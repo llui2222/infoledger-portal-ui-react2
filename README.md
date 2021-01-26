@@ -1,29 +1,29 @@
-# README #
+# Info Ledger React App
 
-This README would normally document whatever steps are necessary to get your application up and running.
+## Available Scripts
 
-### What is this repository for? ###
+In the project directory, you can run:
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### `yarn start`
 
-### How do I get set up? ###
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-### Contribution guidelines ###
+### `yarn test`
 
-* Writing tests
-* Code review
-* Other guidelines
+Launches the test runner in the interactive watch mode.
 
-### Who do I talk to? ###
+### `npm run test -- --coverage --watchAll=false`
 
-* Repo owner or admin
-* Other community or team contact
+Generates test coverage report
+
+### `yarn build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
