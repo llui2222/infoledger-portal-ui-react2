@@ -41,5 +41,7 @@
     "enzyme-adapter-react-16": "^1.15.6",
     "jest-sonar-reporter": "^2.0.0"
   },
-  "testResultsProcessor": "jest-sonar-reported"
+  "jest": {
+    "testResultsProcessor": "jest-sonar-reporter"
+  }
 }
