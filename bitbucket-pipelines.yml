@@ -23,7 +23,7 @@ definitions:
         script:
           - pipe: sonarsource/sonarcloud-scan:1.2.1
           variables:
-            EXTRA_ARGS: -Dsonar.projectKey=\"infoledger-portal-ui-react\" -Dsonar.organization=\"infoledger\" -Dsonar.projectName=\"InfoLedger Front\" -Dsonar.projectDescription=\"InfoLedger React Frontend\"
+            EXTRA_ARGS: '-Dsonar.projectKey=\"infoledger-portal-ui-react\" -Dsonar.organization=\"infoledger\" -Dsonar.projectName=\"InfoLedger Front\" -Dsonar.projectDescription=\"InfoLedger React Frontend\"'
             DEBUG: "true"
     - step: &lint
         name: Lint the node package
