@@ -45,7 +45,7 @@ pipelines:
               - pipe: atlassian/git-secrets-scan:0.4.3
       - step:
           name: Deploy to Dev
-          deployment: Dev
+          deployment: develop
           trigger: manual
           clone:
             enabled: false
