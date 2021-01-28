@@ -4,6 +4,9 @@ image: node:10.15.3
 
 # Workflow Configuration
 
+clone:
+  depth: full
+
 definitions:
   caches:
     sonar: ~/.sonar/cache
