@@ -84,7 +84,8 @@ pipelines:
           - step: *sonar-cloud
           - step: *lint
       - step: *deploy-dev
-    master:
+  tags:
+    release-*:
       - parallel:
           - step: *build-test
           - step: *sonar-cloud
