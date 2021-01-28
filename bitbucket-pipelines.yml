@@ -12,6 +12,13 @@ definitions:
     sonar: ~/.sonar/cache
   steps:
     - step: &build-test
+        name: Test Coverage Report
+        caches:
+          - node
+        script:
+          - npm install
+          - npm test
+    - step: &build-test
         name: Build and Test
         caches:
           - node
