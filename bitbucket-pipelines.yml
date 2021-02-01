@@ -17,7 +17,7 @@ definitions:
           - node
         script:
           - npm install
-          - npm run test -- --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox
+          - npm npm run test -- --coverage --watchAll=false
           - pipe: sonarsource/sonarcloud-scan:1.2.1
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &lint
