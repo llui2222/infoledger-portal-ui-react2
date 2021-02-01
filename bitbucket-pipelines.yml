@@ -11,23 +11,13 @@ definitions:
   caches:
     sonar: ~/.sonar/cache
   steps:
-    - step: &build-test
+    - step: &build-test-sonar
         name: Test Coverage Report
         caches:
           - node
         script:
           - npm install
-          - npm test
-    - step: &build-test
-        name: Build and Test
-        caches:
-          - node
-        script:
-          - npm install
-          - npm test
-    - step: &sonar-cloud
-        name: Sonar Cloud Scan
-        script:
+          - npm run test -- --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox
           - pipe: sonarsource/sonarcloud-scan:1.2.1
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &lint
@@ -81,20 +71,17 @@ definitions:
 pipelines:
   default:
     - parallel:
-        - step: *build-test
-        - step: *sonar-cloud
+        - step: *build-test-sonar
         - step: *lint
   branches:
     develop:
       - parallel:
-          - step: *build-test
-          - step: *sonar-cloud
+          - step: *build-test-sonar
           - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
       - parallel:
-          - step: *build-test
-          - step: *sonar-cloud
+          - step: *build-test-sonar
           - step: *lint
       - step: *deploy-prod
