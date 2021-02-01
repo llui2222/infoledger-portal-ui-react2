@@ -19,6 +19,14 @@ definitions:
           - npm install
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
+    - step: &build-test-sonar-quality-gate
+        name: Test Coverage Report
+        caches:
+          - node
+        script:
+          - npm install
+          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
+          - pipe: sonarsource/sonarcloud-scan:1.2.1
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &lint
         name: Lint the node package
@@ -76,12 +84,12 @@ pipelines:
   branches:
     develop:
       - parallel:
-          - step: *build-test-sonar
+          - step: *build-test-sonar-quality-gate
           - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
       - parallel:
-          - step: *build-test-sonar
+          - step: *build-test-sonar-quality-gate
           - step: *lint
       - step: *deploy-prod
