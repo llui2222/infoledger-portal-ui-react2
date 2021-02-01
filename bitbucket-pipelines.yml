@@ -17,7 +17,7 @@ definitions:
           - node
         script:
           - npm install
-          - npm npm run test -- --coverage --watchAll=false
+          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &lint
