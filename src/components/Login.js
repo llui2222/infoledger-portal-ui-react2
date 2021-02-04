@@ -1,15 +1,19 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
-import PageContainer from "./PageContainer";
+import UnauthContainer from "./UnauthContainer";
+import {Link} from "react-router-dom";
 
 function Login() {
 
     return (
-        <PageContainer>
+        <UnauthContainer>
             <Typography variant="h4" gutterBottom>
                 Login
             </Typography>
-        </PageContainer>
+            <Link to="/signup">
+                Sign Up
+            </Link>
+        </UnauthContainer>
     );
 }
 

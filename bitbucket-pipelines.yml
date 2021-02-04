@@ -20,7 +20,7 @@ definitions:
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
     - step: &build-test-sonar-quality-gate
-        name: Test Coverage Report
+        name: Test Coverage Report & Quality Gate
         caches:
           - node
         script:
