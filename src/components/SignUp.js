@@ -11,7 +11,7 @@ import {
     Button,
     TextField,
 } from '@material-ui/core';
-import FieldPassword from "./common/FieldPassword";
+import PasswordHelper from "./common/PasswordHelper";
 import { useSnackbar } from 'notistack';
 import {useDispatch} from "react-redux";
 import {
@@ -19,6 +19,7 @@ import {
     userRegisterSuccess,
     userRegisterFailure
 } from "../redux/reducers/usersReducer";
+import FieldPassword from "./common/FieldPassword";
 
 Amplify.configure(awsconfig);
 Auth.configure(awsconfig);
@@ -51,7 +52,7 @@ function SignUp() {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
-    const { register, handleSubmit, watch, errors, setError } = useForm({
+    const { register, handleSubmit, watch, errors } = useForm({
         mode: 'onChange'
     });
 
@@ -100,26 +101,24 @@ function SignUp() {
                     helperText={errors.email && <>This field is required</>}
                 />
 
-                <FieldPassword register={register} errors={errors} setError={setError} />
+                <PasswordHelper
+                    register={register}
+                    errors={errors}
+                    name='password'
+                    label='Password'
+                />
 
-                <TextField
-                    defaultValue=""
-                    fullWidth
-                    id="password2"
-                    label="Confirm Password"
-                    autoComplete="confirm-password"
-                    variant="outlined"
-                    type="password"
-                    margin="normal"
-                    inputProps={{
-                        name: "password2",
-                        ref: register({
-                            required: true,
-                            validate: value => value === password.current
-                        }),
-                    }}
-                    error={!!errors.password2}
+                <FieldPassword
+                    register={register}
+                    errors={errors}
+                    name='password2'
+                    label='Confirm Password'
                     helperText={errors.password2 && <>The passwords do not match</>}
+                    labelWidth={132}
+                    registerRule={{
+                        required: true,
+                        validate: value => value === password.current
+                    }}
                 />
 
                 <Box className={classes.formFooter}>
