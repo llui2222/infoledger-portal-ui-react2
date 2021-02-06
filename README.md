@@ -16,7 +16,7 @@ You will also see any lint errors in the console.
 
 Launches the test runner in the interactive watch mode.
 
-### `npm run test -- --coverage --watchAll=false`
+### `yarn test:coverage`
 
 Generates test coverage report
 

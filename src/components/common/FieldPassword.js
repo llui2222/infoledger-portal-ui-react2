@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Fade, Paper, Popper, TextField} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import { CheckCircle, RadioButtonUnchecked } from '@material-ui/icons';
-import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     passwordPopper: {

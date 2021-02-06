@@ -12,6 +12,13 @@ import {
     TextField,
 } from '@material-ui/core';
 import FieldPassword from "./common/FieldPassword";
+import { useSnackbar } from 'notistack';
+import {useDispatch} from "react-redux";
+import {
+    userRegisterRequest,
+    userRegisterSuccess,
+    userRegisterFailure
+} from "../redux/reducers/usersReducer";
 
 Amplify.configure(awsconfig);
 Auth.configure(awsconfig);
@@ -41,6 +48,8 @@ function SignUp() {
     const classes = useStyles();
     const password = useRef({});
     const history = useHistory();
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
 
     const { register, handleSubmit, watch, errors, setError } = useForm({
         mode: 'onChange'
@@ -49,15 +58,21 @@ function SignUp() {
     password.current = watch('password', '');
 
     const onSubmit = data => {
-        console.log('loading');
+        dispatch(userRegisterRequest());
         Auth.signUp({
             username: data.email,
             password: data.password
         }).then(() => {
+            dispatch(userRegisterSuccess());
             history.push('/validateEmail');
         }).catch(err => {
-            console.log('error');
+            dispatch(userRegisterFailure());
+            showErrorMessage(err.message);
         });
+    }
+
+    function showErrorMessage(text) {
+        enqueueSnackbar(text, { variant: 'error' });
     }
 
     return (

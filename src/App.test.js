@@ -1,9 +1,10 @@
 import React from "react";
-import { shallow } from 'enzyme';
+import {render } from '@testing-library/react'
 import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 describe('<App />', () => {
-  it('<App /> renders', () => {
-    shallow(<App />);
+  test('<App /> renders successfully', () => {
+    render(<Router><App /></Router>);
   });
 });
