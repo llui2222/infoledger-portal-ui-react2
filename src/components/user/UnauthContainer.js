@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -12,9 +13,9 @@ function UnauthContainer(props) {
     const classes = useStyles();
 
     return (
-        <div className={classes.page}>
+        <Box className={classes.page}>
             {props.children}
-        </div>
+        </Box>
     );
 }
 

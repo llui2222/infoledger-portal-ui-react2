@@ -1,8 +1,6 @@
 import React, { useRef } from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import { useForm } from "react-hook-form";
-import Amplify, { Auth } from 'aws-amplify';
-import awsconfig from '../aws-exports';
 import {makeStyles} from "@material-ui/core/styles";
 import {
     Container,
@@ -11,18 +9,12 @@ import {
     Button,
     TextField,
 } from '@material-ui/core';
-import PasswordHelper from "./common/PasswordHelper";
-import { useSnackbar } from 'notistack';
+import PasswordHelper from "../common/PasswordHelper";
 import {useDispatch} from "react-redux";
 import {
-    userRegisterRequest,
-    userRegisterSuccess,
-    userRegisterFailure
-} from "../redux/reducers/usersReducer";
-import FieldPassword from "./common/FieldPassword";
-
-Amplify.configure(awsconfig);
-Auth.configure(awsconfig);
+    USER_REGISTER_REQUEST
+} from "../../redux/actions/users";
+import FieldPassword from "../common/FieldPassword";
 
 const useStyles = makeStyles((theme) => ({
     pageContainer: {
@@ -47,10 +39,8 @@ const useStyles = makeStyles((theme) => ({
 function SignUp() {
 
     const classes = useStyles();
-    const password = useRef({});
-    const history = useHistory();
     const dispatch = useDispatch();
-    const { enqueueSnackbar } = useSnackbar();
+    const password = useRef({});
 
     const { register, handleSubmit, watch, errors } = useForm({
         mode: 'onChange'
@@ -59,21 +49,11 @@ function SignUp() {
     password.current = watch('password', '');
 
     const onSubmit = data => {
-        dispatch(userRegisterRequest());
-        Auth.signUp({
-            username: data.email,
+        dispatch({
+            type: USER_REGISTER_REQUEST,
+            email: data.email,
             password: data.password
-        }).then(() => {
-            dispatch(userRegisterSuccess());
-            history.push('/validateEmail');
-        }).catch(err => {
-            dispatch(userRegisterFailure());
-            showErrorMessage(err.message);
         });
-    }
-
-    function showErrorMessage(text) {
-        enqueueSnackbar(text, { variant: 'error' });
     }
 
     return (

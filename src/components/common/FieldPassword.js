@@ -65,6 +65,7 @@ function FieldPassword({
                             onClick={handleClickShowPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
+                            tabIndex="-1"
                         >
                             {showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
