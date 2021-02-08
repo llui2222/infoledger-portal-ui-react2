@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import {useSelector} from "react-redux";
 
@@ -14,7 +14,7 @@ function EmailConfirmedMessage() {
     const classes = useStyles();
     const emailConfirmed = useSelector(state => state.users.emailConfirmed);
 
-    if(!emailConfirmed) {
+    if (!emailConfirmed) {
         return null;
     }
 

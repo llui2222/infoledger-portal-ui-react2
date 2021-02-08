@@ -1,36 +1,15 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import {
     USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAILURE,
     CONFIRM_EMAIL_REQUEST,
-    CONFIRM_EMAIL_SUCCESS,
-    CONFIRM_EMAIL_FAILURE,
-    CLEAR_USER_EMAIL
+    userRegisterSuccess,
+    userRegisterFailure,
+    confirmEmailSuccess,
+    confirmEmailFailure
 } from "../actions/users";
 import { showNotification } from "../actions/notifications";
 import { history } from "../index";
-import Amplify, {Auth} from "aws-amplify";
-import awsconfig from "../../aws-exports";
-
-Amplify.configure(awsconfig);
-Auth.configure(awsconfig);
-
-function userRegister({ email, password }) {
-
-    return Auth.signUp({
-        username: email,
-        password: password
-    }).then(response => ({ response }))
-        .catch(error => ({ error }))
-}
-
-function emailConfirm({ userName, confirmationCode }) {
-
-    return Auth.confirmSignUp(userName, confirmationCode)
-        .then(response => ({ response }))
-        .catch(error => ({ error }))
-}
+import * as api from '../api/auth';
 
 function showErrorMessage(message) {
     return put(showNotification({
@@ -42,33 +21,26 @@ function showErrorMessage(message) {
     }));
 }
 
-function* workerUserRegister(action) {
-
-    const { response, error } = yield call(() => userRegister(action));
-
-    if (response) {
-        yield put({
-            type: USER_REGISTER_SUCCESS,
-            user: response.user.username
-        });
+export function* workerUserRegister(action) {
+    try {
+        const response = yield call(() => api.userRegister(action));
+        yield put(userRegisterSuccess(response.user.username));
         yield history.push('/confirmEmail');
-    } else {
-        yield put({type: USER_REGISTER_FAILURE});
-        yield showErrorMessage(error.message);
+    } catch (err) {
+        yield put(userRegisterFailure());
+        yield showErrorMessage(err.message);
     }
 }
 
 function* workerEmailConfirm(action) {
 
-    const { response, error } = yield call(() => emailConfirm(action));
+    const { response, error } = yield call(() => api.emailConfirm(action));
 
     if (response) {
-        yield put({
-            type: CONFIRM_EMAIL_SUCCESS
-        });
+        yield put(confirmEmailSuccess());
         yield history.push('/login');
     } else {
-        yield put({type: CONFIRM_EMAIL_FAILURE});
+        yield put(confirmEmailFailure());
         yield showErrorMessage(error.message);
     }
 }
