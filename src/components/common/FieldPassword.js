@@ -21,6 +21,7 @@ function FieldPassword({
                            onBlur,
                            register,
                            required,
+                           margin,
                            labelWidth = 82,
                            ...restProps
 }) {
@@ -39,7 +40,7 @@ function FieldPassword({
         <FormControl
             fullWidth
             variant="outlined"
-            margin="normal"
+            margin={margin}
             error={errors && !!errors[name]}
             onFocus={onFocus}
             onBlur={onBlur}

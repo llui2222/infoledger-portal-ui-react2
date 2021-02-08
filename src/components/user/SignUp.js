@@ -16,9 +16,7 @@ import UnauthorizedContainer from "./UnauthorizedContainer";
 import LoginFormFooter from "./LoginFormFooter";
 
 const useStyles = makeStyles((theme) => ({
-    form: {
-        width: 320
-    },
+
 }));
 
 function SignUp() {
@@ -45,7 +43,6 @@ function SignUp() {
         <UnauthorizedContainer>
             <FormControl
                 component="form"
-                className={classes.form}
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Typography variant="h3" gutterBottom>
@@ -73,9 +70,10 @@ function SignUp() {
                     required
                     register={register}
                     errors={errors}
+                    margin='normal'
                     name='password'
                     label='Password'
-                    defaultValue=""
+                    defaultValue=''
                     helperText='This field is required'
                 />
 
@@ -83,6 +81,7 @@ function SignUp() {
                     required
                     register={register}
                     errors={errors}
+                    margin='normal'
                     name='password2'
                     label='Confirm Password'
                     helperText='The passwords do not match'

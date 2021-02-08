@@ -16,7 +16,7 @@ function Router() {
             <Route path="/login/">
                 <Login/>
             </Route>
-            <Route path="/signup/">
+            <Route path="/sign-up/">
                 <SignUp/>
             </Route>
             <Route path="/messenger/:name">

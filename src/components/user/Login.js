@@ -7,11 +7,9 @@ import LoginFormFooter from "./LoginFormFooter";
 import {makeStyles} from "@material-ui/core/styles";
 import {USER_REGISTER_REQUEST} from "../../redux/actions/users";
 import {useDispatch} from "react-redux";
+import PasswordHelper from "../common/PasswordHelper";
 
 const useStyles = makeStyles((theme) => ({
-    form: {
-        width: 320
-    },
 }));
 
 function Login() {
@@ -31,7 +29,6 @@ function Login() {
         <UnauthorizedContainer>
             <FormControl
                 component="form"
-                className={classes.form}
                 onSubmit={onSubmit}
             >
                 <Typography variant="h3" gutterBottom>
@@ -54,12 +51,13 @@ function Login() {
                     required
                     name='password'
                     label='Password'
+                    margin='normal'
                 />
 
                 <LoginFormFooter
                     submitTitle='Log In'
                     secondaryTitle='Sign Up'
-                    secondaryUrl='/signup'
+                    secondaryUrl='/sign-up'
                 />
 
             </FormControl>
