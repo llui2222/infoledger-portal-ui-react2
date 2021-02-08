@@ -5,7 +5,8 @@ import {
     USER_REGISTER_FAILURE,
     CONFIRM_EMAIL_REQUEST,
     CONFIRM_EMAIL_SUCCESS,
-    CONFIRM_EMAIL_FAILURE
+    CONFIRM_EMAIL_FAILURE,
+    CLEAR_USER_EMAIL
 } from "../actions/users";
 import { showNotification } from "../actions/notifications";
 import { history } from "../index";
@@ -65,7 +66,7 @@ function* workerEmailConfirm(action) {
         yield put({
             type: CONFIRM_EMAIL_SUCCESS
         });
-        yield history.push('/');
+        yield history.push('/login');
     } else {
         yield put({type: CONFIRM_EMAIL_FAILURE});
         yield showErrorMessage(error.message);

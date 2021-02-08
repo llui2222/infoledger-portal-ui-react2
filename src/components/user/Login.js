@@ -6,10 +6,19 @@ import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
 import {USER_REGISTER_REQUEST} from "../../redux/actions/users";
 import {useDispatch} from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
+
+const useStyles = makeStyles((theme) => ({
+    form: {
+        margin: 'auto'
+    }
+}));
 
 function Login() {
 
     const dispatch = useDispatch();
+    const classes = useStyles();
 
     const onSubmit = data => {
         dispatch({
@@ -21,9 +30,13 @@ function Login() {
 
     return (
         <UnauthorizedContainer>
+
+            <EmailConfirmedMessage/>
+
             <FormControl
                 component="form"
                 onSubmit={onSubmit}
+                className={classes.form}
             >
                 <Typography variant="h3" gutterBottom>
                     Log In

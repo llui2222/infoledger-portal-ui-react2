@@ -4,15 +4,15 @@ import {Box, Container} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     pageContainer: {
-        height: `calc(100% - ${theme.spacing(7)}px)`,
+        height: `calc(100% - ${theme.spacing(7)}px)`
+    },
+    page: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
-    },
-    page: {
-        minWidth: 600,
+        flexDirection: 'column',
         textAlign: 'center',
+        height: '100%'
     },
 }));
 
