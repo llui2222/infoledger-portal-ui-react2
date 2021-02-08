@@ -4,17 +4,11 @@ import UnauthorizedContainer from "./UnauthorizedContainer";
 import {FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
-import {makeStyles} from "@material-ui/core/styles";
 import {USER_REGISTER_REQUEST} from "../../redux/actions/users";
 import {useDispatch} from "react-redux";
-import PasswordHelper from "../common/PasswordHelper";
-
-const useStyles = makeStyles((theme) => ({
-}));
 
 function Login() {
 
-    const classes = useStyles();
     const dispatch = useDispatch();
 
     const onSubmit = data => {

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { makeStyles } from "@material-ui/core/styles";
 import {
     Fade,
     Paper,
     Popper
 } from '@material-ui/core';
-import { makeStyles } from "@material-ui/core/styles";
 import {
     CheckCircle,
     RadioButtonUnchecked
@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     passwordPopper: {
         padding: `1px ${theme.spacing(2)}px`,
         margin: `0 ${theme.spacing(2)}px`,
+        border: '2px solid transparent',
         '&>ul': {
             padding: 0,
             listStyle: 'none',
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
                 }
             }
         }
+    },
+    notValid: {
+        borderColor: '#f44336'
     },
     done: {
         color: theme.palette.secondary.secondary
@@ -106,7 +110,7 @@ function PasswordHelper({ fieldProps, controlProps, name, register, ...restProps
             >
                 {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={350}>
-                        <Paper className={classes.passwordPopper}>
+                        <Paper className={`${classes.passwordPopper} ${passwordReq.length !== 0 && classes.notValid}`}>
                         <h4>Your password should contain: </h4>
                         <ul>
                             <DrawPopoverLine type='minLength'>Minimum length of 8 characters</DrawPopoverLine>

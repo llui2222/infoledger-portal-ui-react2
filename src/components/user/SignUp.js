@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { useForm } from "react-hook-form";
-import {makeStyles} from "@material-ui/core/styles";
 import {
     FormControl,
     Typography,
@@ -15,13 +14,8 @@ import FieldPassword from "../common/FieldPassword";
 import UnauthorizedContainer from "./UnauthorizedContainer";
 import LoginFormFooter from "./LoginFormFooter";
 
-const useStyles = makeStyles((theme) => ({
-
-}));
-
 function SignUp() {
 
-    const classes = useStyles();
     const dispatch = useDispatch();
     const password = useRef({});
 
@@ -74,7 +68,6 @@ function SignUp() {
                     name='password'
                     label='Password'
                     defaultValue=''
-                    helperText='This field is required'
                 />
 
                 <FieldPassword
