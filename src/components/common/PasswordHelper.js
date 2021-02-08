@@ -41,7 +41,7 @@ const initialPasswordRequirements = [
     'hasNumber',
 ];
 
-function PasswordHelper(props) {
+function PasswordHelper({ fieldProps, controlProps, name, register, ...restProps }) {
 
     const classes = useStyles();
     const [passwordReq, setPasswordReq] = useState(initialPasswordRequirements);
@@ -85,9 +85,18 @@ function PasswordHelper(props) {
     return (
         <>
             <FieldPassword
-                passwordValidate={passwordValidate}
-                setInputAnchor={setInputAnchor}
-                {...props}
+                name={name}
+                onFocus={e => setInputAnchor(e.currentTarget)}
+                onBlur={() => setInputAnchor(null)}
+                inputProps={{
+                    name: name,
+                    ref: register( {
+                        validate: {
+                            passwordValidate
+                        }
+                    })
+                }}
+                {...restProps}
             />
             <Popper
                 open={!!inputAnchor}

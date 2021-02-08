@@ -12,17 +12,7 @@ import {
     VisibilityOff
 } from '@material-ui/icons';
 
-function FieldPassword({
-                           register,
-                           errors,
-                           passwordValidate = () => {},
-                           setInputAnchor = () => {},
-                           name,
-                           label,
-                           helperText,
-                           registerRule,
-                           labelWidth = 72
-}) {
+function FieldPassword({ errors, name, label, helperText, onFocus, onBlur, register, labelWidth = 72, ...restProps }) {
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -39,25 +29,15 @@ function FieldPassword({
             fullWidth
             variant="outlined"
             margin="normal"
-            onFocus={e => setInputAnchor(e.currentTarget)}
-            onBlur={() => setInputAnchor(null)}
-            error={!!errors[name]}
+            error={errors && !!errors[name]}
+            onFocus={onFocus}
+            onBlur={onBlur}
         >
             <InputLabel htmlFor={name}>{label}</InputLabel>
             <OutlinedInput
                 id={name}
                 type={showPassword ? 'text' : 'password'}
-                defaultValue=""
                 autoComplete="password"
-                labelWidth={labelWidth}
-                inputProps={{
-                    name: name,
-                    ref: register( registerRule ? registerRule : {
-                        validate: {
-                            passwordValidate
-                        }
-                    })
-                }}
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
@@ -71,6 +51,7 @@ function FieldPassword({
                         </IconButton>
                     </InputAdornment>
                 }
+                {...restProps}
             />
             { helperText && errors && errors[name] && <FormHelperText>{helperText}</FormHelperText> }
         </FormControl>

@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import {makeStyles} from "@material-ui/core/styles";
 import {
     FormControl,
-    Box,
-    Button,
     Typography,
     TextField,
 } from '@material-ui/core';
@@ -15,24 +13,12 @@ import {
 } from "../../redux/actions/users";
 import FieldPassword from "../common/FieldPassword";
 import UnauthorizedContainer from "./UnauthorizedContainer";
-import Link from "../common/Link";
+import LoginFormFooter from "./LoginFormFooter";
 
 const useStyles = makeStyles((theme) => ({
     form: {
         width: 320
     },
-    formFooter: {
-        display: 'flex',
-        alignItems: 'center',
-        marginTop: theme.spacing(1)
-    },
-    linkToLogin: {
-        marginLeft: 'auto',
-        fontSize: '18px',
-        '&::visited': {
-            color: theme.palette.primary
-        }
-    }
 }));
 
 function SignUp() {
@@ -88,6 +74,8 @@ function SignUp() {
                     errors={errors}
                     name='password'
                     label='Password'
+                    defaultValue=""
+                    helperText='This field is required'
                 />
 
                 <FieldPassword
@@ -95,33 +83,23 @@ function SignUp() {
                     errors={errors}
                     name='password2'
                     label='Confirm Password'
-                    helperText={errors.password2 && <>The passwords do not match</>}
+                    helperText='The passwords do not match'
                     labelWidth={132}
-                    registerRule={{
-                        required: true,
-                        validate: value => value === password.current
+                    inputProps={{
+                        name: 'password2',
+                        ref: register({
+                            required: true,
+                            validate: value => value === password.current
+                        })
                     }}
                 />
 
-                <Box className={classes.formFooter}>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        color="primary"
-                        disableElevation
-                        type="submit"
-                        name="register"
-                    >
-                        Register
-                    </Button>
-                    <Link
-                        to="/login"
-                        className={classes.linkToLogin}
-                        name="login"
-                    >
-                        Log In
-                    </Link>
-                </Box>
+                <LoginFormFooter
+                    submitTitle='Register'
+                    secondaryTitle='Log In'
+                    secondaryUrl='/login'
+                />
+
             </FormControl>
         </UnauthorizedContainer>
     );
