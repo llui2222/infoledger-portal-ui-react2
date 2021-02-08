@@ -32,7 +32,7 @@ function Login() {
                 onSubmit={onSubmit}
             >
                 <Typography variant="h3" gutterBottom>
-                    Sign Up
+                    Log In
                 </Typography>
 
                 <TextField
