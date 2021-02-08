@@ -54,7 +54,6 @@ function Login() {
                     required
                     name='password'
                     label='Password'
-                    labelWidth={132}
                 />
 
                 <LoginFormFooter

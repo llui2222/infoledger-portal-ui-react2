@@ -70,6 +70,7 @@ function SignUp() {
                 />
 
                 <PasswordHelper
+                    required
                     register={register}
                     errors={errors}
                     name='password'
@@ -79,12 +80,13 @@ function SignUp() {
                 />
 
                 <FieldPassword
+                    required
                     register={register}
                     errors={errors}
                     name='password2'
                     label='Confirm Password'
                     helperText='The passwords do not match'
-                    labelWidth={132}
+                    labelWidth={142}
                     inputProps={{
                         name: 'password2',
                         ref: register({

@@ -12,7 +12,18 @@ import {
     VisibilityOff
 } from '@material-ui/icons';
 
-function FieldPassword({ errors, name, label, helperText, onFocus, onBlur, register, labelWidth = 72, ...restProps }) {
+function FieldPassword({
+                           errors,
+                           name,
+                           label,
+                           helperText,
+                           onFocus,
+                           onBlur,
+                           register,
+                           required,
+                           labelWidth = 82,
+                           ...restProps
+}) {
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -32,12 +43,14 @@ function FieldPassword({ errors, name, label, helperText, onFocus, onBlur, regis
             error={errors && !!errors[name]}
             onFocus={onFocus}
             onBlur={onBlur}
+            required={required}
         >
             <InputLabel htmlFor={name}>{label}</InputLabel>
             <OutlinedInput
                 id={name}
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="password"
+                labelWidth={labelWidth}
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
