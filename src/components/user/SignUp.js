@@ -1,12 +1,11 @@
 import React, { useRef } from 'react';
-import {Link} from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import {makeStyles} from "@material-ui/core/styles";
 import {
-    Container,
     FormControl,
     Box,
     Button,
+    Typography,
     TextField,
 } from '@material-ui/core';
 import PasswordHelper from "../common/PasswordHelper";
@@ -15,24 +14,24 @@ import {
     USER_REGISTER_REQUEST
 } from "../../redux/actions/users";
 import FieldPassword from "../common/FieldPassword";
+import UnauthorizedContainer from "./UnauthorizedContainer";
+import Link from "../common/Link";
 
 const useStyles = makeStyles((theme) => ({
-    pageContainer: {
-        height: `calc(100% - ${theme.spacing(7)}px)`,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column'
-    },
     form: {
         width: 320
     },
     formFooter: {
         display: 'flex',
+        alignItems: 'center',
         marginTop: theme.spacing(1)
     },
     linkToLogin: {
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        fontSize: '18px',
+        '&::visited': {
+            color: theme.palette.primary
+        }
     }
 }));
 
@@ -57,12 +56,15 @@ function SignUp() {
     }
 
     return (
-        <Container maxWidth="sm" className={classes.pageContainer}>
+        <UnauthorizedContainer>
             <FormControl
                 component="form"
                 className={classes.form}
                 onSubmit={handleSubmit(onSubmit)}
             >
+                <Typography variant="h3" gutterBottom>
+                    Sign Up
+                </Typography>
                 <TextField
                     required
                     defaultValue=""
@@ -104,6 +106,7 @@ function SignUp() {
                 <Box className={classes.formFooter}>
                     <Button
                         variant="contained"
+                        size="large"
                         color="primary"
                         disableElevation
                         type="submit"
@@ -120,7 +123,7 @@ function SignUp() {
                     </Link>
                 </Box>
             </FormControl>
-        </Container>
+        </UnauthorizedContainer>
     );
 }
 

@@ -1,21 +1,11 @@
 import React, { useState } from "react";
-import {TextField, Box, Typography, FormControl, Button, Container} from '@material-ui/core';
+import {TextField, Typography, FormControl, Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import {useDispatch, useSelector} from 'react-redux';
 import {CONFIRM_EMAIL_REQUEST} from "../../redux/actions/users";
+import UnauthorizedContainer from "./UnauthorizedContainer";
 
 const useStyles = makeStyles((theme) => ({
-    pageContainer: {
-        height: `calc(100% - ${theme.spacing(7)}px)`,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column'
-    },
-    page: {
-        minWidth: 600,
-        textAlign: 'center',
-    },
     form: {
         display: 'flex',
         justifyContent: 'center',
@@ -44,38 +34,36 @@ function ConfirmEmail() {
     }
 
     return (
-        <Container maxWidth="sm" className={classes.pageContainer}>
-            <Box className={classes.page}>
-                <Typography variant="h4" gutterBottom>
-                    You have been successfully registered
-                </Typography>
-                <Typography variant="subtitle1">
-                    Please check your email and enter conformation code below
-                </Typography>
-                <FormControl
-                    component="form"
-                    className={classes.form}
-                    onSubmit={e => handleSubmit(e)}
+        <UnauthorizedContainer>
+            <Typography variant="h4" gutterBottom>
+                You have been successfully registered
+            </Typography>
+            <Typography variant="subtitle1">
+                Please check your email and enter conformation code below
+            </Typography>
+            <FormControl
+                component="form"
+                className={classes.form}
+                onSubmit={e => handleSubmit(e)}
+            >
+                <TextField
+                    label="Confirmation Code"
+                    variant="outlined"
+                    value={confirmationCode}
+                    onChange={e => setConfirmationCode(e.target.value)}
+                    className={classes.confirmationCodeField}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    type="submit"
+                    name="verify"
                 >
-                    <TextField
-                        label="Confirmation Code"
-                        variant="outlined"
-                        value={confirmationCode}
-                        onChange={e => setConfirmationCode(e.target.value)}
-                        className={classes.confirmationCodeField}
-                    />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        disableElevation
-                        type="submit"
-                        name="verify"
-                    >
-                        Verify Email
-                    </Button>
-                </FormControl>
-            </Box>
-        </Container>
+                    Verify Email
+                </Button>
+            </FormControl>
+        </UnauthorizedContainer>
     );
 }
 
