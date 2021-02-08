@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {TextField, Typography, FormControl, Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import {useDispatch, useSelector} from 'react-redux';
 import {CONFIRM_EMAIL_REQUEST} from "../../redux/actions/users";
 import UnauthorizedContainer from "./UnauthorizedContainer";
+import {history} from "../../redux";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -23,6 +24,10 @@ function ConfirmEmail() {
     const dispatch = useDispatch();
     const [ confirmationCode, setConfirmationCode ] = useState('');
     const userID = useSelector(state => state.users.userID);
+
+    useEffect(() => {
+        if(!userID) history.push('/sign-up');
+    }, [])
 
     const handleSubmit = e => {
         e.preventDefault();
