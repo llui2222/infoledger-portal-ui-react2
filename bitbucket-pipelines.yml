@@ -13,8 +13,6 @@ definitions:
   steps:
     - step: &install-dependencies
         name: Install Dependencies
-        caches:
-          - node
         script:
           - npm install
     - step: &test-sonar
@@ -33,7 +31,7 @@ definitions:
     - step: &build
         name: Build
         script:
-          - npm run build
+          - npm run-script build
         artifacts:
           - build/**
     - step: &lint
@@ -84,11 +82,6 @@ definitions:
               DISTRIBUTION_ID: $DISTRIBUTION_ID_PROD
 
 pipelines:
-  default:
-    - step: *install-dependencies
-    - parallel:
-        - step: *test-sonar
-        - step: *lint
   branches:
     develop:
       - step: *install-dependencies
