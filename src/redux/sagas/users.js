@@ -1,11 +1,14 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import {
     USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAILURE,
     CONFIRM_EMAIL_REQUEST,
+    CONFIRM_EMAIL_SUCCESS,
     userRegisterSuccess,
     userRegisterFailure,
     confirmEmailSuccess,
-    confirmEmailFailure
+    confirmEmailFailure,
 } from "../actions/users";
 import { showNotification } from "../actions/notifications";
 import { history } from "../index";
@@ -25,11 +28,21 @@ export function* workerUserRegister(action) {
     try {
         const response = yield call(() => api.userRegister(action));
         yield put(userRegisterSuccess(response.user.username));
-        yield history.push('/confirmEmail');
-    } catch (err) {
-        yield put(userRegisterFailure());
-        yield showErrorMessage(err.message);
+    } catch (error) {
+        yield put(userRegisterFailure(error));
     }
+}
+
+export function* workerUserRegisterSuccess() {
+    yield history.push('/confirmEmail');
+}
+
+export function* workerUserRegisterFailure(action) {
+    yield showErrorMessage(action.error.message);
+}
+
+export function* workerEmailConfirmSuccess() {
+    yield history.push('/login');
 }
 
 function* workerEmailConfirm(action) {
@@ -38,7 +51,6 @@ function* workerEmailConfirm(action) {
 
     if (response) {
         yield put(confirmEmailSuccess());
-        yield history.push('/login');
     } else {
         yield put(confirmEmailFailure());
         yield showErrorMessage(error.message);
@@ -49,6 +61,18 @@ export function* watchUserRegister () {
     yield takeLatest(USER_REGISTER_REQUEST, workerUserRegister)
 }
 
+export function* watchUserRegisterSuccess () {
+    yield takeLatest(USER_REGISTER_SUCCESS, workerUserRegisterSuccess)
+}
+
+export function* watchUserRegisterFailure () {
+    yield takeLatest(USER_REGISTER_FAILURE, workerUserRegisterFailure)
+}
+
 export function* watchEmailConfirm () {
     yield takeLatest(CONFIRM_EMAIL_REQUEST, workerEmailConfirm)
+}
+
+export function* watchEmailConfirmSuccess () {
+    yield takeLatest(CONFIRM_EMAIL_SUCCESS, workerEmailConfirmSuccess)
 }

@@ -10,8 +10,9 @@ export const userRegisterSuccess = username => ({
     user: username
 });
 
-export const userRegisterFailure = () => ({
-    type: USER_REGISTER_FAILURE
+export const userRegisterFailure = (error) => ({
+    type: USER_REGISTER_FAILURE,
+    error: error
 });
 
 export const confirmEmailSuccess = () => ({
