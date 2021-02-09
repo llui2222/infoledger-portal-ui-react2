@@ -11,10 +11,13 @@ definitions:
   caches:
     sonar: ~/.sonar/cache
   steps:
-    - step: &install-dependencies
-        name: Install Dependencies
+    - step: &install-build
+        name: Install & Build
         script:
           - npm install
+          - npm run build
+        artifacts:
+          - build/**
     - step: &test-sonar
         name: Test Coverage Report
         caches:
@@ -28,12 +31,6 @@ definitions:
           - node
         script:
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
-    - step: &build
-        name: Build
-        script:
-          - npm run-script build
-        artifacts:
-          - build/**
     - step: &lint
         name: Lint the code
         script:
@@ -84,18 +81,16 @@ definitions:
 pipelines:
   branches:
     develop:
-      - step: *install-dependencies
+      - step: *install-build
       - parallel:
           - step: *test-sonar
           - step: *lint
-      - step: *build
       - step: *deploy-dev
   tags:
     release-*:
-      - step: *install-dependencies
+      - step: *install-build
       - parallel:
           - step: *test-sonar
           - step: *quality-gate
           - step: *lint
-      - step: *build
       - step: *deploy-prod
