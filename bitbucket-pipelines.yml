@@ -31,8 +31,8 @@ definitions:
     - step: &lint
         name: Lint the node package
         script:
-          - npm install eslint
-          - npx eslint src
+          - npm install
+          - npm lint
         caches:
           - node
     - step: &deploy-dev
