@@ -3,5 +3,5 @@ module.exports = {
         configure: {
             reporters: ["jest-sonar-reporter"]
         }
-    }
+    },
 };

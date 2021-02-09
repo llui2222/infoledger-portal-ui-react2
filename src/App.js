@@ -1,44 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { Provider } from "react-redux";
+import {store, history, sagaMiddleware} from "./redux";
+import { SnackbarProvider } from 'notistack';
+import { ConnectedRouter } from 'connected-react-router'
+import infoLedgerTheme from './theme';
 import Header from "./components/app/Header";
-import Sidebar from "./components/app/Sidebar";
 import Router from "./components/app/Router";
-import { BrowserRouter } from "react-router-dom";
-import {makeStyles} from "@material-ui/core/styles";
-import { SIDEBAR_WIDTH } from "./constants"
-
-const useStyles = makeStyles((theme) => ({
-    mainContainer: {
-        display: 'flex',
-        minHeight: 'calc(100% - 56px)'
-    },
-    sidebar: {
-        width: SIDEBAR_WIDTH,
-        borderRight: '1px solid #ccc'
-    },
-    body: {
-        flex: 1
-    }
-}));
+import Loader from "./components/common/Loader";
+import Notifier from "./components/app/Notifier";
+import rootSaga from "./redux/sagas/root";
 
 function App() {
 
-    const classes = useStyles();
+    useEffect(() => {
+        sagaMiddleware.run(rootSaga);
+    }, []);
 
     return (
         <React.Fragment>
             <CssBaseline/>
-            <BrowserRouter>
-                <Header/>
-                <div className={classes.mainContainer}>
-                    <div className={classes.sidebar}>
-                        <Sidebar/>
-                    </div>
-                    <div className={classes.body}>
-                        <Router/>
-                    </div>
-                </div>
-            </BrowserRouter>
+            <ThemeProvider theme={infoLedgerTheme}>
+                <Provider store={store}>
+                    <SnackbarProvider maxSnack={3}>
+                        <ConnectedRouter history={history}>
+                            <Header/>
+                            <Router/>
+                            <Loader/>
+                            <Notifier/>
+                        </ConnectedRouter>
+                    </SnackbarProvider>
+                </Provider>
+            </ThemeProvider>
         </React.Fragment>
     );
 }
