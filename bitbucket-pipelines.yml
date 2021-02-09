@@ -24,16 +24,14 @@ definitions:
         script:
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
-    - step: &build-test-sonar-quality-gate
-        name: Test Coverage Report & Quality Gate
+    - step: &quality-gate
+        name: Quality Gate
         caches:
           - node
         script:
-          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
-          - pipe: sonarsource/sonarcloud-scan:1.2.1
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &lint
-        name: Lint the node package
+        name: Lint the code
         script:
           - npx eslint src
         caches:
@@ -89,13 +87,14 @@ pipelines:
     develop:
       - step: *install-dependencies
       - parallel:
-          - step: *build-test-sonar-quality-gate
+          - step: *build-test-sonar
           - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
       - step: *install-dependencies
       - parallel:
-          - step: *build-test-sonar-quality-gate
+          - step: *build-test-sonar
+          - step: *quality-gate
           - step: *lint
       - step: *deploy-prod
