@@ -17,7 +17,7 @@ definitions:
           - node
         script:
           - npm install
-    - step: &build-test-sonar
+    - step: &test-sonar
         name: Test Coverage Report
         caches:
           - node
@@ -30,6 +30,12 @@ definitions:
           - node
         script:
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
+    - step: &build
+        name: Build
+        script:
+          - npm run build
+        artifacts:
+          - build/**
     - step: &lint
         name: Lint the code
         script:
@@ -81,20 +87,22 @@ pipelines:
   default:
     - step: *install-dependencies
     - parallel:
-        - step: *build-test-sonar
+        - step: *test-sonar
         - step: *lint
   branches:
     develop:
       - step: *install-dependencies
       - parallel:
-          - step: *build-test-sonar
+          - step: *test-sonar
           - step: *lint
+      - step: *build
       - step: *deploy-dev
   tags:
     release-*:
       - step: *install-dependencies
       - parallel:
-          - step: *build-test-sonar
+          - step: *test-sonar
           - step: *quality-gate
           - step: *lint
+      - step: *build
       - step: *deploy-prod
