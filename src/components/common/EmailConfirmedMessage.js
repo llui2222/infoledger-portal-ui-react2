@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
 function EmailConfirmedMessage() {
 
     const classes = useStyles();
-    const emailConfirmed = useSelector(state => state.users.emailConfirmed);
+    const emailConfirmed = useSelector(state => state.user.emailConfirmed);
 
     if (!emailConfirmed) {
         return null;

@@ -15,3 +15,7 @@ export function emailConfirm({userName, confirmationCode}) {
 export function signIn({userName, password}) {
     return Auth.signIn(userName, password);
 }
+
+export function currentSession() {
+    return Auth.currentSession();
+}

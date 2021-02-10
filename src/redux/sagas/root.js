@@ -1,15 +1,23 @@
 import { all } from 'redux-saga/effects';
 import {
-    watchUserRegister,
-    watchUserRegisterSuccess,
-    watchUserRegisterFailure,
-    watchEmailConfirm,
-    watchEmailConfirmSuccess,
-    watchEmailConfirmFailure,
     watchSignIn,
     watchSignInSuccess,
     watchSignInFailure
-} from "./users";
+} from "./signInSaga";
+import {
+    watchUserRegister,
+    watchUserRegisterSuccess,
+    watchUserRegisterFailure,
+} from "./signUpSaga";
+import {
+    watchEmailConfirm,
+    watchEmailConfirmSuccess,
+    watchEmailConfirmFailure
+} from "./emailConfirmSaga";
+import {
+    watchGetAuth,
+    watchGetAuthFailure,
+} from "./isAuthSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -22,5 +30,7 @@ export default function* rootSaga() {
         watchSignIn(),
         watchSignInSuccess(),
         watchSignInFailure(),
+        watchGetAuth(),
+        watchGetAuthFailure(),
     ])
 };

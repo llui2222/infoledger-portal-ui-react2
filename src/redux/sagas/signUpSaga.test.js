@@ -1,9 +1,9 @@
 import {
     workerUserRegister,
     workerUserRegisterSuccess
-} from "./users";
+} from "./signUpSaga";
 import {runSaga} from 'redux-saga';
-import {userRegisterFailure, userRegisterSuccess} from "../actions/users";
+import {userRegisterFailure, userRegisterSuccess} from "../actions/user";
 import * as api from '../api/auth';
 import { history } from "../index";
 
@@ -29,11 +29,18 @@ describe('workerUserRegister', () => {
         userRegister.mockClear();
     });
     it('should redirect on success', () => {
+
+        const mockAction = {
+            userName: 'Test'
+        }
+
         const push = jest.spyOn(history, 'push')
             .mockImplementation(() => {});
-        const gen = workerUserRegisterSuccess();
+        const gen = workerUserRegisterSuccess(mockAction);
+        gen.next();
         gen.next();
         expect(push).toHaveBeenCalledWith('/confirmEmail');
+        push.mockClear();
     });
     it('should dispatch failure action on reject', async () => {
         const dispatched = [];

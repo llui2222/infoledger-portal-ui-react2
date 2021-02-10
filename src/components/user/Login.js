@@ -4,7 +4,7 @@ import UnauthorizedContainer from "./UnauthorizedContainer";
 import {FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
-import {SIGN_IN_REQUEST} from "../../redux/actions/users";
+import {signIn} from "../../redux/actions/user";
 import {useDispatch} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
@@ -21,17 +21,12 @@ function Login() {
     const dispatch = useDispatch();
     const classes = useStyles();
 
-    const { register, handleSubmit, watch, errors } = useForm({
+    const { register, handleSubmit, errors } = useForm({
         mode: 'onChange'
     });
 
     const onSubmit = data => {
-
-        dispatch({
-            type: SIGN_IN_REQUEST,
-            userName: data.userName,
-            password: data.password
-        });
+        dispatch(signIn(data.userName, data.password));
     }
 
     return (

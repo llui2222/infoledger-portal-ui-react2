@@ -1,15 +1,15 @@
 import React from "react";
 import {Typography} from '@material-ui/core';
-import PageContainer from "./PageContainer";
+import UnauthorizedContainer from "./user/UnauthorizedContainer";
 
 function NotFound() {
 
     return (
-        <PageContainer>
+        <UnauthorizedContainer>
             <Typography variant="h3" gutterBottom>
                 Sorry, page not found!
             </Typography>
-        </PageContainer>
+        </UnauthorizedContainer>
     );
 }
 

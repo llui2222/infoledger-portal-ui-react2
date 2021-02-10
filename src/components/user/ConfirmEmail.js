@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {TextField, Typography, FormControl, Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import {useDispatch} from 'react-redux';
-import {CONFIRM_EMAIL_REQUEST} from "../../redux/actions/users";
+import {confirmEmail} from "../../redux/actions/user";
 import UnauthorizedContainer from "./UnauthorizedContainer";
 import {history} from "../../redux";
 import {USERNAME_TO_CONFIRM} from "../../utils/constants";
@@ -32,11 +32,7 @@ function ConfirmEmail() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch({
-            type: CONFIRM_EMAIL_REQUEST,
-            userName: userName,
-            confirmationCode: confirmationCode
-        });
+        dispatch(confirmEmail(userName, confirmationCode));
     }
 
     return (

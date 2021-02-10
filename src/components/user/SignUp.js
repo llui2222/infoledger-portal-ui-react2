@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { useForm } from "react-hook-form";
+import React, {useRef} from 'react';
+import {useForm} from "react-hook-form";
 import {
     FormControl,
     Typography,
@@ -7,9 +7,7 @@ import {
 } from '@material-ui/core';
 import PasswordHelper from "../common/PasswordHelper";
 import {useDispatch} from "react-redux";
-import {
-    USER_REGISTER_REQUEST
-} from "../../redux/actions/users";
+import {userRegister} from "../../redux/actions/user";
 import FieldPassword from "../common/FieldPassword";
 import UnauthorizedContainer from "./UnauthorizedContainer";
 import LoginFormFooter from "./LoginFormFooter";
@@ -26,11 +24,7 @@ function SignUp() {
     password.current = watch('password', '');
 
     const onSubmit = data => {
-        dispatch({
-            type: USER_REGISTER_REQUEST,
-            userName: data.userName,
-            password: data.password
-        });
+        dispatch(userRegister(data.userName, data.password));
     }
 
     return (
