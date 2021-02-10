@@ -4,10 +4,11 @@ import UnauthorizedContainer from "./UnauthorizedContainer";
 import {FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
-import {USER_REGISTER_REQUEST} from "../../redux/actions/users";
+import {SIGN_IN_REQUEST} from "../../redux/actions/users";
 import {useDispatch} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
+import {useForm} from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -20,10 +21,15 @@ function Login() {
     const dispatch = useDispatch();
     const classes = useStyles();
 
+    const { register, handleSubmit, watch, errors } = useForm({
+        mode: 'onChange'
+    });
+
     const onSubmit = data => {
+
         dispatch({
-            type: USER_REGISTER_REQUEST,
-            email: data.email,
+            type: SIGN_IN_REQUEST,
+            userName: data.userName,
             password: data.password
         });
     }
@@ -35,7 +41,7 @@ function Login() {
 
             <FormControl
                 component="form"
-                onSubmit={onSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 className={classes.form}
             >
                 <Typography variant="h3" gutterBottom>
@@ -52,6 +58,11 @@ function Login() {
                     variant="outlined"
                     type="email"
                     margin="normal"
+                    inputProps={{
+                        name: "userName",
+                        ref: register({ required: true })
+                    }}
+                    error={!!errors.email}
                 />
 
                 <FieldPassword
@@ -59,6 +70,10 @@ function Login() {
                     name='password'
                     label='Password'
                     margin='normal'
+                    inputProps={{
+                        name: "password",
+                        ref: register({ required: true })
+                    }}
                 />
 
                 <LoginFormFooter

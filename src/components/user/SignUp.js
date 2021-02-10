@@ -28,7 +28,7 @@ function SignUp() {
     const onSubmit = data => {
         dispatch({
             type: USER_REGISTER_REQUEST,
-            email: data.email,
+            userName: data.userName,
             password: data.password
         });
     }
@@ -53,7 +53,7 @@ function SignUp() {
                     type="email"
                     margin="normal"
                     inputProps={{
-                        name: "email",
+                        name: "userName",
                         ref: register({ required: true })
                     }}
                     error={!!errors.email}

@@ -1,17 +1,24 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
+import {takeLatest, put, call} from 'redux-saga/effects';
 import {
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
     USER_REGISTER_FAILURE,
     CONFIRM_EMAIL_REQUEST,
     CONFIRM_EMAIL_SUCCESS,
+    CONFIRM_EMAIL_FAILURE,
+    SIGN_IN_REQUEST,
+    SIGN_IN_SUCCESS,
+    SIGN_IN_FAILURE,
     userRegisterSuccess,
     userRegisterFailure,
     confirmEmailSuccess,
     confirmEmailFailure,
+    signInSuccess,
+    signInFailure
 } from "../actions/users";
-import { showNotification } from "../actions/notifications";
-import { history } from "../index";
+import {AUTH_USER_TOKEN_KEY} from "../../utils/constants";
+import {showNotification} from "../actions/notifications";
+import {history} from "../index";
 import * as api from '../api/auth';
 
 function showErrorMessage(message) {
@@ -24,6 +31,10 @@ function showErrorMessage(message) {
     }));
 }
 
+export function* watchUserRegister() {
+    yield takeLatest(USER_REGISTER_REQUEST, workerUserRegister);
+}
+
 export function* workerUserRegister(action) {
     try {
         const response = yield call(() => api.userRegister(action));
@@ -33,46 +44,69 @@ export function* workerUserRegister(action) {
     }
 }
 
+export function* watchUserRegisterSuccess() {
+    yield takeLatest(USER_REGISTER_SUCCESS, workerUserRegisterSuccess);
+}
+
 export function* workerUserRegisterSuccess() {
     yield history.push('/confirmEmail');
 }
 
-export function* workerUserRegisterFailure(action) {
+export function* watchUserRegisterFailure() {
+    yield takeLatest(USER_REGISTER_FAILURE, workerFailure);
+}
+
+export function* workerFailure(action) {
     yield showErrorMessage(action.error.message);
+}
+
+export function* watchEmailConfirm() {
+    yield takeLatest(CONFIRM_EMAIL_REQUEST, workerEmailConfirm);
+}
+
+function* workerEmailConfirm(action) {
+    try {
+        yield call(() => api.emailConfirm(action));
+        yield put(confirmEmailSuccess());
+    } catch (error) {
+        yield put(confirmEmailFailure(error));
+    }
+}
+
+export function* watchEmailConfirmSuccess() {
+    yield takeLatest(CONFIRM_EMAIL_SUCCESS, workerEmailConfirmSuccess);
 }
 
 export function* workerEmailConfirmSuccess() {
     yield history.push('/login');
 }
 
-function* workerEmailConfirm(action) {
+export function* watchEmailConfirmFailure() {
+    yield takeLatest(CONFIRM_EMAIL_FAILURE, workerFailure);
+}
 
-    const { response, error } = yield call(() => api.emailConfirm(action));
+export function* watchSignIn() {
+    yield takeLatest(SIGN_IN_REQUEST, workerSignIn);
+}
 
-    if (response) {
-        yield put(confirmEmailSuccess());
-    } else {
-        yield put(confirmEmailFailure());
-        yield showErrorMessage(error.message);
+function* workerSignIn(action) {
+    try {
+        const user = yield call(() => api.signIn(action));
+        yield put(signInSuccess(user.signInUserSession.accessToken.jwtToken));
+    } catch (error) {
+        yield put(signInFailure(error));
     }
 }
 
-export function* watchUserRegister () {
-    yield takeLatest(USER_REGISTER_REQUEST, workerUserRegister)
+export function* watchSignInSuccess() {
+    yield takeLatest(SIGN_IN_SUCCESS, workerSignInSuccess);
 }
 
-export function* watchUserRegisterSuccess () {
-    yield takeLatest(USER_REGISTER_SUCCESS, workerUserRegisterSuccess)
+export function* workerSignInSuccess({token}) {
+    yield localStorage.setItem(AUTH_USER_TOKEN_KEY, token);
+    yield history.push('/');
 }
 
-export function* watchUserRegisterFailure () {
-    yield takeLatest(USER_REGISTER_FAILURE, workerUserRegisterFailure)
-}
-
-export function* watchEmailConfirm () {
-    yield takeLatest(CONFIRM_EMAIL_REQUEST, workerEmailConfirm)
-}
-
-export function* watchEmailConfirmSuccess () {
-    yield takeLatest(CONFIRM_EMAIL_SUCCESS, workerEmailConfirmSuccess)
+export function* watchSignInFailure() {
+    yield takeLatest(SIGN_IN_FAILURE, workerFailure);
 }

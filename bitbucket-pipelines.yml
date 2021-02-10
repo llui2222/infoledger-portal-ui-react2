@@ -11,29 +11,30 @@ definitions:
   caches:
     sonar: ~/.sonar/cache
   steps:
-    - step: &install-dependencies
-        name: Install Dependencies
+    - step: &install-build
+        name: Install & Build
         caches:
           - node
         script:
           - npm install
-    - step: &build-test-sonar
+          - npm run build
+        artifacts:
+          - build/**
+    - step: &test-sonar
         name: Test Coverage Report
         caches:
           - node
         script:
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
-    - step: &build-test-sonar-quality-gate
-        name: Test Coverage Report & Quality Gate
+    - step: &quality-gate
+        name: Quality Gate
         caches:
           - node
         script:
-          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
-          - pipe: sonarsource/sonarcloud-scan:1.2.1
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &lint
-        name: Lint the node package
+        name: Lint the code
         script:
           - npx eslint src
         caches:
@@ -80,22 +81,18 @@ definitions:
               DISTRIBUTION_ID: $DISTRIBUTION_ID_PROD
 
 pipelines:
-  default:
-    - step: *install-dependencies
-    - parallel:
-        - step: *build-test-sonar
-        - step: *lint
   branches:
     develop:
-      - step: *install-dependencies
+      - step: *install-build
       - parallel:
-          - step: *build-test-sonar-quality-gate
+          - step: *test-sonar
           - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
-      - step: *install-dependencies
+      - step: *install-build
       - parallel:
-          - step: *build-test-sonar-quality-gate
+          - step: *test-sonar
+          - step: *quality-gate
           - step: *lint
       - step: *deploy-prod
