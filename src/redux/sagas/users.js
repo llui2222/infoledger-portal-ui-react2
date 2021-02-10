@@ -16,7 +16,10 @@ import {
     signInSuccess,
     signInFailure
 } from "../actions/users";
-import {AUTH_USER_TOKEN_KEY} from "../../utils/constants";
+import {
+    AUTH_USER_TOKEN_KEY,
+    USERNAME_TO_CONFIRM,
+} from "../../utils/constants";
 import {showNotification} from "../actions/notifications";
 import {history} from "../index";
 import * as api from '../api/auth';
@@ -48,7 +51,8 @@ export function* watchUserRegisterSuccess() {
     yield takeLatest(USER_REGISTER_SUCCESS, workerUserRegisterSuccess);
 }
 
-export function* workerUserRegisterSuccess() {
+export function* workerUserRegisterSuccess(action) {
+    yield localStorage.setItem(USERNAME_TO_CONFIRM, action.user);
     yield history.push('/confirmEmail');
 }
 
@@ -78,6 +82,7 @@ export function* watchEmailConfirmSuccess() {
 }
 
 export function* workerEmailConfirmSuccess() {
+    yield localStorage.removeItem(USERNAME_TO_CONFIRM);
     yield history.push('/login');
 }
 
