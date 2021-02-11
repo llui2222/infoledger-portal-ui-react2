@@ -10,6 +10,9 @@ export const SIGN_IN_FAILURE = 'SIGN_IN_FAILURE';
 export const IS_AUTHENTICATED_REQUEST = 'IS_AUTHENTICATED_REQUEST';
 export const IS_AUTHENTICATED_SUCCESS = 'IS_AUTHENTICATED_SUCCESS';
 export const IS_AUTHENTICATED_FAILURE = 'IS_AUTHENTICATED_FAILURE';
+export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
+export const LOG_OUT_SUCCESS = 'LOG_OUT_SUCCESS';
+export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 
 export const userRegister = (userName, password) => ({
     type: USER_REGISTER_REQUEST,
@@ -59,15 +62,30 @@ export const signInFailure = error => ({
 
 export const isAuthenticated = path => ({
     type: IS_AUTHENTICATED_REQUEST,
+    isAuthenticated: false,
     path: path
 });
 
-export const isAuthenticatedSuccess = currentUser => ({
+export const isAuthenticatedSuccess = () => ({
     type: IS_AUTHENTICATED_SUCCESS,
     isAuthenticated: true
 });
 
 export const isAuthenticatedFailure = error => ({
     type: IS_AUTHENTICATED_FAILURE,
-    isAuthenticated: false
+    isAuthenticated: false,
+    error
+});
+
+export const LogOut = () => ({
+    type: LOG_OUT_REQUEST
+});
+
+export const LogOutSuccess = () => ({
+    type: LOG_OUT_SUCCESS
+});
+
+export const LogOutFailure = error => ({
+    type: LOG_OUT_FAILURE,
+    error
 });

@@ -6,9 +6,6 @@ import {
     signInSuccess,
     signInFailure
 } from "../actions/user";
-import {
-    AUTH_USER_TOKEN_KEY
-} from "../../utils/constants";
 import {history} from "../index";
 import * as api from '../api/auth';
 import { workerFailure } from "./common";
@@ -30,8 +27,7 @@ export function* watchSignInSuccess() {
     yield takeLatest(SIGN_IN_SUCCESS, workerSignInSuccess);
 }
 
-export function* workerSignInSuccess({token}) {
-    yield localStorage.setItem(AUTH_USER_TOKEN_KEY, token);
+export function* workerSignInSuccess() {
     yield history.push('/');
 }
 

@@ -1,12 +1,14 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Login from "../user/Login";
+import LogOut from "../user/LogOut";
 import SignUp from "../user/SignUp";
 import Home from "../Home";
 import Messenger from "../Messenger";
 import NotFound from "../NotFound";
 import ConfirmEmail from "../user/ConfirmEmail";
-import ProtectedRoute from "../common/ProtectedRoute";
+import ProtectedRoute from "../user/ProtectedRoute";
+import UnauthorizedRoute from "../user/UnauthorizedRoute";
 
 function Router() {
     return (
@@ -14,18 +16,21 @@ function Router() {
             <ProtectedRoute exact path="/">
                 <Home/>
             </ProtectedRoute>
-            <Route path="/login/">
+            <UnauthorizedRoute path="/login">
                 <Login/>
-            </Route>
-            <Route path="/sign-up/">
+            </UnauthorizedRoute>
+            <ProtectedRoute exact path="/logout">
+                <LogOut/>
+            </ProtectedRoute>
+            <UnauthorizedRoute path="/sign-up">
                 <SignUp/>
-            </Route>
-            <Route path="/messenger/:name">
+            </UnauthorizedRoute>
+            <ProtectedRoute path="/messenger/:name">
                 <Messenger/>
-            </Route>
-            <Route path="/confirmEmail">
+            </ProtectedRoute>
+            <UnauthorizedRoute path="/confirm-email">
                 <ConfirmEmail/>
-            </Route>
+            </UnauthorizedRoute>
             <Route>
                 <NotFound/>
             </Route>

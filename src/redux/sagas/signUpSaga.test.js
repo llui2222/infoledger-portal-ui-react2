@@ -39,7 +39,7 @@ describe('workerUserRegister', () => {
         const gen = workerUserRegisterSuccess(mockAction);
         gen.next();
         gen.next();
-        expect(push).toHaveBeenCalledWith('/confirmEmail');
+        expect(push).toHaveBeenCalledWith('/confirm-email');
         push.mockClear();
     });
     it('should dispatch failure action on reject', async () => {

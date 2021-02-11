@@ -5,10 +5,11 @@ import {FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
 import {signIn} from "../../redux/actions/user";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm} from "react-hook-form";
+import {NOT_AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -20,6 +21,7 @@ function Login() {
 
     const dispatch = useDispatch();
     const classes = useStyles();
+    const authState = useSelector(state => state.user.authState);
 
     const { register, handleSubmit, errors } = useForm({
         mode: 'onChange'
@@ -27,6 +29,10 @@ function Login() {
 
     const onSubmit = data => {
         dispatch(signIn(data.userName, data.password));
+    }
+
+    if(authState !== NOT_AUTHORIZED_AUTH_STATE) {
+        return null;
     }
 
     return (

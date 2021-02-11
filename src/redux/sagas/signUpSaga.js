@@ -32,7 +32,7 @@ export function* watchUserRegisterSuccess() {
 
 export function* workerUserRegisterSuccess(action) {
     yield localStorage.setItem(USERNAME_TO_CONFIRM, action.userName);
-    yield history.push('/confirmEmail');
+    yield history.push('/confirm-email');
 }
 
 export function* watchUserRegisterFailure() {

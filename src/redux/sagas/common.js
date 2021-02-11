@@ -12,5 +12,7 @@ function showErrorMessage(message) {
 }
 
 export function* workerFailure(action) {
-    yield showErrorMessage(action.error.message);
+    if(action && action.error && action.error.message) {
+        yield showErrorMessage(action.error.message);
+    }
 }

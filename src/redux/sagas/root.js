@@ -5,9 +5,14 @@ import {
     watchSignInFailure
 } from "./signInSaga";
 import {
+    watchLogOut,
+    watchLogOutSuccess,
+    watchLogOutFailure
+} from "./logOutSaga";
+import {
     watchUserRegister,
     watchUserRegisterSuccess,
-    watchUserRegisterFailure,
+    watchUserRegisterFailure
 } from "./signUpSaga";
 import {
     watchEmailConfirm,
@@ -17,6 +22,7 @@ import {
 import {
     watchGetAuth,
     watchGetAuthFailure,
+    watchGetAuthSuccess
 } from "./isAuthSaga";
 
 export default function* rootSaga() {
@@ -32,5 +38,9 @@ export default function* rootSaga() {
         watchSignInFailure(),
         watchGetAuth(),
         watchGetAuthFailure(),
+        watchGetAuthSuccess(),
+        watchLogOut(),
+        watchLogOutSuccess(),
+        watchLogOutFailure(),
     ])
 };

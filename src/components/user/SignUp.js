@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useForm} from "react-hook-form";
 import {
     FormControl,
@@ -6,16 +6,18 @@ import {
     TextField,
 } from '@material-ui/core';
 import PasswordHelper from "../common/PasswordHelper";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {userRegister} from "../../redux/actions/user";
 import FieldPassword from "../common/FieldPassword";
 import UnauthorizedContainer from "./UnauthorizedContainer";
 import LoginFormFooter from "./LoginFormFooter";
+import {NOT_AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 
 function SignUp() {
 
     const dispatch = useDispatch();
     const password = useRef({});
+    const authState = useSelector(state => state.user.authState);
 
     const { register, handleSubmit, watch, errors } = useForm({
         mode: 'onChange'
@@ -25,6 +27,10 @@ function SignUp() {
 
     const onSubmit = data => {
         dispatch(userRegister(data.userName, data.password));
+    }
+
+    if(authState !== NOT_AUTHORIZED_AUTH_STATE) {
+        return null;
     }
 
     return (
