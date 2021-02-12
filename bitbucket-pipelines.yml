@@ -12,7 +12,7 @@ definitions:
     sonar: ~/.sonar/cache
   steps:
     - step: &install-build-and-test
-        name: Install & Build
+        name: Install & Build & Test
         script:
           - npm install
           - npm run build
