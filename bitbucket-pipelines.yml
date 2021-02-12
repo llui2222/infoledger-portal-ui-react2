@@ -20,6 +20,8 @@ definitions:
           - build/**
     - step: &test-sonar
         name: Test Coverage Report
+        caches:
+          - node
         script:
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
