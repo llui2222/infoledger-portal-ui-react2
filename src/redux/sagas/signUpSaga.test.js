@@ -2,62 +2,58 @@ import {
     workerUserRegister,
     workerUserRegisterSuccess
 } from "./signUpSaga";
-import {runSaga} from 'redux-saga';
-import {userRegisterFailure, userRegisterSuccess} from "../actions/user";
+import {
+    userRegister,
+    userRegisterFailure,
+    userRegisterSuccess
+} from "../actions/user";
 import * as api from '../api/auth';
 import { history } from "../index";
+import {expectSaga} from "redux-saga-test-plan";
+import * as matchers from "redux-saga-test-plan/matchers";
+import {throwError} from "redux-saga-test-plan/providers";
 
-describe('workerUserRegister', () => {
+const mockAction = {
+    userName: 'Test',
+    password: 'TestPassword'
+}
+
+const mockUser = {
+    user: {
+        username: 'Test'
+    }
+}
+
+describe('signUpSaga', () => {
     it('should call api and dispatch success action', async () => {
-        const dispatched = [];
 
-        const regResponseMock = {
-            user: {
-                username: "test@test.test",
-            },
-        };
-
-        const userRegister = jest.spyOn(api, 'userRegister')
-            .mockImplementation(() => Promise.resolve(regResponseMock));
-
-        const result = await runSaga({
-            dispatch: (action) => dispatched.push(action),
-        }, workerUserRegister);
-
-        expect(userRegister).toHaveBeenCalledTimes(1);
-        expect(dispatched).toEqual([userRegisterSuccess(regResponseMock.user.username)]);
-        userRegister.mockClear();
+        return expectSaga(workerUserRegister, mockAction)
+            .provide([
+                [matchers.call.fn(api.userRegister), mockUser],
+            ])
+            .put(userRegisterSuccess(mockUser.user.username))
+            .dispatch(userRegister(mockAction))
+            .run();
     });
     it('should redirect on success', () => {
-
-        const mockAction = {
-            userName: 'Test'
-        }
-
-        const push = jest.spyOn(history, 'push')
-            .mockImplementation(() => {});
-        const gen = workerUserRegisterSuccess(mockAction);
-        gen.next();
-        gen.next();
-        expect(push).toHaveBeenCalledWith('/confirm-email');
-        push.mockClear();
+        return expectSaga(workerUserRegisterSuccess, mockUser.user.username)
+            .provide([
+                [matchers.call.fn(history.push), true],
+            ])
+            .dispatch(userRegisterSuccess(mockUser.user.username))
+            .run();
     });
-    it('should dispatch failure action on reject', async () => {
-        const dispatched = [];
-        const error = new Error('Error message');
-        const errorMock = () => {
-            throw error;
-        }
 
-        const userRegister = jest.spyOn(api, 'userRegister')
-            .mockImplementation(errorMock);
+    it('should dispatch error on failure', () => {
 
-        const result = await runSaga({
-            dispatch: (action) => dispatched.push(action),
-        }, workerUserRegister);
+        const error = new Error('error');
 
-        expect(userRegister).toHaveBeenCalledTimes(1);
-        expect(dispatched).toEqual([userRegisterFailure(error)]);
-        userRegister.mockClear();
+        return expectSaga(workerUserRegister, mockAction)
+            .provide([
+                [matchers.call.fn(api.userRegister), throwError(error)],
+            ])
+            .put(userRegisterFailure(error))
+            .dispatch(userRegister(mockAction))
+            .run();
     });
 });

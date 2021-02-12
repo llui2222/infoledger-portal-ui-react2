@@ -19,7 +19,7 @@ export function* watchUserRegister() {
 
 export function* workerUserRegister(action) {
     try {
-        const response = yield call(() => api.userRegister(action));
+        const response = yield call(api.userRegister, action);
         yield put(userRegisterSuccess(response.user.username));
     } catch (error) {
         yield put(userRegisterFailure(error));
