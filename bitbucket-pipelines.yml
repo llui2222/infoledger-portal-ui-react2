@@ -16,10 +16,10 @@ definitions:
         script:
           - npm install
           - npm run build
-        artifacts:
-          - build/**
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
+        artifacts:
+          - build/**
     - step: &quality-gate
         name: Quality Gate
         caches:
