@@ -6,13 +6,13 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 
 import requestsReducer from "./reducers/requestsReducer";
-import usersReducer from "./reducers/usersReducer";
+import userReducer from "./reducers/userReducer";
 import notificationsReducer from "./reducers/notificationsReducer";
 
 const rootReducer = (history) =>  combineReducers({
     router: connectRouter(history),
     requests: requestsReducer,
-    users: usersReducer,
+    user: userReducer,
     notifications: notificationsReducer,
 });
 

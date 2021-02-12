@@ -13,6 +13,8 @@ definitions:
   steps:
     - step: &install-build
         name: Install & Build
+        caches:
+          - node
         script:
           - npm install
           - npm run build

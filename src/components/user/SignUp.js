@@ -1,23 +1,23 @@
-import React, { useRef } from 'react';
-import { useForm } from "react-hook-form";
+import React, {useEffect, useRef} from 'react';
+import {useForm} from "react-hook-form";
 import {
     FormControl,
     Typography,
     TextField,
 } from '@material-ui/core';
 import PasswordHelper from "../common/PasswordHelper";
-import {useDispatch} from "react-redux";
-import {
-    USER_REGISTER_REQUEST
-} from "../../redux/actions/users";
+import {useDispatch, useSelector} from "react-redux";
+import {userRegister} from "../../redux/actions/user";
 import FieldPassword from "../common/FieldPassword";
 import UnauthorizedContainer from "./UnauthorizedContainer";
 import LoginFormFooter from "./LoginFormFooter";
+import {NOT_AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 
 function SignUp() {
 
     const dispatch = useDispatch();
     const password = useRef({});
+    const authState = useSelector(state => state.user.authState);
 
     const { register, handleSubmit, watch, errors } = useForm({
         mode: 'onChange'
@@ -26,11 +26,11 @@ function SignUp() {
     password.current = watch('password', '');
 
     const onSubmit = data => {
-        dispatch({
-            type: USER_REGISTER_REQUEST,
-            email: data.email,
-            password: data.password
-        });
+        dispatch(userRegister(data.userName, data.password));
+    }
+
+    if(authState !== NOT_AUTHORIZED_AUTH_STATE) {
+        return null;
     }
 
     return (
@@ -53,7 +53,7 @@ function SignUp() {
                     type="email"
                     margin="normal"
                     inputProps={{
-                        name: "email",
+                        name: "userName",
                         ref: register({ required: true })
                     }}
                     error={!!errors.email}

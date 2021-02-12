@@ -3,10 +3,12 @@ import {
     BottomNavigation,
     BottomNavigationAction
 } from '@material-ui/core';
-import { Today, AccountCircle } from '@material-ui/icons';
+import { Today, ExitToApp } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom';
 import Logo from "./Logo";
+import {useSelector} from "react-redux";
+import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,9 +28,14 @@ function Header() {
 
     const classes = useStyles();
     const history = useHistory();
+    const authState = useSelector(state => state.user.authState);
 
     const handleChange = (event, value) => {
         history.push(value);
+    }
+
+    if(authState !== AUTHORIZED_AUTH_STATE) {
+        return null;
     }
 
     return (
@@ -47,9 +54,9 @@ function Header() {
                 />
                 <BottomNavigationAction
                     className={classes.iconButton}
-                    label="Login"
-                    icon={<AccountCircle />}
-                    value='/login'
+                    label="Log out"
+                    icon={<ExitToApp />}
+                    value='/logout'
                 />
             </BottomNavigation>
         </div>
