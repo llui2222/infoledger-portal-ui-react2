@@ -14,9 +14,9 @@ export function* watchLogOut() {
     yield takeLatest(LOG_OUT_REQUEST, workerLogOut);
 }
 
-function* workerLogOut() {
+export function* workerLogOut() {
     try {
-        yield call(() => api.signOut());
+        yield call(api.signOut);
         yield put(LogOutSuccess());
     } catch (error) {
         yield put(LogOutFailure(error));
