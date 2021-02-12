@@ -18,12 +18,8 @@ export function* watchGetAuth() {
 export function* workerGetAuth() {
 
     try {
-        const result = yield call(() => api.currentSession());
-        if(result.isValid()) {
-            yield put(isAuthenticatedSuccess());
-        } else {
-            yield put(isAuthenticatedFailure({message: 'User is not logged in'}));
-        }
+        yield call(api.currentSession);
+        yield put(isAuthenticatedSuccess());
     } catch (error) {
         yield put(isAuthenticatedFailure(error));
     }
