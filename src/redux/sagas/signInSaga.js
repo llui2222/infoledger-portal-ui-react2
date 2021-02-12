@@ -14,9 +14,9 @@ export function* watchSignIn() {
     yield takeLatest(SIGN_IN_REQUEST, workerSignIn);
 }
 
-function* workerSignIn(action) {
+export function* workerSignIn(action) {
     try {
-        yield call(() => api.signIn(action));
+        yield call(api.signIn, action);
         yield put(signInSuccess());
     } catch (error) {
         yield put(signInFailure(error));
