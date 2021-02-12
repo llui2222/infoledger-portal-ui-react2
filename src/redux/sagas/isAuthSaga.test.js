@@ -14,7 +14,7 @@ const mockAction = {
     password: 'TestPassword'
 }
 
-describe('signInSaga', () => {
+describe('isAuthSaga', () => {
     it('should call api and dispatch success action', async () => {
 
         const mockUser = {
