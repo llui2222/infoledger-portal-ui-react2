@@ -17,9 +17,9 @@ export function* watchEmailConfirm() {
     yield takeLatest(CONFIRM_EMAIL_REQUEST, workerEmailConfirm);
 }
 
-function* workerEmailConfirm(action) {
+export function* workerEmailConfirm(action) {
     try {
-        yield call(() => api.emailConfirm(action));
+        yield call(api.emailConfirm, action);
         yield put(confirmEmailSuccess());
     } catch (error) {
         yield put(confirmEmailFailure(error));
