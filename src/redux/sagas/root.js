@@ -24,6 +24,11 @@ import {
     watchGetAuthFailure,
     watchGetAuthSuccess
 } from "./isAuthSaga";
+import {
+    watchUpdateUser,
+    watchUpdateUserAttributesSuccess,
+    watchUpdateUserAttributesFailure
+} from "./updateUserSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -42,5 +47,8 @@ export default function* rootSaga() {
         watchLogOut(),
         watchLogOutSuccess(),
         watchLogOutFailure(),
+        watchUpdateUser(),
+        watchUpdateUserAttributesSuccess(),
+        watchUpdateUserAttributesFailure(),
     ])
 };
