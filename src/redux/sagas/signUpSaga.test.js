@@ -27,7 +27,7 @@ const mockUser = {
 describe('signUpSaga', () => {
     it('should call api and dispatch success action', async () => {
 
-        return expectSaga(workerUserRegister, mockAction)
+        return expectSaga(workerUserRegister)
             .provide([
                 [matchers.call.fn(api.userRegister), mockUser],
             ])
@@ -48,7 +48,7 @@ describe('signUpSaga', () => {
 
         const error = new Error('error');
 
-        return expectSaga(workerUserRegister, mockAction)
+        return expectSaga(workerUserRegister)
             .provide([
                 [matchers.call.fn(api.userRegister), throwError(error)],
             ])
