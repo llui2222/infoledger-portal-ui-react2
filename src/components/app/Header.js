@@ -3,7 +3,7 @@ import {
     BottomNavigation,
     BottomNavigationAction
 } from '@material-ui/core';
-import { Today, ExitToApp } from '@material-ui/icons';
+import { Today, ExitToApp, AccountCircle } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom';
 import Logo from "./Logo";
@@ -51,6 +51,12 @@ function Header() {
                     label="Dashboard"
                     icon={<Today />}
                     value='/'
+                />
+                <BottomNavigationAction
+                    className={classes.iconButton}
+                    label="Profile"
+                    icon={<AccountCircle />}
+                    value='/profile'
                 />
                 <BottomNavigationAction
                     className={classes.iconButton}
