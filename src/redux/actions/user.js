@@ -65,18 +65,16 @@ export const signInFailure = error => ({
 
 export const isAuthenticated = path => ({
     type: IS_AUTHENTICATED_REQUEST,
-    isAuthenticated: false,
     path: path
 });
 
-export const isAuthenticatedSuccess = () => ({
+export const isAuthenticatedSuccess = user => ({
     type: IS_AUTHENTICATED_SUCCESS,
-    isAuthenticated: true
+    user
 });
 
 export const isAuthenticatedFailure = error => ({
     type: IS_AUTHENTICATED_FAILURE,
-    isAuthenticated: false,
     error
 });
 

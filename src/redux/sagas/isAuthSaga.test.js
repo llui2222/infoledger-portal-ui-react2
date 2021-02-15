@@ -23,9 +23,9 @@ describe('isAuthSaga', () => {
 
         return expectSaga(workerGetAuth)
             .provide([
-                [matchers.call.fn(api.currentSession), mockUser],
+                [matchers.call.fn(api.currentAuthenticatedUser), mockUser],
             ])
-            .put(isAuthenticatedSuccess())
+            .put(isAuthenticatedSuccess(mockUser))
             .dispatch(isAuthenticated())
             .run();
     });
@@ -35,7 +35,7 @@ describe('isAuthSaga', () => {
 
         return expectSaga(workerGetAuth, mockAction)
             .provide([
-                [matchers.call.fn(api.currentSession), throwError(error)],
+                [matchers.call.fn(api.currentAuthenticatedUser), throwError(error)],
             ])
             .put(isAuthenticatedFailure(error))
             .dispatch(isAuthenticated())

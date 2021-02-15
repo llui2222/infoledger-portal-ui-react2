@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import Typography from '@material-ui/core/Typography';
 import {Button, FormControl, TextField} from "@material-ui/core";
 import {updateUserAttributes} from "../../redux/actions/user";
@@ -23,25 +23,21 @@ function Profile() {
     const dispatch = useDispatch();
     const classes = useStyles();
 
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [address, setAddress] = useState('');
-    const [companyName, setCompanyName] = useState('');
+    const { register, handleSubmit, errors, setValue } = useForm({
+        mode: 'onChange'
+    });
 
     useEffect(() => {
+
         currentAuthenticatedUser().then(user => {
             if(user.attributes) {
-                user.attributes.given_name && setFirstName(user.attributes.given_name);
-                user.attributes.family_name && setLastName(user.attributes.family_name);
-                user.attributes.address && setAddress(user.attributes.address);
-                user.attributes['custom:company_name'] && setCompanyName(user.attributes['custom:company_name']);
+                user.attributes.given_name && setValue('firstName', user.attributes.given_name, { shouldValidate: true });
+                user.attributes.family_name && setValue('lastName', user.attributes.family_name, { shouldValidate: true });
+                user.attributes.address && setValue('address', user.attributes.address, { shouldValidate: true });
+                user.attributes['custom:company_name'] && setValue('companyName', user.attributes['custom:company_name'], { shouldValidate: true });
             }
         })
     }, [])
-
-    const { register, handleSubmit, errors } = useForm({
-        mode: 'onChange'
-    });
 
     const onSubmit = data => {
         dispatch(updateUserAttributes(
@@ -68,8 +64,7 @@ function Profile() {
 
                 <TextField
                     required
-                    value={firstName}
-                    onChange={e => setFirstName(e.currentTarget.value)}
+                    defaultValue=''
                     fullWidth
                     id="first-name"
                     label="First Name"
@@ -86,8 +81,7 @@ function Profile() {
 
                 <TextField
                     required
-                    value={lastName}
-                    onChange={e => setLastName(e.currentTarget.value)}
+                    defaultValue=''
                     fullWidth
                     id="last-name"
                     label="Last Name"
@@ -104,8 +98,7 @@ function Profile() {
 
                 <TextField
                     required
-                    value={address}
-                    onChange={e => setAddress(e.currentTarget.value)}
+                    defaultValue=''
                     fullWidth
                     id="address"
                     label="Address"
@@ -122,8 +115,7 @@ function Profile() {
 
                 <TextField
                     required
-                    value={companyName}
-                    onChange={e => setCompanyName(e.currentTarget.value)}
+                    defaultValue=''
                     fullWidth
                     id="company-name"
                     label="Company Name"

@@ -6,9 +6,9 @@ import {
     updateUserAttributesSuccess,
     updateUserAttributesFailure
 } from "../actions/user";
-import {history} from "../index";
 import * as api from '../api/auth';
 import { workerFailure } from "./common";
+import {showNotification} from "../actions/notifications";
 
 export function* watchUpdateUser() {
     yield takeLatest(UPDATE_USER_ATTRIBUTES_REQUEST, workerUpdateUser);
@@ -28,7 +28,13 @@ export function* watchUpdateUserAttributesSuccess() {
 }
 
 export function* workerUpdateUserAttributesSuccess() {
-    yield history.push('/');
+    yield put(showNotification({
+        message: 'Profile details is updated',
+        options: {
+            key: 'profile-updated',
+            variant: 'success'
+        },
+    }));
 }
 
 export function* watchUpdateUserAttributesFailure() {
