@@ -29,6 +29,14 @@ import {
     watchUpdateUserAttributesSuccess,
     watchUpdateUserAttributesFailure
 } from "./updateUserSaga";
+import {
+    watchEncryptMessage,
+    watchEncryptMessageSuccess,
+    watchEncryptMessageFailure,
+    watchDecryptMessage,
+    watchDecryptMessageSuccess,
+    watchDecryptMessageFailure
+} from "./encryptionSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -50,5 +58,11 @@ export default function* rootSaga() {
         watchUpdateUser(),
         watchUpdateUserAttributesSuccess(),
         watchUpdateUserAttributesFailure(),
+        watchEncryptMessage(),
+        watchEncryptMessageSuccess(),
+        watchEncryptMessageFailure(),
+        watchDecryptMessage(),
+        watchDecryptMessageSuccess(),
+        watchDecryptMessageFailure()
     ])
 };

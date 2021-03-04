@@ -5,7 +5,7 @@ const { encrypt, decrypt } = buildClient(
     CommitmentPolicy.REQUIRE_ENCRYPT_REQUIRE_DECRYPT
 )
 
-async function encryptClient () {
+async function keyringProvider () {
 
     const credentials = await currentCredentials();
 
@@ -28,25 +28,19 @@ async function encryptClient () {
         },
     })
 
-    const keyring = new KmsKeyringBrowser({
+    return new KmsKeyringBrowser({
         clientProvider,
         generatorKeyId,
         keyIds,
-    })
-
-    const context = {
-        stage: 'testEncryption',
-        purpose: 'POC for client encryption',
-        origin: 'us-east-1'
-    }
-
-    return { keyring, context }
+    });
 }
 
-export async function encryptData(data) {
+export async function encryptData(action) {
 
-    const preparedData = new Uint8Array(data);
-    const { keyring, context } = await encryptClient();
+    const {message, context} = action;
+
+    const preparedData = new TextEncoder("utf-8").encode(message);
+    const keyring = await keyringProvider();
 
     const encryptedData =  await encrypt(keyring, preparedData, {
         encryptionContext: context,
@@ -55,11 +49,11 @@ export async function encryptData(data) {
     return encryptedData.result;
 }
 
-export async function decryptData(data) {
+export async function decryptData(action) {
 
-    const { keyring, context } = await encryptClient();
-    const { plaintext, messageHeader } = await decrypt(keyring, data);
-
+    const {message, context} = action;
+    const keyring = await keyringProvider();
+    const { plaintext, messageHeader } = await decrypt(keyring, message);
     const { encryptionContext } = messageHeader;
 
     Object.entries(context).forEach(([key, value]) => {
@@ -67,5 +61,5 @@ export async function decryptData(data) {
             throw new Error('Encryption Context does not match expected values')
     })
 
-    return plaintext;
+    return new TextDecoder().decode(plaintext);
 }
