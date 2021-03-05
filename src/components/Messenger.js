@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
-import PageContainer from "./PageContainer";
+import MessengerContainer from "./MessengerContainer";
 import { useParams } from "react-router-dom";
 
 function Messenger() {
@@ -8,11 +8,11 @@ function Messenger() {
     const { name } = useParams();
 
     return (
-        <PageContainer>
+        <MessengerContainer>
             <Typography variant="h4" gutterBottom>
                 { name }
             </Typography>
-        </PageContainer>
+        </MessengerContainer>
     );
 }
 

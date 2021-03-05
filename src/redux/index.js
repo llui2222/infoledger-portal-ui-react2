@@ -8,12 +8,14 @@ import createSagaMiddleware from 'redux-saga';
 import requestsReducer from "./reducers/requestsReducer";
 import userReducer from "./reducers/userReducer";
 import notificationsReducer from "./reducers/notificationsReducer";
+import encryptionReducer from "./reducers/encryptionReducer";
 
 const rootReducer = (history) =>  combineReducers({
     router: connectRouter(history),
     requests: requestsReducer,
     user: userReducer,
     notifications: notificationsReducer,
+    encryption: encryptionReducer
 });
 
 export const history = createBrowserHistory();

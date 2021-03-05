@@ -1,15 +1,15 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
-import PageContainer from "./PageContainer";
+import MessengerContainer from "./MessengerContainer";
 
 function Home() {
 
     return (
-        <PageContainer>
+        <MessengerContainer>
             <Typography variant="h4" gutterBottom>
                 Home
             </Typography>
-        </PageContainer>
+        </MessengerContainer>
     );
 }
 
