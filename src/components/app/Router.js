@@ -10,6 +10,7 @@ import ConfirmEmail from "../user/ConfirmEmail";
 import ProtectedRoute from "../user/ProtectedRoute";
 import UnauthorizedRoute from "../user/UnauthorizedRoute";
 import Profile from "../user/Profile";
+import Crypto from "../Crypto";
 
 function Router() {
     return (
@@ -28,6 +29,9 @@ function Router() {
             </UnauthorizedRoute>
             <ProtectedRoute path="/profile">
                 <Profile/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/crypto">
+                <Crypto/>
             </ProtectedRoute>
             <ProtectedRoute path="/messenger/:name">
                 <Messenger/>

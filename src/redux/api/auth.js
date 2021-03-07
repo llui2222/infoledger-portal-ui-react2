@@ -32,6 +32,10 @@ export function currentAuthenticatedUser() {
     return Auth.currentAuthenticatedUser();
 }
 
+export function currentCredentials() {
+    return Auth.currentCredentials();
+}
+
 export function signOut() {
     return Auth.signOut();
 }
