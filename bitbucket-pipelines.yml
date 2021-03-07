@@ -10,6 +10,9 @@ clone:
 definitions:
   caches:
     sonar: ~/.sonar/cache
+  services:
+    docker:
+      memory: 2048
   steps:
     - step: &install-build-and-test
         name: Install & Build & Test
