@@ -1,7 +1,7 @@
 import {Auth} from "aws-amplify";
-import awsconfig from "../../aws-exports";
+import amplifyAuthConfig from "../../amplifyAuthConfig";
 
-Auth.configure(awsconfig);
+Auth.configure(amplifyAuthConfig);
 
 export function userRegister({ userName, password }) {
     return Auth.signUp(userName, password);
