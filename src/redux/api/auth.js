@@ -43,3 +43,11 @@ export function signOut() {
 export function currentSession() {
     return Auth.currentSession();
 }
+
+export function forgotPassword({userName}) {
+    return Auth.forgotPassword(userName);
+}
+
+export function setNewPassword({ newPassword, userName, verificationCode}) {
+    return Auth.forgotPasswordSubmit(userName, verificationCode, newPassword)
+}

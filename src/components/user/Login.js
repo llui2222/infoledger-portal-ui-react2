@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
 import UnauthorizedContainer from "./UnauthorizedContainer";
-import {FormControl, TextField} from "@material-ui/core";
+import {Box, Button, FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
 import {signIn} from "../../redux/actions/user";
@@ -10,10 +10,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm} from "react-hook-form";
 import {NOT_AUTHORIZED_AUTH_STATE} from "../../utils/constants";
+import Link from "../common/Link";
 
 const useStyles = makeStyles((theme) => ({
     form: {
         margin: 'auto'
+    },
+    forgotPassword: {
+        marginTop: theme.spacing(4),
+        marginRight: 'auto'
     }
 }));
 
@@ -82,6 +87,14 @@ function Login() {
                     secondaryTitle='Sign Up'
                     secondaryUrl='/sign-up'
                 />
+
+                <Link
+                    to='/forgot-password'
+                    className={classes.forgotPassword}
+                    name="forgot-password"
+                >
+                    Forgot Password
+                </Link>
 
             </FormControl>
         </UnauthorizedContainer>

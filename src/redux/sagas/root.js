@@ -37,6 +37,16 @@ import {
     watchDecryptMessageSuccess,
     watchDecryptMessageFailure
 } from "./encryptionSaga";
+import {
+    watchForgotPassword,
+    watchForgotPasswordSuccess,
+    watchForgotPasswordFailure,
+} from "./forgotPasswordSaga";
+import {
+    watchSetNewPassword,
+    watchSetNewPasswordSuccess,
+    watchSetNewPasswordFailure,
+} from "./setNewPasswordSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -63,6 +73,12 @@ export default function* rootSaga() {
         watchEncryptMessageFailure(),
         watchDecryptMessage(),
         watchDecryptMessageSuccess(),
-        watchDecryptMessageFailure()
+        watchDecryptMessageFailure(),
+        watchForgotPassword(),
+        watchForgotPasswordSuccess(),
+        watchForgotPasswordFailure(),
+        watchSetNewPassword(),
+        watchSetNewPasswordSuccess(),
+        watchSetNewPasswordFailure(),
     ])
 };

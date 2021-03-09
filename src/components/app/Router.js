@@ -11,6 +11,8 @@ import ProtectedRoute from "../user/ProtectedRoute";
 import UnauthorizedRoute from "../user/UnauthorizedRoute";
 import Profile from "../user/Profile";
 import Crypto from "../Crypto";
+import ForgotPassword from "../user/ForgotPassword";
+import SetNewPassword from "../user/SetNewPassword";
 
 function Router() {
     return (
@@ -24,6 +26,12 @@ function Router() {
             <ProtectedRoute exact path="/logout">
                 <LogOut/>
             </ProtectedRoute>
+            <UnauthorizedRoute exact path="/forgot-password">
+                <ForgotPassword/>
+            </UnauthorizedRoute>
+            <UnauthorizedRoute exact path="/set-new-password">
+                <SetNewPassword/>
+            </UnauthorizedRoute>
             <UnauthorizedRoute path="/sign-up">
                 <SignUp/>
             </UnauthorizedRoute>
