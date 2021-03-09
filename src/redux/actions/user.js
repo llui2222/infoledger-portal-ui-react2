@@ -16,6 +16,12 @@ export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 export const UPDATE_USER_ATTRIBUTES_REQUEST = 'UPDATE_USER_ATTRIBUTES_REQUEST';
 export const UPDATE_USER_ATTRIBUTES_SUCCESS = 'UPDATE_USER_ATTRIBUTES_SUCCESS';
 export const UPDATE_USER_ATTRIBUTES_FAILURE = 'UPDATE_USER_ATTRIBUTES_FAILURE';
+export const FORGOT_PASSWORD_REQUEST = 'FORGOT_PASSWORD_REQUEST';
+export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
+export const FORGOT_PASSWORD_FAILURE = 'FORGOT_PASSWORD_FAILURE';
+export const SET_NEW_PASSWORD_REQUEST = 'SET_NEW_PASSWORD_REQUEST';
+export const SET_NEW_PASSWORD_SUCCESS = 'SET_NEW_PASSWORD_SUCCESS';
+export const SET_NEW_PASSWORD_FAILURE = 'SET_NEW_PASSWORD_FAILURE';
 
 export const userRegister = (userName, password) => ({
     type: USER_REGISTER_REQUEST,
@@ -105,5 +111,35 @@ export const updateUserAttributesSuccess = () => ({
 
 export const updateUserAttributesFailure = error => ({
     type: UPDATE_USER_ATTRIBUTES_FAILURE,
+    error
+});
+
+export const forgotPassword = (userName) => ({
+    type: FORGOT_PASSWORD_REQUEST,
+    userName,
+});
+
+export const forgotPasswordSuccess = () => ({
+    type: FORGOT_PASSWORD_SUCCESS
+});
+
+export const forgotPasswordFailure = error => ({
+    type: FORGOT_PASSWORD_FAILURE,
+    error
+});
+
+export const setNewPassword = (userName, verificationCode, newPassword) => ({
+    type: SET_NEW_PASSWORD_REQUEST,
+    userName,
+    verificationCode,
+    newPassword
+});
+
+export const setNewPasswordSuccess = () => ({
+    type: SET_NEW_PASSWORD_SUCCESS
+});
+
+export const setNewPasswordFailure = error => ({
+    type: SET_NEW_PASSWORD_FAILURE,
     error
 });

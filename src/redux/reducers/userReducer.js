@@ -3,7 +3,8 @@ import {
     IS_AUTHENTICATED_REQUEST,
     IS_AUTHENTICATED_SUCCESS,
     IS_AUTHENTICATED_FAILURE,
-    SIGN_IN_SUCCESS
+    SIGN_IN_SUCCESS,
+    FORGOT_PASSWORD_SUCCESS
 } from '../actions/user';
 
 import {
@@ -26,6 +27,7 @@ const userReducer = (state = initialState, action) => {
         case IS_AUTHENTICATED_FAILURE:
             return {...state, authState: NOT_AUTHORIZED_AUTH_STATE}
         case CONFIRM_EMAIL_SUCCESS:
+        case FORGOT_PASSWORD_SUCCESS:
             return {...state, emailConfirmed: true}
         case SIGN_IN_SUCCESS:
             return {...state, emailConfirmed: false, authState: AUTHORIZED_AUTH_STATE}
