@@ -29,7 +29,7 @@ export function* watchSignInSuccess() {
 }
 
 export function* workerSignInSuccess() {
-    history.push('/');
+    yield history.push('/');
     infoLedgerSync.channel.postMessage('UserLoggedIn');
 }
 
