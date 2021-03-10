@@ -30,7 +30,7 @@ export function* watchSignInSuccess() {
 
 export function* workerSignInSuccess() {
     yield history.push('/');
-    infoLedgerSync.channel.postMessage('UserLoggedIn');
+    yield call(infoLedgerSync.postMessage,'UserLoggedIn');
 }
 
 export function* watchSignInFailure() {

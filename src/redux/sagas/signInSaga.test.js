@@ -8,6 +8,8 @@ import {expectSaga} from 'redux-saga-test-plan';
 import {signIn, signInSuccess, signInFailure} from "../actions/user";
 import * as matchers from 'redux-saga-test-plan/matchers';
 import {throwError} from 'redux-saga-test-plan/providers';
+import { call } from 'redux-saga/effects';
+import * as infoLedgerSync from "../api/tabsSync";
 
 const mockAction = {
     userName: 'Test',
@@ -33,6 +35,7 @@ describe('signInSaga', () => {
         return expectSaga(workerSignInSuccess)
         .provide([
             [matchers.call.fn(history.push), true],
+            [call(infoLedgerSync.postMessage, 'UserLoggedIn'), true]
         ])
         .dispatch(signInSuccess())
         .run();

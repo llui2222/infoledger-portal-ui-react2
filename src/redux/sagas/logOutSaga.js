@@ -29,7 +29,7 @@ export function* watchLogOutSuccess() {
 }
 
 export function* workerLogOutSuccess() {
-    infoLedgerSync.channel.postMessage('UserLoggedOut');
+    yield call(infoLedgerSync.postMessage,'UserLoggedOut');
     yield history.push('/login');
 }
 
