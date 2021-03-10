@@ -11,6 +11,7 @@ import Router from "./components/app/Router";
 import Loader from "./components/common/Loader";
 import Notifier from "./components/app/Notifier";
 import AuthWrapper from "./components/user/AuthWrapper";
+import IdleTimer from "./components/common/IdleTimer";
 
 function App() {
 
@@ -19,16 +20,18 @@ function App() {
             <CssBaseline/>
             <ThemeProvider theme={infoLedgerTheme}>
                 <Provider store={store}>
-                    <SnackbarProvider maxSnack={3}>
-                        <AuthWrapper>
-                            <ConnectedRouter history={history}>
-                                <Header/>
-                                <Router/>
-                                <Loader/>
-                                <Notifier/>
-                            </ConnectedRouter>
-                        </AuthWrapper>
-                    </SnackbarProvider>
+                    <IdleTimer>
+                        <SnackbarProvider maxSnack={3}>
+                            <AuthWrapper>
+                                <ConnectedRouter history={history}>
+                                    <Header/>
+                                    <Router/>
+                                    <Loader/>
+                                    <Notifier/>
+                                </ConnectedRouter>
+                            </AuthWrapper>
+                        </SnackbarProvider>
+                    </IdleTimer>
                 </Provider>
             </ThemeProvider>
         </React.Fragment>
