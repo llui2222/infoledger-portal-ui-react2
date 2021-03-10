@@ -9,6 +9,7 @@ import {
 import {history} from "../index";
 import * as api from '../api/auth';
 import { workerFailure } from "./common";
+import * as infoLedgerSync from "../api/tabsSync";
 
 export function* watchSignIn() {
     yield takeLatest(SIGN_IN_REQUEST, workerSignIn);
@@ -28,7 +29,8 @@ export function* watchSignInSuccess() {
 }
 
 export function* workerSignInSuccess() {
-    yield history.push('/');
+    history.push('/');
+    infoLedgerSync.channel.postMessage('UserLoggedIn');
 }
 
 export function* watchSignInFailure() {

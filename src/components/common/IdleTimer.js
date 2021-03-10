@@ -2,13 +2,13 @@ import React from "react";
 import {useIdleTimer} from "react-idle-timer";
 import {useDispatch} from "react-redux";
 import {LogOut as LogOutAction} from "../../redux/actions/user";
+import * as infoLedgerSync from "../../redux/api/tabsSync";
 
 function IdleTimer({ children }) {
 
     const dispatch = useDispatch();
-    const channel = new BroadcastChannel('infoLedgerSync');
 
-    channel.onmessage = message => {
+    infoLedgerSync.channel.onmessage = message => {
         if(message.data === 'UserIsActive') {
             reset();
         }
@@ -19,7 +19,7 @@ function IdleTimer({ children }) {
     }
 
     const handleOnAction = () => {
-        channel.postMessage('UserIsActive');
+        infoLedgerSync.channel.postMessage('UserIsActive');
     }
 
     const { reset } = useIdleTimer({
