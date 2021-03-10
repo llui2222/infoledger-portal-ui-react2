@@ -8,6 +8,8 @@ import {expectSaga} from 'redux-saga-test-plan';
 import {LogOut, LogOutSuccess, LogOutFailure} from "../actions/user";
 import * as matchers from 'redux-saga-test-plan/matchers';
 import {throwError} from 'redux-saga-test-plan/providers';
+import {call} from "redux-saga/effects";
+import * as infoLedgerSync from "../api/tabsSync";
 
 describe('logOutSaga', () => {
     it('should call api and dispatch success action', async () => {
@@ -35,6 +37,7 @@ describe('logOutSaga', () => {
         return expectSaga(workerLogOut)
             .provide([
                 [matchers.call.fn(api.signOut), throwError(error)],
+                [call(infoLedgerSync.postMessage, 'UserLoggedOut'), true]
             ])
             .put(LogOutFailure(error))
             .dispatch(LogOut())

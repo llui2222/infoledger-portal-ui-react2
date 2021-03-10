@@ -8,18 +8,18 @@ function IdleTimer({ children }) {
 
     const dispatch = useDispatch();
 
-    infoLedgerSync.channel.onmessage = message => {
+    infoLedgerSync.onMessage(message => {
         if(message.data === 'UserIsActive') {
             reset();
         }
-    }
+    });
 
     const handleOnIdle = () => {
         dispatch(LogOutAction());
     }
 
     const handleOnAction = () => {
-        infoLedgerSync.channel.postMessage('UserIsActive');
+        infoLedgerSync.postMessage('UserIsActive');
     }
 
     const { reset } = useIdleTimer({
