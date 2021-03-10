@@ -9,6 +9,7 @@ import {
 import {history} from "../index";
 import * as api from '../api/auth';
 import { workerFailure } from "./common";
+import * as infoLedgerSync from "../api/tabsSync";
 
 export function* watchLogOut() {
     yield takeLatest(LOG_OUT_REQUEST, workerLogOut);
@@ -28,6 +29,7 @@ export function* watchLogOutSuccess() {
 }
 
 export function* workerLogOutSuccess() {
+    infoLedgerSync.channel.postMessage('UserLoggedOut');
     yield history.push('/login');
 }
 
