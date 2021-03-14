@@ -13,6 +13,7 @@ import Profile from "../user/Profile";
 import Crypto from "../Crypto";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
+import Contacts from "../contacts/Contacts";
 
 function Router() {
     return (
@@ -37,6 +38,9 @@ function Router() {
             </UnauthorizedRoute>
             <ProtectedRoute path="/profile">
                 <Profile/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/contacts">
+                <Contacts/>
             </ProtectedRoute>
             <ProtectedRoute path="/crypto">
                 <Crypto/>

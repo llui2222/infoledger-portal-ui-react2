@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {toBase64, fromBase64} from "@aws-sdk/util-base64-browser";
 import {useDispatch} from "react-redux";
 import {encryptMessage, decryptMessage} from "../redux/actions/encryption";
