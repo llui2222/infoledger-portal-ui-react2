@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import {sagaMiddleware} from "./redux";
 import rootSaga from "./redux/sagas/root";
-import { AUTH_TYPE } from 'aws-appsync';
 import amplifyAWSConfig from "./amplifyAWSConfig";
 import { getJwtToken } from "./redux/api/auth";
 import { ApolloProvider, ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client';
@@ -13,11 +12,11 @@ import { createSubscriptionHandshakeLink } from 'aws-appsync-subscription-link';
 sagaMiddleware.run(rootSaga);
 
 const config = {
-    url: amplifyAWSConfig.graphqlEndpoint,
-    region: amplifyAWSConfig.region,
+    url: amplifyAWSConfig.appSync.graphqlEndpoint,
+    region: amplifyAWSConfig.appSync.region,
     auth: {
-        type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
-        jwtToken: async () => await getJwtToken,
+        type: amplifyAWSConfig.appSync.authenticationType,
+        jwtToken: getJwtToken,
     }
 }
 
@@ -26,13 +25,7 @@ const client = new ApolloClient({
         createAuthLink(config),
         createSubscriptionHandshakeLink(config)
     ]),
-    cache: new InMemoryCache(),
-    disableOffline: true,
-    defaultOptions: {
-        watchQuery: {
-            fetchPolicy: 'cache-and-network'
-        }
-    }
+    cache: new InMemoryCache()
 })
 
 ReactDOM.render(<ApolloProvider client={client}>
