@@ -2,6 +2,8 @@ import React from "react";
 import {Typography, List} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import ContactsListItem from "./ContactsListItem";
+import { gql, useQuery } from '@apollo/client';
+import { listContacts } from "../../graphql/queries";
 
 const useStyles = makeStyles((theme) => ({
     groupLetter: {
@@ -34,6 +36,11 @@ const ContactsGroupedByFirstLetter = mockContacts.reduce((groupedContacts, conta
 function Contacts() {
 
     const classes = useStyles();
+    const { loading, error, data } = useQuery(gql(listContacts));
+
+    console.log('loading', loading);
+    console.log('error', error);
+    console.log('data', data);
 
     return (
         <List className={classes.root}>

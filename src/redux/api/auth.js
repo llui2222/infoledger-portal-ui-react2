@@ -1,7 +1,7 @@
 import {Auth} from "aws-amplify";
-import amplifyAuthConfig from "../../amplifyAuthConfig";
+import amplifyAWSConfig from "../../amplifyAWSConfig";
 
-Auth.configure(amplifyAuthConfig);
+Auth.configure(amplifyAWSConfig);
 
 export function userRegister({ userName, password }) {
     return Auth.signUp(userName, password);
@@ -50,4 +50,10 @@ export function forgotPassword({userName}) {
 
 export function setNewPassword({ newPassword, userName, verificationCode}) {
     return Auth.forgotPasswordSubmit(userName, verificationCode, newPassword)
+}
+
+export async function getJwtToken() {
+    const currentSession = await Auth.currentSession();
+    const accessToken = currentSession.getAccessToken();
+    return accessToken.getJwtToken();
 }
