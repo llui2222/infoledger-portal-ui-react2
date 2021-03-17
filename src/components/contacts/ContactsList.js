@@ -1,14 +1,15 @@
 import React from "react";
-import {Typography, List} from '@material-ui/core';
+import {Typography, List, CircularProgress} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import ContactsListItem from "./ContactsListItem";
-import { gql, useQuery } from '@apollo/client';
-import { listContacts } from "../../graphql/queries";
 
 const useStyles = makeStyles((theme) => ({
+    list: {
+        width: '100%'
+    },
     groupLetter: {
         margin: `${theme.spacing(4)}px 0 0`
-    }
+    },
 }));
 
 const mockContacts = [
@@ -26,34 +27,34 @@ const mockContacts = [
     },
 ]
 
-const ContactsGroupedByFirstLetter = mockContacts.reduce((groupedContacts, contact) => {
-    let firstLetter = contact.name[0];
-    if(!groupedContacts[firstLetter]) groupedContacts[firstLetter] = {firstLetter, children: [contact]}
-    else groupedContacts[firstLetter].children.push(contact);
-    return groupedContacts;
-}, {})
+const ContactsGroupedByFirstLetter = contacts => {
+    return contacts.reduce((groupedContacts, contact) => {
+        let firstLetter = contact.name[0];
+        if(!groupedContacts[firstLetter]) groupedContacts[firstLetter] = {firstLetter, children: [contact]}
+        else groupedContacts[firstLetter].children.push(contact);
+        return groupedContacts;
+    }, {})
+}
 
-function Contacts() {
+function Contacts({contacts}) {
 
     const classes = useStyles();
-    const { loading, error, data } = useQuery(gql(listContacts));
+    const preparedContacts = ContactsGroupedByFirstLetter(mockContacts);
 
-    console.log('loading', loading);
-    console.log('error', error);
-    console.log('data', data);
+    console.log('contacts', contacts);
 
     return (
-        <List className={classes.root}>
+        <List className={classes.list}>
             {
-                Object.keys(ContactsGroupedByFirstLetter).map((group) =>
-                    <React.Fragment key={`first-letter-${ContactsGroupedByFirstLetter[group].firstLetter}`}>
+                Object.keys(preparedContacts).map((group) =>
+                    <React.Fragment key={`first-letter-${preparedContacts[group].firstLetter}`}>
                         <li className={classes.groupLetter}>
                             <Typography variant="h6">
-                                {ContactsGroupedByFirstLetter[group].firstLetter}
+                                {preparedContacts[group].firstLetter}
                             </Typography>
                         </li>
                         {
-                            ContactsGroupedByFirstLetter[group].children.map((contact) =>
+                            preparedContacts[group].children.map((contact) =>
                                 <ContactsListItem contact={contact} key={`contact-${contact.name}`}/>
                             )
                         }

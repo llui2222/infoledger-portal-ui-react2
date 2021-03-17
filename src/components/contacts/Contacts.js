@@ -3,7 +3,7 @@ import {Typography, Box, Button, ButtonGroup, IconButton, FormControl, OutlinedI
 import {Add, Search} from '@material-ui/icons';
 import PageContainer from "../PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
-import ContactsList from "./ContactsList";
+import ContactsListContainer from "./ContactsListContainer";
 
 const useStyles = makeStyles((theme) => ({
     contactsHeader: {
@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     inviteButton: {
         height: theme.spacing(4.5),
         margin: 'auto 0'
+    },
+    contactsListContainer: {
+        display: 'flex'
     }
 }));
 
@@ -89,7 +92,9 @@ function Contacts() {
                     <Button>Groups</Button>
                 </ButtonGroup>
             </Box>
-            <ContactsList/>
+            <Box className={classes.contactsListContainer}>
+                <ContactsListContainer/>
+            </Box>
         </PageContainer>
     );
 }
