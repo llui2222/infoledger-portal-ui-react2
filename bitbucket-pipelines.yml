@@ -16,14 +16,17 @@ definitions:
   steps:
     - step: &install
         name: Install
-        script:
-          - npm install
         caches:
           - node
+        script:
+          - yarn install
     - step: &build
         name: Build
+        caches:
+          - node
         script:
-          - npm run build
+          - yarn install
+          - yarn build
         artifacts:
           - build/**
     - step: &quality-gate
@@ -32,12 +35,18 @@ definitions:
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &tests-and-sonar-cloud
         name: Tests & Sonar Cloud
+        caches:
+          - node
         script:
-          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
+          - yarn install
+          - yarn test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
     - step: &lint
         name: Lint the code
+        caches:
+          - node
         script:
+          - yarn install
           - npx eslint src
     - step: &deploy-dev
         name: Deploy to Dev
