@@ -84,16 +84,17 @@ pipelines:
   branches:
     develop:
       - step: *install
+      - parallel:
+        - step: *lint
+        - step: *tests-and-sonar-cloud
       - step: *build
-      - step: *tests-and-sonar-cloud
-      - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
       - step: *install
-      - step: *build
-      - step: *tests-and-sonar-cloud
       - parallel:
-          - step: *quality-gate
           - step: *lint
+          - step: *quality-gate
+          - step: *tests-and-sonar-cloud
+      - step: *build
       - step: *deploy-prod
