@@ -4,6 +4,7 @@ import {Add, Search} from '@material-ui/icons';
 import PageContainer from "../PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import ContactsListContainer from "./ContactsListContainer";
+import InviteContactPopup from "./InviteContactPopup";
 
 const useStyles = makeStyles((theme) => ({
     contactsHeader: {
@@ -30,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
     contactTypesFilters: {
         marginRight: 'auto'
     },
-    inviteButton: {
-        height: theme.spacing(4.5),
-        margin: 'auto 0'
-    },
     contactsListContainer: {
         display: 'flex'
     }
@@ -53,14 +50,8 @@ function Contacts() {
                 >
                     Contacts
                 </Typography>
-                <Button
-                    variant="outlined"
-                    color="default"
-                    startIcon={<Add />}
-                    className={classes.inviteButton}
-                >
-                    Invite
-                </Button>
+
+                <InviteContactPopup/>
 
                 <FormControl className={classes.contactSearch}>
                     <OutlinedInput
