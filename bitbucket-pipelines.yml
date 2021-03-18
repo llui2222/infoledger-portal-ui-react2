@@ -12,15 +12,13 @@ definitions:
     sonar: ~/.sonar/cache
   services:
     docker:
-      memory: 3072
+      memory: 2048
   steps:
-    - step: &install-build-and-test
+    - step: &install-build
         name: Install & Build & Test
         script:
           - npm install
           - npm run build
-          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
-          - pipe: sonarsource/sonarcloud-scan:1.2.1
         artifacts:
           - build/**
     - step: &quality-gate
@@ -29,6 +27,13 @@ definitions:
           - node
         script:
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
+    - step: &tests-and-sonar-cloud
+        name: Tests & Sonar Cloud
+        caches:
+          - node
+        script:
+          - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
+          - pipe: sonarsource/sonarcloud-scan:1.2.1
     - step: &lint
         name: Lint the code
         script:
@@ -79,12 +84,14 @@ definitions:
 pipelines:
   branches:
     develop:
-      - step: *install-build-and-test
+      - step: *install-build
+      - step: *tests-and-sonar-cloud
       - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
-      - step: *install-build-and-test
+      - step: *install-build
+      - step: *tests-and-sonar-cloud
       - parallel:
           - step: *quality-gate
           - step: *lint
