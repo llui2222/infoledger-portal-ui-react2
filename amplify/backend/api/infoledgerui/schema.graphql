@@ -1,0 +1,18 @@
+type Contact
+  @model
+  @key(name: "ByOwnerCognitoGroupId",
+  fields: ["ownerCognitoGroupId", "statusIdTimestamp"],
+  queryField: "contactsByOwnerCognitoGroupId")
+
+  @key(name: "ByContactCognitoGroupId",
+  fields: ["contactCognitoGroupId", "statusIdTimestamp"],
+  queryField: "contactsContactCognitoGroupId")
+  @auth(
+    rules: [
+      { allow: owner }
+    ]
+  ) {
+  ownerCognitoGroupId: ID!
+  statusIdTimestamp: ID!
+  contactCognitoGroupId: ID!
+}

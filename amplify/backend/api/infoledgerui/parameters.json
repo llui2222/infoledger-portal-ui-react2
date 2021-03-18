@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "infoledgerui",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authinfoledgeruifcb510b1",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
