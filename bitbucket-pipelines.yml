@@ -14,23 +14,24 @@ definitions:
     docker:
       memory: 2048
   steps:
-    - step: &install-build
-        name: Install & Build & Test
+    - step: &install
+        name: Install
         script:
           - npm install
+        caches:
+          - node
+    - step: &build
+        name: Build
+        script:
           - npm run build
         artifacts:
           - build/**
     - step: &quality-gate
         name: Quality Gate
-        caches:
-          - node
         script:
           - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
     - step: &tests-and-sonar-cloud
         name: Tests & Sonar Cloud
-        caches:
-          - node
         script:
           - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
           - pipe: sonarsource/sonarcloud-scan:1.2.1
@@ -38,8 +39,6 @@ definitions:
         name: Lint the code
         script:
           - npx eslint src
-        caches:
-          - node
     - step: &deploy-dev
         name: Deploy to Dev
         deployment: staging
@@ -84,13 +83,15 @@ definitions:
 pipelines:
   branches:
     develop:
-      - step: *install-build
+      - step: *install
+      - step: *build
       - step: *tests-and-sonar-cloud
       - step: *lint
       - step: *deploy-dev
   tags:
     release-*:
-      - step: *install-build
+      - step: *install
+      - step: *build
       - step: *tests-and-sonar-cloud
       - parallel:
           - step: *quality-gate
