@@ -12,7 +12,7 @@ definitions:
     sonar: ~/.sonar/cache
   services:
     docker:
-      memory: 2048
+      memory: 4096
   steps:
     - step: &install-build-and-test
         name: Install & Build & Test
