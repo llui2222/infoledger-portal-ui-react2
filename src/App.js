@@ -6,13 +6,10 @@ import {store, history} from "./redux";
 import { SnackbarProvider } from 'notistack';
 import { ConnectedRouter } from 'connected-react-router'
 import infoLedgerTheme from './theme';
-import Header from "./components/app/Header";
-import Router from "./components/app/Router";
-import Loader from "./components/common/Loader";
-import Notifier from "./components/app/Notifier";
 import AuthWrapper from "./components/user/AuthWrapper";
 import IdleTimer from "./components/common/IdleTimer";
 import * as infoLedgerSync from "./redux/api/tabsSync";
+import AppContainer from "./components/app/AppContainer";
 
 function App() {
 
@@ -29,10 +26,7 @@ function App() {
                         <SnackbarProvider maxSnack={3}>
                             <AuthWrapper>
                                 <ConnectedRouter history={history}>
-                                    <Header/>
-                                    <Router/>
-                                    <Loader/>
-                                    <Notifier/>
+                                    <AppContainer/>
                                 </ConnectedRouter>
                             </AuthWrapper>
                         </SnackbarProvider>
