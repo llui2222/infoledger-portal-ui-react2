@@ -4,7 +4,7 @@ import {Box, Container} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     pageContainer: {
-        height: `calc(100% - ${theme.spacing(7)}px)`
+        minHeight: '100%'
     },
     page: {
         display: 'flex',

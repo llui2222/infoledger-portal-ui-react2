@@ -7,12 +7,12 @@ import { SIDEBAR_WIDTH } from "../../constants"
 const useStyles = makeStyles((theme) => ({
     logo: {
         display: 'block',
-        width: SIDEBAR_WIDTH,
-        lineHeight: '56px',
+        height: 48,
+        lineHeight: '48px',
         color: 'white',
-        fontSize: '27px',
-        paddingLeft: 18,
-        textDecoration: 'none'
+        fontSize: '21px',
+        textDecoration: 'none',
+        fontWeight: 'bold'
     }
 }));
 
@@ -21,10 +21,8 @@ function Logo() {
     const classes = useStyles();
 
     return (
-        <Typography variant="h4">
-            <Link to="/" className={classes.logo}>
-                Info Ledger
-            </Link>
+        <Typography variant="h4" className={classes.logo}>
+            Info Ledger
         </Typography>
     );
 }

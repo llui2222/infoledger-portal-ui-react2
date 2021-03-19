@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Crypto() {
+function EncryptDemo() {
 
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');
@@ -66,12 +66,12 @@ function Crypto() {
     return (
         <PageContainer>
 
-            <TextField
-                type="file"
-                onChange={handleFile}
-                variant="outlined"
-                fullWidth
-            />
+            {/*<TextField*/}
+            {/*    type="file"*/}
+            {/*    onChange={handleFile}*/}
+            {/*    variant="outlined"*/}
+            {/*    fullWidth*/}
+            {/*/>*/}
 
             <TextField
                 label="Message"
@@ -124,4 +124,4 @@ function Crypto() {
     );
 }
 
-export default Crypto;
+export default EncryptDemo;

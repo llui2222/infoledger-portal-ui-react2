@@ -4,7 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
         display: 'flex',
-        minHeight: 'calc(100% - 56px)'
+        minHeight: '100%',
+        flexGrow: 1
     },
     body: {
         padding: '40px 8%',

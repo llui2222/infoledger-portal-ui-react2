@@ -4,13 +4,12 @@ import Login from "../user/Login";
 import LogOut from "../user/LogOut";
 import SignUp from "../user/SignUp";
 import Home from "../Home";
-import Messenger from "../Messenger";
 import NotFound from "../NotFound";
 import ConfirmEmail from "../user/ConfirmEmail";
 import ProtectedRoute from "../user/ProtectedRoute";
 import UnauthorizedRoute from "../user/UnauthorizedRoute";
 import Profile from "../user/Profile";
-import Crypto from "../Crypto";
+import EncryptDemo from "../EncryptDemo";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
 import Contacts from "../contacts/Contacts";
@@ -43,10 +42,7 @@ function Router() {
                 <Contacts/>
             </ProtectedRoute>
             <ProtectedRoute path="/crypto">
-                <Crypto/>
-            </ProtectedRoute>
-            <ProtectedRoute path="/messenger/:name">
-                <Messenger/>
+                <EncryptDemo/>
             </ProtectedRoute>
             <UnauthorizedRoute path="/confirm-email">
                 <ConfirmEmail/>
