@@ -72,8 +72,10 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     icon: {
-        marginLeft: theme.spacing(1),
-        color: 'white'
+        color: 'white',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(1),
+        },
     }
 }));
 
