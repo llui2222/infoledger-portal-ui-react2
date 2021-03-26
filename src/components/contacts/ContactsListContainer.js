@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Contacts() {
+function ContactsListContainer() {
 
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -36,13 +36,11 @@ function Contacts() {
 
     if(loading) {
         return <CircularProgress className={classes.loader} color="inherit" />
-    }
-
-    if(data) {
+    } else if(data) {
         return <ContactsList contacts={data.listContacts.items}/>;
     } else {
         return null;
     }
 }
 
-export default Contacts;
+export default ContactsListContainer;

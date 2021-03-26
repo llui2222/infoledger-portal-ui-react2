@@ -36,7 +36,7 @@ const ContactsGroupedByFirstLetter = contacts => {
     }, {})
 }
 
-function Contacts({contacts}) {
+function ContactsList({contacts}) {
 
     const classes = useStyles();
     const preparedContacts = ContactsGroupedByFirstLetter(mockContacts);
@@ -65,4 +65,4 @@ function Contacts({contacts}) {
     );
 }
 
-export default Contacts;
+export default ContactsList;
