@@ -6,7 +6,7 @@ import {
     ListItemIcon,
     ListItemText,
 } from '@material-ui/core';
-import { Notifications, ExitToApp, AccountCircle, Menu, Group, EnhancedEncryption } from '@material-ui/icons';
+import { Notifications, ExitToApp, AccountCircle, Menu, Group, EnhancedEncryption, FileCopy } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom';
 import Logo from "./Logo";
@@ -35,6 +35,11 @@ const menuItems = [
         name: 'Encrypt Demo',
         url: '/crypto',
         icon: EnhancedEncryption,
+    },
+    {
+        name: 'Upload Demo',
+        url: '/file',
+        icon: FileCopy,
     },
     {
         name: 'Log out',
