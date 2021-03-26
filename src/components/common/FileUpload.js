@@ -35,11 +35,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function FileUpload() {
+function FileUpload({ files, setFiles }) {
 
     const classes = useStyles();
     const fileInputField = useRef(null);
-    const [files, setFiles] = useState({});
 
     const handleFileSelect = e => {
 

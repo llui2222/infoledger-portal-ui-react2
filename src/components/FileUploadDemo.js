@@ -14,6 +14,7 @@ function FileUploadDemo() {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const [files, setFiles] = useState({});
 
     return (
         <PageContainer>
@@ -26,7 +27,7 @@ function FileUploadDemo() {
                     Upload Demo
                 </DialogTitle>
                 <DialogContent dividers>
-                    <FileUpload/>
+                    <FileUpload files={files} setFiles={setFiles}/>
                 </DialogContent>
                 <DialogActions>
                     <Button autoFocus onClick={() => setOpen(false)} color="primary">
