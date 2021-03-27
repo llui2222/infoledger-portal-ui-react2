@@ -14,7 +14,7 @@ import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
 import Contacts from "../contacts/Contacts";
 import FileUpload from "../common/FileUpload";
-import FileUploadDemo from "../FileUploadDemo";
+import FileUploadPopup from "../FileUploadPopup";
 
 function Router() {
     return (
@@ -35,10 +35,6 @@ function Router() {
             <ProtectedRoute path="/crypto">
                 <EncryptDemo/>
             </ProtectedRoute>
-            <ProtectedRoute path="/file">
-                <FileUploadDemo/>
-            </ProtectedRoute>
-
             <UnauthorizedRoute path="/login">
                 <Login/>
             </UnauthorizedRoute>

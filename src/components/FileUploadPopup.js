@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Box} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
-import PageContainer from "./PageContainer";
 import FileUpload from "./common/FileUpload";
 
 const useStyles = makeStyles((theme) => ({
@@ -10,14 +9,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function FileUploadDemo() {
+function FileUploadPopup({ handleFile, className }) {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [files, setFiles] = useState({});
 
     return (
-        <PageContainer>
+        <Box className={className}>
             <Button variant="contained" color="primary" disableElevation onClick={() => setOpen(true)}>
                 Upload Files
             </Button>
@@ -35,8 +34,8 @@ function FileUploadDemo() {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </PageContainer>
+        </Box>
     );
 }
 
-export default FileUploadDemo;
+export default FileUploadPopup;

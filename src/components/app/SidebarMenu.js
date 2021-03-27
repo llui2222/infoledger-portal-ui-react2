@@ -37,11 +37,6 @@ const menuItems = [
         icon: EnhancedEncryption,
     },
     {
-        name: 'Upload Demo',
-        url: '/file',
-        icon: FileCopy,
-    },
-    {
         name: 'Log out',
         url: '/logout',
         icon: ExitToApp,

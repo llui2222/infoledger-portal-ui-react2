@@ -6,6 +6,7 @@ import {Box,TextField,Button, Typography} from '@material-ui/core';
 import PageContainer from "./PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux';
+import FileUploadPopup from "./FileUploadPopup";
 
 const useStyles = makeStyles((theme) => ({
     buttons: {
@@ -17,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     },
     encryptedMessage: {
         wordBreak: 'break-all',
+    },
+    uploadButton: {
+        marginBottom: theme.spacing(2)
     }
 }));
 
@@ -66,12 +70,7 @@ function EncryptDemo() {
     return (
         <PageContainer>
 
-            {/*<TextField*/}
-            {/*    type="file"*/}
-            {/*    onChange={handleFile}*/}
-            {/*    variant="outlined"*/}
-            {/*    fullWidth*/}
-            {/*/>*/}
+            <FileUploadPopup handleFile={handleFile} className={classes.uploadButton} />
 
             <TextField
                 label="Message"
