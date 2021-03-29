@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Box} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import FileUpload from "./common/FileUpload";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     browseButton: {
@@ -13,7 +14,12 @@ function FileUploadPopup({ handleFile, className }) {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [files, setFiles] = useState({});
+    const [files, setFiles] = useState([]);
+
+    const handleUpload = () => {
+        setOpen(false);
+        handleFile(files[0]);
+    }
 
     return (
         <Box className={className}>
@@ -29,7 +35,7 @@ function FileUploadPopup({ handleFile, className }) {
                     <FileUpload files={files} setFiles={setFiles}/>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={() => setOpen(false)} color="primary">
+                    <Button autoFocus onClick={handleUpload} color="primary">
                         Upload
                     </Button>
                 </DialogActions>
@@ -37,5 +43,10 @@ function FileUploadPopup({ handleFile, className }) {
         </Box>
     );
 }
+
+FileUploadPopup.propTypes = {
+    handleFile: PropTypes.func,
+    className: PropTypes.string,
+};
 
 export default FileUploadPopup;

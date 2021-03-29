@@ -10,7 +10,6 @@ export const encryptMessage = (message, context) => ({
     message,
     context
 });
-
 export const encryptMessageSuccess = encryptedMessage => ({
     type: ENCRYPT_SUCCESS,
     encryptedMessage

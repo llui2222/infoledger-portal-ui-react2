@@ -7,6 +7,7 @@ import PageContainer from "./PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux';
 import FileUploadPopup from "./FileUploadPopup";
+import { encryptData, decryptData } from "../redux/api/encryption";
 
 const useStyles = makeStyles((theme) => ({
     buttons: {
@@ -28,6 +29,7 @@ function EncryptDemo() {
 
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');
+    const [encrypted, setEncrypted] = useState(null);
     const classes = useStyles();
 
     const encryptedMessage = useSelector(state => state.encryption.encryptedMessage);
@@ -43,34 +45,66 @@ function EncryptDemo() {
         );
     }
 
-    function handleDecrypt() {
-        dispatch(
-            decryptMessage(fromBase64(message), context)
-        );
+    async function handleDecrypt() {
+
+        console.time('Decrypt');
+        decryptData({ message: encrypted, context }).then((decryptedData) => {
+            console.timeEnd('Decrypt');
+            console.log('Decrypted!');
+        }, reason => {
+            console.log(reason);
+        });
+
+
+        // dispatch(
+        //     decryptMessage(encryptedMessage, context)
+        // );
     }
 
-    function handleFile(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
+    function handleFile(file) {
 
+        const reader = new FileReader();
         reader.readAsArrayBuffer(file);
 
         reader.onload = function() {
-            dispatch(
-                encryptMessage(new Uint8Array(reader.result), context)
-            );
+
+            const unit8Arr = new Uint8Array(reader.result);
+
+            // console.log('unit8Arr', unit8Arr);
+
+            console.time('Encrypt');
+
+            encryptData({ message: unit8Arr, context }).then((encryptedData) => {
+                console.timeEnd('Encrypt');
+                setEncrypted(encryptedData);
+                console.log('Encrypted');
+            }, reason => {
+                console.log(reason);
+            });
+
+            // dispatch(
+            //     encryptMessage(unit8Arr, context)
+            // );
         };
 
         reader.onerror = function() {
-            console.log(reader.error);
+            // console.log(reader.error);
         };
 
     }
+
+    // const decryptedUnit8Array = new Uint8Array(decryptedMessage.split(','));
+
+    // console.log('encryptedMessage', encryptedMessage);
+    // console.log('decryptedMessage', decryptedUnit8Array);
 
     return (
         <PageContainer>
 
-            <FileUploadPopup handleFile={handleFile} className={classes.uploadButton} />
+            <FileUploadPopup
+                handleFile={handleFile}
+                className={classes.uploadButton}
+            />
 
             <TextField
                 label="Message"
@@ -101,23 +135,25 @@ function EncryptDemo() {
                 </Button>
             </Box>
 
-            {encryptedMessage &&
-                <>
-                    <Typography variant="h6" gutterBottom>
-                        Encrypted message
-                    </Typography>
-                    <Box className={classes.encryptedMessage}>{toBase64(encryptedMessage)}</Box>
-                </>
-            }
+            {/*{ decryptedMessage && <img src={`data:image/gif;base64,${toBase64(decryptedUnit8Array)}`}/> }*/}
 
-            {decryptedMessage &&
-                <>
-                    <Typography variant="h6" gutterBottom>
-                        Decrypted message
-                    </Typography>
-                    <Box>{decryptedMessage}</Box>
-                </>
-            }
+            {/*{encryptedMessage &&*/}
+            {/*    <>*/}
+            {/*        <Typography variant="h6" gutterBottom>*/}
+            {/*            Encrypted message*/}
+            {/*        </Typography>*/}
+            {/*        <Box className={classes.encryptedMessage}>{toBase64(encryptedMessage)}</Box>*/}
+            {/*    </>*/}
+            {/*}*/}
+
+            {/*{decryptedMessage &&*/}
+            {/*    <>*/}
+            {/*        <Typography variant="h6" gutterBottom>*/}
+            {/*            Decrypted message*/}
+            {/*        </Typography>*/}
+            {/*        <Box>{decryptedMessage}</Box>*/}
+            {/*    </>*/}
+            {/*}*/}
 
         </PageContainer>
     );

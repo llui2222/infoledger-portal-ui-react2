@@ -53,10 +53,12 @@ function FileUpload({ files, setFiles }) {
 
     const addNewFiles = (newFiles) => {
 
+        const filesToUpdate = [ ...files ];
+
         for (let file of newFiles) {
-            files[file.name] = file;
+            filesToUpdate.push(file);
         }
-        return { ...files };
+        return filesToUpdate;
     };
 
     return (
