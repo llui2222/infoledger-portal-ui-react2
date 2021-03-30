@@ -1,7 +1,16 @@
 import React, { useState } from "react";
-import {toBase64, fromBase64} from "@aws-sdk/util-base64-browser";
+import {toBase64} from "@aws-sdk/util-base64-browser";
 import {useDispatch} from "react-redux";
-import {encryptMessage, decryptMessage} from "../redux/actions/encryption";
+import {
+    encryptMessage,
+    decryptMessage,
+    fileEncrypt,
+    fileEncryptSuccess,
+    fileEncryptFailure,
+    fileDecrypt,
+    fileDecryptSuccess,
+    fileDecryptFailure
+} from "../redux/actions/encryption";
 import {Box,TextField,Button, Typography} from '@material-ui/core';
 import PageContainer from "./PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,6 +30,13 @@ const useStyles = makeStyles((theme) => ({
         wordBreak: 'break-all',
     },
     uploadButton: {
+        marginBottom: theme.spacing(2)
+    },
+    fileEncryption: {
+        display: 'flex'
+    },
+    fileDecryptButton: {
+        marginLeft: theme.spacing(1),
         marginBottom: theme.spacing(2)
     }
 }));
@@ -45,23 +61,29 @@ function EncryptDemo() {
         );
     }
 
-    async function handleDecrypt() {
+    function handleDecrypt() {
+        dispatch(
+            decryptMessage(encryptedMessage, context)
+        );
+    }
 
+    function handleDecryptFile() {
+
+        dispatch(fileDecrypt);
         console.time('Decrypt');
+
         decryptData({ message: encrypted, context }).then((decryptedData) => {
+            dispatch(fileDecryptSuccess);
             console.timeEnd('Decrypt');
-            console.log('Decrypted!');
         }, reason => {
+            dispatch(fileDecryptFailure);
             console.log(reason);
         });
-
-
-        // dispatch(
-        //     decryptMessage(encryptedMessage, context)
-        // );
     }
 
     function handleFile(file) {
+
+        dispatch(fileEncrypt);
 
         const reader = new FileReader();
         reader.readAsArrayBuffer(file);
@@ -70,41 +92,44 @@ function EncryptDemo() {
 
             const unit8Arr = new Uint8Array(reader.result);
 
-            // console.log('unit8Arr', unit8Arr);
-
             console.time('Encrypt');
-
             encryptData({ message: unit8Arr, context }).then((encryptedData) => {
                 console.timeEnd('Encrypt');
                 setEncrypted(encryptedData);
-                console.log('Encrypted');
+                dispatch(fileEncryptSuccess);
             }, reason => {
+                dispatch(fileEncryptFailure);
                 console.log(reason);
             });
-
-            // dispatch(
-            //     encryptMessage(unit8Arr, context)
-            // );
         };
 
         reader.onerror = function() {
-            // console.log(reader.error);
+            console.log(reader.error);
         };
 
     }
 
-    // const decryptedUnit8Array = new Uint8Array(decryptedMessage.split(','));
-
-    // console.log('encryptedMessage', encryptedMessage);
-    // console.log('decryptedMessage', decryptedUnit8Array);
+    const decryptedUnit8Array = new Uint8Array(decryptedMessage.split(','));
 
     return (
         <PageContainer>
 
-            <FileUploadPopup
-                handleFile={handleFile}
-                className={classes.uploadButton}
-            />
+            <Box className={classes.fileEncryption}>
+                <FileUploadPopup
+                    handleFile={handleFile}
+                    className={classes.uploadButton}
+                />
+
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    disableElevation
+                    className={classes.fileDecryptButton}
+                    onClick={handleDecryptFile}
+                >
+                    Decrypt File
+                </Button>
+            </Box>
 
             <TextField
                 label="Message"
@@ -135,25 +160,23 @@ function EncryptDemo() {
                 </Button>
             </Box>
 
-            {/*{ decryptedMessage && <img src={`data:image/gif;base64,${toBase64(decryptedUnit8Array)}`}/> }*/}
+            {encryptedMessage &&
+                <>
+                    <Typography variant="h6" gutterBottom>
+                        Encrypted message
+                    </Typography>
+                    <Box className={classes.encryptedMessage}>{toBase64(encryptedMessage)}</Box>
+                </>
+            }
 
-            {/*{encryptedMessage &&*/}
-            {/*    <>*/}
-            {/*        <Typography variant="h6" gutterBottom>*/}
-            {/*            Encrypted message*/}
-            {/*        </Typography>*/}
-            {/*        <Box className={classes.encryptedMessage}>{toBase64(encryptedMessage)}</Box>*/}
-            {/*    </>*/}
-            {/*}*/}
-
-            {/*{decryptedMessage &&*/}
-            {/*    <>*/}
-            {/*        <Typography variant="h6" gutterBottom>*/}
-            {/*            Decrypted message*/}
-            {/*        </Typography>*/}
-            {/*        <Box>{decryptedMessage}</Box>*/}
-            {/*    </>*/}
-            {/*}*/}
+            {decryptedMessage &&
+                <>
+                    <Typography variant="h6" gutterBottom>
+                        Decrypted message
+                    </Typography>
+                    <Box>{decryptedMessage}</Box>
+                </>
+            }
 
         </PageContainer>
     );
