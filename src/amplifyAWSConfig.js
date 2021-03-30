@@ -3,8 +3,8 @@ const amplifyAWSConfig = {
         identityPoolId: 'us-east-1:be536160-a21f-4b38-9217-8055fc80317b',
         region: 'us-east-1',
         identityPoolRegion: 'us-east-1',
-        userPoolId: 'us-east-1_oP4wPwk4x',
-        userPoolWebClientId: '4fbpc2r7f1h4hic05jts3tv94t',
+        userPoolId: 'us-east-1_dnSXclPd6',
+        userPoolWebClientId: '10cr20oqg53rjv0a9g1cp1dor6',
         mandatorySignIn: true,
     },
     appSync: {

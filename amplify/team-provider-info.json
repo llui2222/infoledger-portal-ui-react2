@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "infoledgeruifcb510b1": {}
+      },
+      "function": {
+        "infoledgeruifcb510b1PostConfirmation": {
+          "deploymentBucketName": "amplify-infoledgerui-dev-154109-deployment",
+          "s3Key": "amplify-builds/infoledgeruifcb510b1PostConfirmation-676b4c6d644a51334543-build.zip"
+        }
       }
     }
   }
