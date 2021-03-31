@@ -19,6 +19,7 @@ function FileUploadPopup({ handleFile, className }) {
     const handleUpload = () => {
         setOpen(false);
         handleFile(files[0]);
+        setFiles([]);
     }
 
     return (
