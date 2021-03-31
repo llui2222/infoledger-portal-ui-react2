@@ -13,28 +13,19 @@ import EncryptDemo from "../EncryptDemo";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
 import Contacts from "../contacts/Contacts";
+import FileUpload from "../common/FileUpload";
+import FileUploadPopup from "../FileUploadPopup";
 
 function Router() {
     return (
         <Switch>
+
             <ProtectedRoute exact path="/">
                 <Home/>
             </ProtectedRoute>
-            <UnauthorizedRoute path="/login">
-                <Login/>
-            </UnauthorizedRoute>
             <ProtectedRoute exact path="/logout">
                 <LogOut/>
             </ProtectedRoute>
-            <UnauthorizedRoute exact path="/forgot-password">
-                <ForgotPassword/>
-            </UnauthorizedRoute>
-            <UnauthorizedRoute exact path="/set-new-password">
-                <SetNewPassword/>
-            </UnauthorizedRoute>
-            <UnauthorizedRoute path="/sign-up">
-                <SignUp/>
-            </UnauthorizedRoute>
             <ProtectedRoute path="/profile">
                 <Profile/>
             </ProtectedRoute>
@@ -44,6 +35,18 @@ function Router() {
             <ProtectedRoute path="/crypto">
                 <EncryptDemo/>
             </ProtectedRoute>
+            <UnauthorizedRoute path="/login">
+                <Login/>
+            </UnauthorizedRoute>
+            <UnauthorizedRoute exact path="/forgot-password">
+                <ForgotPassword/>
+            </UnauthorizedRoute>
+            <UnauthorizedRoute exact path="/set-new-password">
+                <SetNewPassword/>
+            </UnauthorizedRoute>
+            <UnauthorizedRoute path="/sign-up">
+                <SignUp/>
+            </UnauthorizedRoute>
             <UnauthorizedRoute path="/confirm-email">
                 <ConfirmEmail/>
             </UnauthorizedRoute>

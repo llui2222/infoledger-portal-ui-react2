@@ -43,3 +43,4 @@ amplifytools.xcconfig
 .secret-*
 /test-report.xml
 /yarn.lock
+/src/aws-exports.js

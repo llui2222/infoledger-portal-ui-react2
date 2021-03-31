@@ -1,11 +1,22 @@
 import React, { useState } from "react";
-import {toBase64, fromBase64} from "@aws-sdk/util-base64-browser";
+import {toBase64} from "@aws-sdk/util-base64-browser";
 import {useDispatch} from "react-redux";
-import {encryptMessage, decryptMessage} from "../redux/actions/encryption";
+import {
+    encryptMessage,
+    decryptMessage,
+    fileEncrypt,
+    fileEncryptSuccess,
+    fileEncryptFailure,
+    fileDecrypt,
+    fileDecryptSuccess,
+    fileDecryptFailure
+} from "../redux/actions/encryption";
 import {Box,TextField,Button, Typography} from '@material-ui/core';
 import PageContainer from "./PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux';
+import FileUploadPopup from "./FileUploadPopup";
+import { encryptData, decryptData } from "../redux/api/encryption";
 
 const useStyles = makeStyles((theme) => ({
     buttons: {
@@ -17,6 +28,16 @@ const useStyles = makeStyles((theme) => ({
     },
     encryptedMessage: {
         wordBreak: 'break-all',
+    },
+    uploadButton: {
+        marginBottom: theme.spacing(2)
+    },
+    fileEncryption: {
+        display: 'flex'
+    },
+    fileDecryptButton: {
+        marginLeft: theme.spacing(1),
+        marginBottom: theme.spacing(2)
     }
 }));
 
@@ -24,6 +45,7 @@ function EncryptDemo() {
 
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');
+    const [encrypted, setEncrypted] = useState(null);
     const classes = useStyles();
 
     const encryptedMessage = useSelector(state => state.encryption.encryptedMessage);
@@ -41,20 +63,44 @@ function EncryptDemo() {
 
     function handleDecrypt() {
         dispatch(
-            decryptMessage(fromBase64(message), context)
+            decryptMessage(encryptedMessage, context)
         );
     }
 
-    function handleFile(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
+    function handleDecryptFile() {
 
+        dispatch(fileDecrypt);
+        console.time('Decrypt');
+
+        decryptData({ message: encrypted, context }).then((decryptedData) => {
+            dispatch(fileDecryptSuccess);
+            console.timeEnd('Decrypt');
+        }, reason => {
+            dispatch(fileDecryptFailure);
+            console.log(reason);
+        });
+    }
+
+    function handleFile(file) {
+
+        dispatch(fileEncrypt);
+
+        const reader = new FileReader();
         reader.readAsArrayBuffer(file);
 
         reader.onload = function() {
-            dispatch(
-                encryptMessage(new Uint8Array(reader.result), context)
-            );
+
+            const unit8Arr = new Uint8Array(reader.result);
+
+            console.time('Encrypt');
+            encryptData({ message: unit8Arr, context }).then((encryptedData) => {
+                console.timeEnd('Encrypt');
+                setEncrypted(encryptedData);
+                dispatch(fileEncryptSuccess);
+            }, reason => {
+                dispatch(fileEncryptFailure);
+                console.log(reason);
+            });
         };
 
         reader.onerror = function() {
@@ -63,15 +109,27 @@ function EncryptDemo() {
 
     }
 
+    const decryptedUnit8Array = new Uint8Array(decryptedMessage.split(','));
+
     return (
         <PageContainer>
 
-            {/*<TextField*/}
-            {/*    type="file"*/}
-            {/*    onChange={handleFile}*/}
-            {/*    variant="outlined"*/}
-            {/*    fullWidth*/}
-            {/*/>*/}
+            <Box className={classes.fileEncryption}>
+                <FileUploadPopup
+                    handleFile={handleFile}
+                    className={classes.uploadButton}
+                />
+
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    disableElevation
+                    className={classes.fileDecryptButton}
+                    onClick={handleDecryptFile}
+                >
+                    Decrypt File
+                </Button>
+            </Box>
 
             <TextField
                 label="Message"
