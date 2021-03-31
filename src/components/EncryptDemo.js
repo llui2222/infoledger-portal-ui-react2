@@ -114,6 +114,13 @@ function EncryptDemo() {
     return (
         <PageContainer>
 
+            <Typography
+                variant="h6"
+                gutterBottom
+            >
+                File Encryption
+            </Typography>
+
             <Box className={classes.fileEncryption}>
                 <FileUploadPopup
                     handleFile={handleFile}
@@ -130,6 +137,13 @@ function EncryptDemo() {
                     Decrypt File
                 </Button>
             </Box>
+
+            <Typography
+                variant="h6"
+                gutterBottom
+            >
+                Text Message Encryption
+            </Typography>
 
             <TextField
                 label="Message"
