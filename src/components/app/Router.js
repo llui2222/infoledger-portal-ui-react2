@@ -13,8 +13,7 @@ import EncryptDemo from "../EncryptDemo";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
 import Contacts from "../contacts/Contacts";
-import FileUpload from "../common/FileUpload";
-import FileUploadPopup from "../FileUploadPopup";
+import CompanyCreate from "../company/CompanyCreate";
 
 function Router() {
     return (
@@ -28,6 +27,9 @@ function Router() {
             </ProtectedRoute>
             <ProtectedRoute path="/profile">
                 <Profile/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/company/create">
+                <CompanyCreate/>
             </ProtectedRoute>
             <ProtectedRoute path="/contacts">
                 <Contacts/>

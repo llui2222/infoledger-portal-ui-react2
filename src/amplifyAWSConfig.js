@@ -9,8 +9,10 @@ const amplifyAWSConfig = {
     },
     appSync: {
         region: 'us-east-1',
-        graphqlEndpoint: "https://hlbtkdk34fhzrmyyvtmbjszgkq.appsync-api.us-east-1.amazonaws.com/graphql",
-        authenticationType: "AMAZON_COGNITO_USER_POOLS"
+        graphqlEndpoint: "https://vwmp54jovnhudaimxhnulbcfmq.appsync-api.us-east-1.amazonaws.com/graphql",
+        authenticationType: "AMAZON_COGNITO_USER_POOLS",
+        ClientDatabasePrefix: "ProfilesAPI_AMAZON_COGNITO_USER_POOLS",
+        GraphQLApiId: "mzxy7e62xzby7ixfr5fakjpcta"
     }
 };
 
