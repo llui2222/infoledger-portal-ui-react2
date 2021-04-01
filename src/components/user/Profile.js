@@ -6,7 +6,7 @@ import {useDispatch} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm} from "react-hook-form";
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import {currentAuthenticatedUser} from "../../redux/api/auth";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,7 +49,7 @@ function Profile() {
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
 
             <EmailConfirmedMessage/>
 
@@ -143,7 +143,7 @@ function Profile() {
                 </Button>
 
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

@@ -1,15 +1,15 @@
 import React from "react";
 import {Typography} from '@material-ui/core';
-import UnauthorizedContainer from "./user/UnauthorizedContainer";
+import CenteredContainer from "./common/containers/CenteredContainer";
 
 function NotFound() {
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
             <Typography variant="h3" gutterBottom>
                 Sorry, page not found!
             </Typography>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

@@ -3,7 +3,7 @@ import {TextField, Typography, FormControl, Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import {useDispatch} from 'react-redux';
 import {confirmEmail} from "../../redux/actions/user";
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import {history} from "../../redux";
 import {USERNAME_TO_CONFIRM} from "../../utils/constants";
 
@@ -36,7 +36,7 @@ function ConfirmEmail() {
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
             <Typography variant="h4" gutterBottom>
                 You have been successfully registered
             </Typography>
@@ -65,7 +65,7 @@ function ConfirmEmail() {
                     Verify Email
                 </Button>
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

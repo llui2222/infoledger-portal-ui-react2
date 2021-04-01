@@ -2,7 +2,7 @@ import React, {useState, useRef} from "react";
 import {Box, Typography, Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import { FileCopy } from "@material-ui/icons";
-import PageContainer from "../PageContainer";
+import PageContainer from "./containers/PageContainer";
 
 const useStyles = makeStyles((theme) => ({
     dragAndDropZone: {

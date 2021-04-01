@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Typography from '@material-ui/core/Typography';
 import {
     Button,
@@ -8,13 +8,14 @@ import {
     Select,
     MenuItem,
 } from "@material-ui/core";
-import {updateUserAttributes} from "../../redux/actions/user";
 import {useDispatch} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
-import {useForm} from "react-hook-form";
-import {currentAuthenticatedUser} from "../../redux/api/auth";
-import PageContainer from "../PageContainer";
+import {useForm, Controller} from "react-hook-form";
+import CenteredContainer from "../common/containers/CenteredContainer";
+import {companyCreate} from "../../redux/actions/company";
+import { gql, useMutation } from '@apollo/client';
+import {saveProfile} from "../../graphql/mutations";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -29,34 +30,42 @@ function CompanyCreate() {
 
     const dispatch = useDispatch();
     const classes = useStyles();
+    const [addTodo, { loading, error, data }] = useMutation(gql(saveProfile));
 
-    const { register, handleSubmit, errors, setValue } = useForm({
+    const { register, handleSubmit, errors, setValue, control } = useForm({
         mode: 'onChange'
     });
 
-    useEffect(() => {
+    // useEffect(() => {
+    //
+    //     currentAuthenticatedUser().then(user => {
+    //         if(user.attributes) {
+    //             user.attributes.given_name && setValue('firstName', user.attributes.given_name, { shouldValidate: true });
+    //             user.attributes.family_name && setValue('lastName', user.attributes.family_name, { shouldValidate: true });
+    //             user.attributes.address && setValue('address', user.attributes.address, { shouldValidate: true });
+    //             user.attributes['custom:company_name'] && setValue('companyName', user.attributes['custom:company_name'], { shouldValidate: true });
+    //         }
+    //     })
+    // }, [])
 
-        currentAuthenticatedUser().then(user => {
-            if(user.attributes) {
-                user.attributes.given_name && setValue('firstName', user.attributes.given_name, { shouldValidate: true });
-                user.attributes.family_name && setValue('lastName', user.attributes.family_name, { shouldValidate: true });
-                user.attributes.address && setValue('address', user.attributes.address, { shouldValidate: true });
-                user.attributes['custom:company_name'] && setValue('companyName', user.attributes['custom:company_name'], { shouldValidate: true });
-            }
-        })
-    }, [])
+    const handleSubmitForm = e => {
+        e.preventDefault();
+        handleSubmit(onSubmit);
+    }
 
     const onSubmit = data => {
-        dispatch(updateUserAttributes(
-            data.firstName,
-            data.lastName,
-            data.address,
+
+        dispatch(companyCreate(
             data.companyName,
+            data.companyType,
+            data.typeOfBusiness,
+            data.address,
+            data.postalCode,
         ));
     }
 
     return (
-        <PageContainer>
+        <CenteredContainer>
 
             <EmailConfirmedMessage/>
 
@@ -80,24 +89,65 @@ function CompanyCreate() {
                     type="text"
                     margin="normal"
                     inputProps={{
-                        name: "profileName",
-                        ref: register({ required: true })
+                        name: "companyName",
+                        ref: register({
+                            required: true
+                        })
                     }}
-                    error={!!errors.profileName}
+                    error={!!errors.companyName}
                 />
 
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel id="profile-type-label">Type</InputLabel>
-                    <Select
-                        labelId="profile-type-label"
-                        id="profile-type"
-                        label="Type"
-                    >
-                        <MenuItem value='ORGANIZATION'>Organization</MenuItem>
-                        <MenuItem value='CLIENT'>Client</MenuItem>
-                        <MenuItem value='ACCOUNT'>Account</MenuItem>
-                        <MenuItem value='INDIVIDUAL_INVESTOR'>Individual Investor</MenuItem>
-                    </Select>
+                <FormControl
+                    variant="outlined"
+                    margin="normal"
+                    error={!!errors.companyType}
+                >
+                    <InputLabel id="profile-type-label">Company Type</InputLabel>
+
+                    <Controller
+                        as={<Select
+                            required
+                            labelId="profile-type-label"
+                            id="profile-type"
+                            label="Company Type"
+                        >
+                            <MenuItem value='ORGANIZATION'>Organization</MenuItem>
+                            <MenuItem value='CLIENT'>Client</MenuItem>
+                            <MenuItem value='ACCOUNT'>Account</MenuItem>
+                            <MenuItem value='INDIVIDUAL_INVESTOR'>Individual Investor</MenuItem>
+                        </Select>}
+                        defaultValue=''
+                        name="companyType"
+                        type="select"
+                        control={control}
+                    />
+
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    margin="normal"
+                    error={!!errors.typeOfBusiness}
+                >
+                    <InputLabel id="type-of-business-label">Type of Business</InputLabel>
+
+
+                    <Controller
+                        as={<Select
+                            required
+                            labelId="type-of-business-label"
+                            id="type-of-business"
+                            label="Type of Business"
+                        >
+                            <MenuItem value='ASSET_OWNER'>Asset Owner</MenuItem>
+                            <MenuItem value='SERVICE_COMPANY'>Service Company</MenuItem>
+                        </Select>}
+                        defaultValue=''
+                        name="typeOfBusiness"
+                        type="select"
+                        control={control}
+                    />
+
                 </FormControl>
 
                 <TextField
@@ -108,7 +158,7 @@ function CompanyCreate() {
                     label="Address"
                     autoComplete="address"
                     variant="outlined"
-                    type="number"
+                    type="text"
                     margin="normal"
                     inputProps={{
                         name: "address",
@@ -125,47 +175,13 @@ function CompanyCreate() {
                     label="Postal Code"
                     autoComplete="postal-code"
                     variant="outlined"
-                    type="text"
+                    type="number"
                     margin="normal"
                     inputProps={{
                         name: "postalCode",
                         ref: register({ required: true })
                     }}
-                    error={!!errors.lastName}
-                />
-
-                <TextField
-                    required
-                    defaultValue=''
-                    fullWidth
-                    id="address"
-                    label="Address"
-                    autoComplete="address"
-                    variant="outlined"
-                    type="text"
-                    margin="normal"
-                    inputProps={{
-                        name: "address",
-                        ref: register({ required: true })
-                    }}
-                    error={!!errors.address}
-                />
-
-                <TextField
-                    required
-                    defaultValue=''
-                    fullWidth
-                    id="company-name"
-                    label="Company Name"
-                    autoComplete="company-name"
-                    variant="outlined"
-                    type="text"
-                    margin="normal"
-                    inputProps={{
-                        name: "companyName",
-                        ref: register({ required: true })
-                    }}
-                    error={!!errors.companyName}
+                    error={!!errors.postalCode}
                 />
 
                 <Button
@@ -181,7 +197,7 @@ function CompanyCreate() {
                 </Button>
 
             </FormControl>
-        </PageContainer>
+        </CenteredContainer>
     );
 }
 

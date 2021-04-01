@@ -1,7 +1,7 @@
 import React from "react";
 import {Typography, Box, Button, ButtonGroup, IconButton, FormControl, OutlinedInput, InputAdornment} from '@material-ui/core';
 import {Search} from '@material-ui/icons';
-import PageContainer from "../PageContainer";
+import PageContainer from "../common/containers/PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import ContactsListContainer from "./ContactsListContainer";
 import InviteContactPopup from "./InviteContactPopup";

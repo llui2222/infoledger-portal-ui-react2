@@ -1,5 +1,5 @@
 projects:
-  infoledgerui:
+  ProfilesAPI:
     schemaPath: src/graphql/schema.json
     includes:
       - src/graphql/**/*.js
@@ -10,6 +10,9 @@ projects:
         codeGenTarget: javascript
         generatedFileName: ''
         docsFilePath: src/graphql
+        region: us-east-1
+        apiId: mzxy7e62xzby7ixfr5fakjpcta
+        maxDepth: 2
 extensions:
   amplify:
     version: 3

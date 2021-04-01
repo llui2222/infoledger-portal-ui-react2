@@ -27,11 +27,6 @@ const menuItems = [
         icon: AccountCircle,
     },
     {
-        name: 'Contacts',
-        url: '/contacts',
-        icon: Group,
-    },
-    {
         name: 'Encrypt Demo',
         url: '/crypto',
         icon: EnhancedEncryption,
