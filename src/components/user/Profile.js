@@ -31,10 +31,9 @@ function Profile() {
 
         currentAuthenticatedUser().then(user => {
             if(user.attributes) {
-                user.attributes.given_name && setValue('firstName', user.attributes.given_name, { shouldValidate: true });
+                user.attributes.name && setValue('firstName', user.attributes.name, { shouldValidate: true });
                 user.attributes.family_name && setValue('lastName', user.attributes.family_name, { shouldValidate: true });
                 user.attributes.address && setValue('address', user.attributes.address, { shouldValidate: true });
-                user.attributes['custom:company_name'] && setValue('companyName', user.attributes['custom:company_name'], { shouldValidate: true });
             }
         })
     }, [])
@@ -44,7 +43,6 @@ function Profile() {
             data.firstName,
             data.lastName,
             data.address,
-            data.companyName,
         ));
     }
 
@@ -111,23 +109,6 @@ function Profile() {
                         ref: register({ required: true })
                     }}
                     error={!!errors.address}
-                />
-
-                <TextField
-                    required
-                    defaultValue=''
-                    fullWidth
-                    id="company-name"
-                    label="Company Name"
-                    autoComplete="company-name"
-                    variant="outlined"
-                    type="text"
-                    margin="normal"
-                    inputProps={{
-                        name: "companyName",
-                        ref: register({ required: true })
-                    }}
-                    error={!!errors.companyName}
                 />
 
                 <Button

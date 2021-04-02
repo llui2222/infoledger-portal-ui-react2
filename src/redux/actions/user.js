@@ -97,12 +97,11 @@ export const LogOutFailure = error => ({
     error
 });
 
-export const updateUserAttributes = (firstName, lastName, address, companyName) => ({
+export const updateUserAttributes = (firstName, lastName, address) => ({
     type: UPDATE_USER_ATTRIBUTES_REQUEST,
     firstName,
     lastName,
     address,
-    companyName,
 });
 
 export const updateUserAttributesSuccess = () => ({

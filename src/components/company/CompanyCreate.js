@@ -30,23 +30,11 @@ function CompanyCreate() {
 
     const dispatch = useDispatch();
     const classes = useStyles();
-    const [addTodo, { loading, error, data }] = useMutation(gql(saveProfile));
+    const [addCompany, { loading, error, data }] = useMutation(gql(saveProfile));
 
     const { register, handleSubmit, errors, setValue, control } = useForm({
         mode: 'onChange'
     });
-
-    // useEffect(() => {
-    //
-    //     currentAuthenticatedUser().then(user => {
-    //         if(user.attributes) {
-    //             user.attributes.given_name && setValue('firstName', user.attributes.given_name, { shouldValidate: true });
-    //             user.attributes.family_name && setValue('lastName', user.attributes.family_name, { shouldValidate: true });
-    //             user.attributes.address && setValue('address', user.attributes.address, { shouldValidate: true });
-    //             user.attributes['custom:company_name'] && setValue('companyName', user.attributes['custom:company_name'], { shouldValidate: true });
-    //         }
-    //     })
-    // }, [])
 
     const handleSubmitForm = e => {
         e.preventDefault();
@@ -55,13 +43,18 @@ function CompanyCreate() {
 
     const onSubmit = data => {
 
-        dispatch(companyCreate(
-            data.companyName,
-            data.companyType,
-            data.typeOfBusiness,
-            data.address,
-            data.postalCode,
-        ));
+        addCompany({ variables: {
+                profile: {
+                    profileName: data.companyName,
+                    profileType: data.companyType,
+                    typeOfBusiness: data.typeOfBusiness,
+                    businessAddress: {
+                        streetAddress: data.address,
+                        postalCode: data.postalCode,
+                    },
+                }
+            }
+        });
     }
 
     return (

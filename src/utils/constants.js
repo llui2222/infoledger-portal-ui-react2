@@ -9,5 +9,5 @@ export const routesNotAuthorizedOnly = [
 ];
 
 export const fieldsRequired = [
-    'family_name', 'given_name', 'address', 'custom:company_name'
+    'family_name', 'name', 'address'
 ];
