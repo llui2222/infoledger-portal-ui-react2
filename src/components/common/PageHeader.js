@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function PageHeader({ children }) {
+function PageHeader({ children, title }) {
 
     const classes = useStyles();
 
@@ -34,7 +34,7 @@ function PageHeader({ children }) {
                 gutterBottom
                 className={classes.pageHeaderTitle}
             >
-                Contacts
+                {title}
             </Typography>
 
             { children }
