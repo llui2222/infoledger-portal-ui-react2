@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { gql, useQuery } from '@apollo/client';
-import { listContacts } from "../../graphql/queries";
+// import { listContacts } from "../../graphql/queries";
 import {showNotification} from "../../redux/actions/notifications";
 import {useDispatch} from "react-redux";
 import ContactsList from "./ContactsList";
@@ -17,7 +17,10 @@ function ContactsListContainer() {
 
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { loading, error, data } = useQuery(gql(listContacts));
+    // const { loading, error, data } = useQuery(gql(listContacts));
+    let loading;
+    let error;
+    let data;
 
     useEffect(() => {
         if(error) {

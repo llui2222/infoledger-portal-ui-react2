@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import { gql, useMutation } from '@apollo/client';
-import { createContact } from "../../graphql/mutations";
+// import { createContact } from "../../graphql/mutations";
 import {Add} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,25 +36,25 @@ function Contacts() {
     const [open, setOpen] = useState(false);
     const [ownerId, setOwnerId] = useState('');
     const [contactId, setContactId] = useState('');
-    const [addContact, { data }] = useMutation(gql(createContact));
+    // const [addContact, { data }] = useMutation(gql(createContact));
     const [emailsAdded, setEmailsAdded] = useState([]);
     const [emailInput, setEmailInput] = useState('');
     const [error, setError] = useState(false);
 
     const handleAdd = () => {
-        addContact({ variables: {
-                input: {
-                    ownerCognitoGroupId: ownerId,
-                    contactCognitoGroupId: contactId,
-                    statusIdTimestamp: new Date().toISOString(),
-                },
-            }
-        });
+        // addContact({ variables: {
+        //         input: {
+        //             ownerCognitoGroupId: ownerId,
+        //             contactCognitoGroupId: contactId,
+        //             statusIdTimestamp: new Date().toISOString(),
+        //         },
+        //     }
+        // });
     }
 
-    useEffect(() => {
-        console.log(data);
-    }, [data])
+    // useEffect(() => {
+    //     console.log(data);
+    // }, [data])
 
     const handleKeyPress = e => {
         if(['Enter', 'Tab'].includes(e.key)) {
