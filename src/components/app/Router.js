@@ -12,16 +12,16 @@ import Profile from "../user/Profile";
 import EncryptDemo from "../EncryptDemo";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
+import CompanyCreate from "../company/CompanyCreate";
 import Contacts from "../contacts/Contacts";
-import FileUpload from "../common/FileUpload";
-import FileUploadPopup from "../FileUploadPopup";
+import Notifications from "../Notifications";
 
 function Router() {
     return (
         <Switch>
 
             <ProtectedRoute exact path="/">
-                <Home/>
+                <Notifications/>
             </ProtectedRoute>
             <ProtectedRoute exact path="/logout">
                 <LogOut/>
@@ -29,11 +29,14 @@ function Router() {
             <ProtectedRoute path="/profile">
                 <Profile/>
             </ProtectedRoute>
-            <ProtectedRoute path="/contacts">
-                <Contacts/>
+            <ProtectedRoute path="/company/create">
+                <CompanyCreate/>
             </ProtectedRoute>
             <ProtectedRoute path="/crypto">
                 <EncryptDemo/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/contacts">
+                <Contacts/>
             </ProtectedRoute>
             <UnauthorizedRoute path="/login">
                 <Login/>

@@ -6,7 +6,7 @@ import {useDispatch} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm} from "react-hook-form";
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import {currentAuthenticatedUser} from "../../redux/api/auth";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,10 +31,9 @@ function Profile() {
 
         currentAuthenticatedUser().then(user => {
             if(user.attributes) {
-                user.attributes.given_name && setValue('firstName', user.attributes.given_name, { shouldValidate: true });
+                user.attributes.name && setValue('firstName', user.attributes.name, { shouldValidate: true });
                 user.attributes.family_name && setValue('lastName', user.attributes.family_name, { shouldValidate: true });
                 user.attributes.address && setValue('address', user.attributes.address, { shouldValidate: true });
-                user.attributes['custom:company_name'] && setValue('companyName', user.attributes['custom:company_name'], { shouldValidate: true });
             }
         })
     }, [])
@@ -44,12 +43,11 @@ function Profile() {
             data.firstName,
             data.lastName,
             data.address,
-            data.companyName,
         ));
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
 
             <EmailConfirmedMessage/>
 
@@ -113,23 +111,6 @@ function Profile() {
                     error={!!errors.address}
                 />
 
-                <TextField
-                    required
-                    defaultValue=''
-                    fullWidth
-                    id="company-name"
-                    label="Company Name"
-                    autoComplete="company-name"
-                    variant="outlined"
-                    type="text"
-                    margin="normal"
-                    inputProps={{
-                        name: "companyName",
-                        ref: register({ required: true })
-                    }}
-                    error={!!errors.companyName}
-                />
-
                 <Button
                     className={classes.submitButton}
                     variant="contained"
@@ -143,7 +124,7 @@ function Profile() {
                 </Button>
 
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

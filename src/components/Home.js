@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
-import PageContainer from "./PageContainer";
+import PageContainer from "./common/containers/PageContainer";
 
 function Home() {
 

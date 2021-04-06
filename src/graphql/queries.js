@@ -1,96 +1,49 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getContact = /* GraphQL */ `
-  query GetContact($id: ID!) {
-    getContact(id: $id) {
-      id
-      ownerCognitoGroupId
-      statusIdTimestamp
-      contactCognitoGroupId
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const listContacts = /* GraphQL */ `
-  query ListContacts(
-    $filter: ModelContactFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listContacts(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        ownerCognitoGroupId
-        statusIdTimestamp
-        contactCognitoGroupId
-        createdAt
-        updatedAt
-        owner
+export const allProfiles = /* GraphQL */ `
+  query AllProfiles($limit: Int, $nextToken: String) {
+    allProfiles(limit: $limit, nextToken: $nextToken) {
+      profiles {
+        ownerGroupName
+        profileStatusAndTimestampAndUuid
+        profileStatus
+        profileType
+        parentProfileUUID
+        displayName
       }
       nextToken
     }
   }
 `;
-export const contactsByOwnerCognitoGroupId = /* GraphQL */ `
-  query ContactsByOwnerCognitoGroupId(
-    $ownerCognitoGroupId: ID
-    $statusIdTimestamp: ModelIDKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelContactFilterInput
-    $limit: Int
-    $nextToken: String
+export const getProfile = /* GraphQL */ `
+  query GetProfile(
+    $ownerGroupName: ID!
+    $profileStatusAndTimestampAndUuid: String!
   ) {
-    contactsByOwnerCognitoGroupId(
-      ownerCognitoGroupId: $ownerCognitoGroupId
-      statusIdTimestamp: $statusIdTimestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
+    getProfile(
+      ownerGroupName: $ownerGroupName
+      profileStatusAndTimestampAndUuid: $profileStatusAndTimestampAndUuid
     ) {
-      items {
-        id
-        ownerCognitoGroupId
-        statusIdTimestamp
-        contactCognitoGroupId
-        createdAt
-        updatedAt
-        owner
+      ownerGroupName
+      profileStatusAndTimestampAndUuid
+      profileStatus
+      profileType
+      parentProfileUUID
+      displayName
+      metadata {
+        createTimestamp
+        deleteTimestamp
+        updateTimestamp
+        createdBy
+        updatedBy
+        deletedBy
+        userPoolId
       }
-      nextToken
-    }
-  }
-`;
-export const contactsContactCognitoGroupId = /* GraphQL */ `
-  query ContactsContactCognitoGroupId(
-    $contactCognitoGroupId: ID
-    $statusIdTimestamp: ModelIDKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelContactFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    contactsContactCognitoGroupId(
-      contactCognitoGroupId: $contactCognitoGroupId
-      statusIdTimestamp: $statusIdTimestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        ownerCognitoGroupId
-        statusIdTimestamp
-        contactCognitoGroupId
-        createdAt
-        updatedAt
-        owner
+      profile {
+        typeOfBusiness
+        currency
       }
-      nextToken
     }
   }
 `;

@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import {Box, Button, FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
@@ -41,7 +41,7 @@ function Login() {
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
 
             <EmailConfirmedMessage/>
 
@@ -97,7 +97,7 @@ function Login() {
                 </Link>
 
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

@@ -12,7 +12,7 @@ import {
     fileDecryptFailure
 } from "../redux/actions/encryption";
 import {Box,TextField,Button, Typography} from '@material-ui/core';
-import PageContainer from "./PageContainer";
+import PageContainer from "./common/containers/PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux';
 import FileUploadPopup from "./FileUploadPopup";

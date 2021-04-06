@@ -9,7 +9,7 @@ import PasswordHelper from "../common/PasswordHelper";
 import {useDispatch, useSelector} from "react-redux";
 import {setNewPassword} from "../../redux/actions/user";
 import FieldPassword from "../common/FieldPassword";
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import {NOT_AUTHORIZED_AUTH_STATE, USERNAME_TO_PASSWORD_RESET} from "../../utils/constants";
 import { Redirect } from 'react-router-dom';
 import LoginFormFooter from "./LoginFormFooter";
@@ -40,7 +40,7 @@ function SetNewPassword() {
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
             <FormControl
                 component="form"
                 onSubmit={handleSubmit(onSubmit)}
@@ -103,7 +103,7 @@ function SetNewPassword() {
                 />
 
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

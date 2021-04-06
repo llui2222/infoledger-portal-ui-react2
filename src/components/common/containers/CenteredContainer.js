@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function UnauthorizedContainer(props) {
+function CenteredContainer(props) {
 
     const classes = useStyles();
 
@@ -29,4 +29,4 @@ function UnauthorizedContainer(props) {
     );
 }
 
-export default UnauthorizedContainer;
+export default CenteredContainer;

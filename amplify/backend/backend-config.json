@@ -1,44 +1,10 @@
 {
   "auth": {
-    "infoledgeruifcb510b1": {
+    "InfoLedgerUI": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "infoledgeruifcb510b1PostConfirmation",
-          "triggerProvider": "Cognito",
-          "attributes": [
-            "Arn",
-            "Name"
-          ]
-        }
-      ],
+      "dependsOn": [],
       "customAuth": false
-    }
-  },
-  "api": {
-    "infoledgerui": {
-      "service": "AppSync",
-      "providerPlugin": "awscloudformation",
-      "output": {
-        "authConfig": {
-          "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authinfoledgeruifcb510b1"
-            }
-          },
-          "additionalAuthenticationProviders": []
-        }
-      }
-    }
-  },
-  "function": {
-    "infoledgeruifcb510b1PostConfirmation": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
     }
   }
 }

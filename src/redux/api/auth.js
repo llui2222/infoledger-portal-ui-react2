@@ -15,13 +15,12 @@ export function signIn({userName, password}) {
     return Auth.signIn(userName, password);
 }
 
-export function updateUserAttributes({firstName, lastName, address, companyName}) {
+export function updateUserAttributes({firstName, lastName, address}) {
     return Auth.currentAuthenticatedUser().then(user => {
         return Auth.updateUserAttributes(user, {
-            'given_name': firstName,
+            'name': firstName,
             'family_name': lastName,
-            'address': address,
-            'custom:company_name': companyName
+            'address': address
         }).catch(error => {
             return error;
         })

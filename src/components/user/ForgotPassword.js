@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Typography from '@material-ui/core/Typography';
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import {Button, FormControl, TextField} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,7 +31,7 @@ function ForgotPassword() {
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
 
             <FormControl
                 className={classes.form}
@@ -67,7 +67,7 @@ function ForgotPassword() {
                 />
 
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 

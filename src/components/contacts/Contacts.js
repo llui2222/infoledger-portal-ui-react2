@@ -1,29 +1,12 @@
 import React from "react";
-import {Typography, Box, Button, ButtonGroup, IconButton, FormControl, OutlinedInput, InputAdornment} from '@material-ui/core';
-import {Search} from '@material-ui/icons';
-import PageContainer from "../PageContainer";
+import {Box, Button, ButtonGroup} from '@material-ui/core';
+import PageContainer from "../common/containers/PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import ContactsListContainer from "./ContactsListContainer";
+import PageHeader from "../common/PageHeader";
 import InviteContactPopup from "./InviteContactPopup";
 
 const useStyles = makeStyles((theme) => ({
-    contactsHeader: {
-        display: 'flex'
-    },
-    contactsHeaderTitle: {
-        marginRight: 'auto'
-    },
-    contactSearch: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginLeft: theme.spacing(3),
-        '& .MuiInputBase-root': {
-            borderRadius: theme.spacing(4)
-        },
-        '& .MuiOutlinedInput-adornedEnd': {
-            paddingRight: 0
-        }
-    },
     contactFilters: {
         display: 'flex',
         marginTop: theme.spacing(5)
@@ -42,30 +25,9 @@ function Contacts() {
 
     return (
         <PageContainer>
-            <Box className={classes.contactsHeader}>
-                <Typography
-                    variant="h4"
-                    gutterBottom
-                    className={classes.contactsHeaderTitle}
-                >
-                    Contacts
-                </Typography>
-
+            <PageHeader title='Contacts'>
                 <InviteContactPopup/>
-
-                <FormControl className={classes.contactSearch}>
-                    <OutlinedInput
-                        id="filled-adornment-password"
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton type="submit" aria-label="search">
-                                    <Search />
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                </FormControl>
-            </Box>
+            </PageHeader>
             <Box className={classes.contactFilters}>
                 <ButtonGroup
                     disableElevation

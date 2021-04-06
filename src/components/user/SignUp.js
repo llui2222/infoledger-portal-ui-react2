@@ -9,7 +9,7 @@ import PasswordHelper from "../common/PasswordHelper";
 import {useDispatch, useSelector} from "react-redux";
 import {userRegister} from "../../redux/actions/user";
 import FieldPassword from "../common/FieldPassword";
-import UnauthorizedContainer from "./UnauthorizedContainer";
+import CenteredContainer from "../common/containers/CenteredContainer";
 import LoginFormFooter from "./LoginFormFooter";
 import {NOT_AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 
@@ -34,7 +34,7 @@ function SignUp() {
     }
 
     return (
-        <UnauthorizedContainer>
+        <CenteredContainer>
             <FormControl
                 component="form"
                 onSubmit={handleSubmit(onSubmit)}
@@ -95,7 +95,7 @@ function SignUp() {
                 />
 
             </FormControl>
-        </UnauthorizedContainer>
+        </CenteredContainer>
     );
 }
 
