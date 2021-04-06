@@ -14,13 +14,14 @@ import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
 import CompanyCreate from "../company/CompanyCreate";
 import Contacts from "../contacts/Contacts";
+import Notifications from "../Notifications";
 
 function Router() {
     return (
         <Switch>
 
             <ProtectedRoute exact path="/">
-                <Home/>
+                <Notifications/>
             </ProtectedRoute>
             <ProtectedRoute exact path="/logout">
                 <LogOut/>
