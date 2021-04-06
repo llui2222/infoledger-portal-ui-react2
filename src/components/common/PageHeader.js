@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
             paddingRight: 0
         }
     },
+    customButtons: {
+        height: 36,
+        margin: 'auto 0'
+    }
 }));
 
 function PageHeader({ children, title }) {
@@ -37,7 +41,9 @@ function PageHeader({ children, title }) {
                 {title}
             </Typography>
 
-            { children }
+            <Box className={classes.customButtons}>
+                { children }
+            </Box>
 
             <FormControl className={classes.search}>
                 <OutlinedInput

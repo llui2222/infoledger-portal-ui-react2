@@ -15,10 +15,6 @@ import { gql, useMutation } from '@apollo/client';
 import {Add} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-    inviteButton: {
-        height: theme.spacing(4.5),
-        margin: 'auto 0'
-    },
     addedEmail: {
         margin: `0 ${theme.spacing(0.5)}px ${theme.spacing(0.5)}px 0`,
     },
@@ -96,7 +92,6 @@ function Contacts() {
                 variant="outlined"
                 color="default"
                 startIcon={<Add />}
-                className={classes.inviteButton}
                 onClick={() => setOpen(true)}
             >
                 Invite
