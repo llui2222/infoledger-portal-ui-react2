@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from '@material-ui/core/Typography';
 import {
     Button,
@@ -10,16 +10,18 @@ import {
 } from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm, Controller} from "react-hook-form";
 import CenteredContainer from "../common/containers/CenteredContainer";
-import {companyCreate} from "../../redux/actions/company";
+import {companyCreate, companyCreateSuccess, companyCreateFailure} from "../../redux/actions/company";
 import { gql, useMutation } from '@apollo/client';
 import {saveProfile} from "../../graphql/mutations";
+import {showNotification} from "../../redux/actions/notifications";
+import Companies from "./Companies";
 
 const useStyles = makeStyles((theme) => ({
     form: {
-        margin: 'auto'
+        margin: 'auto',
+        textAlign: 'left'
     },
     submitButton: {
         margin: `${theme.spacing(1)}px 0 0 auto`
@@ -36,12 +38,39 @@ function CompanyCreate() {
         mode: 'onChange'
     });
 
-    const handleSubmitForm = e => {
-        e.preventDefault();
-        handleSubmit(onSubmit);
+    useEffect(() => {
+
+        if(error) {
+            dispatch(companyCreateFailure(error));
+        }
+
+        if(data) {
+            dispatch(companyCreateSuccess);
+
+            dispatch(showNotification({
+                message: 'Company created',
+                options: {
+                    key: 'company-updated',
+                    variant: 'success'
+                },
+            }));
+
+            resetForm();
+        }
+
+    },[error, data]);
+
+    const resetForm = () => {
+        setValue('companyName', '');
+        setValue('companyType', '');
+        setValue('typeOfBusiness', '');
+        setValue('address', '');
+        setValue('postalCode', '');
     }
 
     const onSubmit = data => {
+
+        dispatch(companyCreate);
 
         addCompany({ variables: {
                 profile: {
@@ -60,7 +89,7 @@ function CompanyCreate() {
     return (
         <CenteredContainer>
 
-            <EmailConfirmedMessage/>
+            <Companies/>
 
             <FormControl
                 component="form"
