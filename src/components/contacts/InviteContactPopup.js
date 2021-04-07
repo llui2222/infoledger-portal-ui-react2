@@ -23,7 +23,10 @@ const useStyles = makeStyles((theme) => ({
     },
     dialogHeader: {
         marginBottom: theme.spacing(3)
-    }
+    },
+    inviteButton: {
+        marginRight: theme.spacing(1)
+    },
 }));
 
 function Contacts() {
@@ -93,6 +96,7 @@ function Contacts() {
                 color="default"
                 startIcon={<Add />}
                 onClick={() => setOpen(true)}
+                className={classes.inviteButton}
             >
                 Invite
             </Button>

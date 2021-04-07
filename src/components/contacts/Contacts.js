@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ContactsListContainer from "./ContactsListContainer";
 import PageHeader from "../common/PageHeader";
 import InviteContactPopup from "./InviteContactPopup";
+import {MoreHoriz} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     contactFilters: {
@@ -27,6 +28,13 @@ function Contacts() {
         <PageContainer>
             <PageHeader title='Contacts'>
                 <InviteContactPopup/>
+                <Button
+                    variant="outlined"
+                    color="default"
+                    startIcon={<MoreHoriz />}
+                >
+                    More
+                </Button>
             </PageHeader>
             <Box className={classes.contactFilters}>
                 <ButtonGroup
