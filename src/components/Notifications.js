@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     filterButton: {
         minHeight: theme.spacing(7),
         marginRight: theme.spacing(1),
+    },
+    quickFilterButton: {
+        marginTop: -2
     }
 }));
 
@@ -87,7 +90,7 @@ const mockNotifications = [
             'Fund 3'
         ],
         date: 1617737299
-    },
+    }
 ];
 
 const MenuProps = {
@@ -159,7 +162,7 @@ function Notifications() {
                 <Button
                     variant="outlined"
                     color="default"
-                    endIcon={<Typography variant='h6'>8</Typography>}
+                    endIcon={<Typography variant='h6' className={classes.quickFilterButton}>8</Typography>}
                     className={classes.filterButton}
                 >
                     New Messages
@@ -168,7 +171,7 @@ function Notifications() {
                 <Button
                     variant="outlined"
                     color="default"
-                    endIcon={<Typography variant='h6'>2</Typography>}
+                    endIcon={<Typography variant='h6' className={classes.quickFilterButton}>2</Typography>}
                     className={classes.filterButton}
                 >
                     Active Transactions
