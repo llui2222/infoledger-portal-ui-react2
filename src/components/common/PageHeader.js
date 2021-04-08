@@ -49,7 +49,15 @@ function PageHeader({children, title, isBackBtn = false}) {
         <Box className={classes.pageHeader}>
             <Box className={classes.pageHeaderTitleWrapper}>
                 {
-                    isBackBtn && <Button className={classes.PageHeaderBackBtn} onClick={handleBack}>{'<-back'}</Button>
+                    isBackBtn && (
+                        <Button
+                            className={classes.PageHeaderBackBtn}
+                            onClick={handleBack}
+                            data-testid="backBtn"
+                        >
+                            {'<-back'}
+                        </Button>
+                    )
                 }
                 <Typography
                     variant="h4"
