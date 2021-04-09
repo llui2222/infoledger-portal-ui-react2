@@ -4,7 +4,7 @@ import {
     CONFIRM_EMAIL_SUCCESS,
     CONFIRM_EMAIL_FAILURE,
     confirmEmailSuccess,
-    confirmEmailFailure,
+    confirmEmailFailure, CONFIRM_CHANGED_EMAIL_REQUEST, confirmChangedEmailSuccess, confirmChangedEmailFailure,
 } from "../actions/user";
 import {
     USERNAME_TO_CONFIRM,
@@ -26,6 +26,15 @@ export function* workerEmailConfirm(action) {
     }
 }
 
+export function* workerChangedEmailConfirm({payload: {code, attr}}) {
+    try {
+        yield call(api.verifyUserAttributeSubmit, attr, code);
+        yield put(confirmChangedEmailSuccess());
+    } catch (error) {
+        yield put(confirmChangedEmailFailure(error));
+    }
+}
+
 export function* watchEmailConfirmSuccess() {
     yield takeLatest(CONFIRM_EMAIL_SUCCESS, workerEmailConfirmSuccess);
 }
@@ -37,4 +46,7 @@ export function* workerEmailConfirmSuccess() {
 
 export function* watchEmailConfirmFailure() {
     yield takeLatest(CONFIRM_EMAIL_FAILURE, workerFailure);
+}
+export function* watchChangedEmailConfirm() {
+    yield takeLatest(CONFIRM_CHANGED_EMAIL_REQUEST, workerChangedEmailConfirm);
 }

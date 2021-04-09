@@ -15,12 +15,10 @@ export function signIn({userName, password}) {
     return Auth.signIn(userName, password);
 }
 
-export function updateUserAttributes({firstName, lastName, address}) {
+export function updateUserAttributes(modifiedFields) {
     return Auth.currentAuthenticatedUser().then(user => {
         return Auth.updateUserAttributes(user, {
-            'name': firstName,
-            'family_name': lastName,
-            'address': address
+            ...modifiedFields
         }).catch(error => {
             return error;
         })
@@ -29,6 +27,21 @@ export function updateUserAttributes({firstName, lastName, address}) {
 
 export function currentAuthenticatedUser() {
     return Auth.currentAuthenticatedUser();
+}
+
+export function currentUserInfo() {
+    return Auth.currentUserInfo();
+}
+
+export function verifyCurrentUserAttribute(attr) {
+    return Auth.currentAuthenticatedUser().then(user => {
+        return Auth.verifyUserAttribute(user, attr);
+    })
+}
+export function verifyUserAttributeSubmit(attr, code) {
+    return Auth.currentAuthenticatedUser().then(user => {
+        return Auth.verifyUserAttributeSubmit(user, attr, code);
+    })
 }
 
 export function currentCredentials() {

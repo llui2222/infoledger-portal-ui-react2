@@ -1,7 +1,7 @@
 import React from "react";
 import {Typography, Box, IconButton, FormControl, OutlinedInput, InputAdornment} from '@material-ui/core';
 import {Search} from '@material-ui/icons';
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     pageHeader: {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function PageHeader({ children, title }) {
+function PageHeader({children, title, isSearch = true}) {
 
     const classes = useStyles();
 
@@ -42,21 +42,25 @@ function PageHeader({ children, title }) {
             </Typography>
 
             <Box className={classes.customButtons}>
-                { children }
+                {children}
             </Box>
 
-            <FormControl className={classes.search}>
-                <OutlinedInput
-                    id="filled-adornment-password"
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton type="submit" aria-label="search">
-                                <Search />
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                />
-            </FormControl>
+            {
+                isSearch &&
+                <FormControl className={classes.search}>
+                    <OutlinedInput
+                        id="filled-adornment-password"
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton type="submit" aria-label="search">
+                                    <Search/>
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
+            }
+
         </Box>
     );
 }

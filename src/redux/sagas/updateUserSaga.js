@@ -7,16 +7,20 @@ import {
     updateUserAttributesFailure
 } from "../actions/user";
 import * as api from '../api/auth';
-import { workerFailure } from "./common";
+import {workerFailure} from "./common";
 import {showNotification} from "../actions/notifications";
 
 export function* watchUpdateUser() {
     yield takeLatest(UPDATE_USER_ATTRIBUTES_REQUEST, workerUpdateUser);
 }
 
-export function* workerUpdateUser(action) {
+export function* workerUpdateUser({payload: {info, confirmationCallback = () => {}}}) {
     try {
-        yield call(api.updateUserAttributes, action);
+        yield call(api.updateUserAttributes, info);
+        if (Object.keys(info).includes('email')) {
+            yield call(api.verifyCurrentUserAttribute, 'email')
+            confirmationCallback(info.email)
+        }
         yield put(updateUserAttributesSuccess());
     } catch (error) {
         yield put(updateUserAttributesFailure(error));
