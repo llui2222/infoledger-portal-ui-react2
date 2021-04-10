@@ -7,9 +7,13 @@ function Companies() {
 
     const { loading, error, data } = useQuery(gql(allProfiles));
 
-    console.log(loading);
-    console.log(error);
-    console.log(data);
+    if(error) {
+        console.log(error);
+    }
+
+    if(data) {
+        console.log(data);
+    }
 
     return (
         <List component="nav">
