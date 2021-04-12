@@ -9,11 +9,13 @@ import {useDispatch} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm} from "react-hook-form";
-import {currentAuthenticatedUser} from "../../redux/api/auth";
+import {
+    currentAuthenticatedUser,
+} from "../../redux/api/auth";
 import PageContainer from "../common/containers/PageContainer";
 import PageHeader from "../common/PageHeader";
 import TextInputWithAdornment from "../shared/TextInputWithAdornment";
-import {confirmChangedEmail, confirmEmail, updateUserAttributes} from "../../redux/actions/user";
+import {changePassword, confirmChangedEmail, confirmEmail, updateUserAttributes} from "../../redux/actions/user";
 import {cleanProperty} from "../../utils/cleanProperty";
 import Typography from "@material-ui/core/Typography";
 
@@ -27,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
     },
     passwordAccordion: {
         border: 'none!important',
+        background: 'none',
+        '&::before': {
+            display: 'none'
+        },
         boxShadow: 'none',
         '& div': {
             padding: 0
@@ -44,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
         padding: '15px'
     },
     codeInput: {
-       marginTop: 0,
-       marginRight: 15
+        marginTop: 0,
+        marginRight: 15
     },
     modalActive: {
         width: '100%',
@@ -63,8 +69,18 @@ function Profile() {
     const classes = useStyles();
     const ref = useRef(null);
 
-    const {register, handleSubmit, errors, setValue} = useForm({
-        mode: 'onChange'
+    const {
+        register,
+        handleSubmit,
+        errors,
+        setValue,
+        getValues,
+        formState: {
+            isDirty,
+            isValid
+        }
+    } = useForm({
+        mode: 'onBlur'
     });
 
     useEffect(() => {
@@ -81,26 +97,40 @@ function Profile() {
     const isPasswordActive = Object.keys(activeFields).includes('oldPass')
 
     const onSubmit = data => {
-        console.log(`==========>data`, data)
-        const {name, family_name, address, email} = data
-        dispatch(updateUserAttributes({
-                info: cleanProperty(
-                    {
-                        name,
-                        family_name,
-                        address,
-                        email
+        const {name, family_name, address, email, oldPass, newPass} = data
+        const formattedValues = cleanProperty(
+            {
+                name,
+                family_name,
+                address,
+                email
+            })
+        if (Object.keys(formattedValues).length) {
+            dispatch(updateUserAttributes({
+                    info: cleanProperty(
+                        {
+                            name,
+                            family_name,
+                            address,
+                            email
+                        }
+                    ),
+                    confirmationCallback: (name) => {
+                        setIsConfirmModalOpen(true)
                     }
-                ),
-                confirmationCallback: (name) => {
-                    setIsConfirmModalOpen(true)
                 }
-            }
-        ));
+            ));
+        }
+        if (oldPass && newPass) {
+            dispatch(changePassword({oldPass, newPass}));
+        }
     }
-    
+
     const handleConfirm = () => {
-        dispatch(confirmChangedEmail('email', ref.current.value));
+        dispatch(confirmChangedEmail({
+            attr: 'email',
+            code: ref.current.value
+        }));
         setIsConfirmModalOpen(false)
     }
 
@@ -121,10 +151,14 @@ function Profile() {
                         autoComplete="first-name"
                         inputProps={{
                             name: "name",
-                            ref: register({pattern: /^[A-Za-z]+$/i,})
+                            ref: register({
+                                validate: {
+                                    pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.',
+                                }
+                            })
                         }}
                         error={!!errors.name}
-                        helperText={!!errors.name && "Incorrect entry."}
+                        helperText={errors.name?.message}
                     />
                     <TextInputWithAdornment
                         required
@@ -134,10 +168,14 @@ function Profile() {
                         type="text"
                         inputProps={{
                             name: "family_name",
-                            ref: register({pattern: /^[A-Za-z]+$/i}),
+                            ref: register({
+                                validate: {
+                                    pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.'
+                                }
+                            }),
                         }}
                         error={!!errors.family_name}
-                        helperText={!!errors.family_name && "Incorrect entry."}
+                        helperText={errors.family_name?.message}
                     />
                     <TextInputWithAdornment
                         required
@@ -147,10 +185,14 @@ function Profile() {
                         type="text"
                         inputProps={{
                             name: "address",
-                            ref: register({pattern: /^[A-Za-z]+$/i})
+                            ref: register({
+                                validate: {
+                                    pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.'
+                                }
+                            })
                         }}
                         error={!!errors.address}
-                        helperText={!!errors.address && "Incorrect entry."}
+                        helperText={errors.address?.message}
                     />
                     <TextInputWithAdornment
                         required
@@ -160,14 +202,19 @@ function Profile() {
                         type="email"
                         inputProps={{
                             name: "email",
-                            ref: register({pattern: /^(.+@.+\..+)+$/i})
+                            ref: register({
+                                validate: {
+                                    pattern: v => /^(.+@.+\..+)+$/i.test(v) || 'Incorrect entry.'
+                                }
+                            })
                         }}
                         error={!!errors.email}
-                        helperText={!!errors.email && "Incorrect entry."}
+                        helperText={errors.email?.message}
                     />
                     <Accordion className={classes.passwordAccordion} expanded={isPasswordActive}>
                         <AccordionSummary>
                             <TextInputWithAdornment
+                                isPassword
                                 required={isPasswordActive}
                                 id="oldPass"
                                 label="Old password"
@@ -176,12 +223,17 @@ function Profile() {
                                     oldPass: isActive
                                 }))}
                                 autoComplete="current-password"
-                                type="password"
                                 inputProps={{
                                     name: "oldPass",
-                                    ref: register()
+                                    ref: !isPasswordActive ? register : register({
+                                        validate: {
+                                            pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
+                                                || 'Password must include [a-zA-z0-9!@#$%^&*]'
+                                        }
+                                    })
                                 }}
                                 error={!!errors.oldPass}
+                                helperText={errors.oldPass?.message}
                             />
                         </AccordionSummary>
                         <AccordionDetails>
@@ -191,12 +243,18 @@ function Profile() {
                                 id="newPass"
                                 label="Password"
                                 autoComplete="new-password"
-                                type="password"
                                 inputProps={{
                                     name: "newPass",
-                                    ref: register()
+                                    ref: !isPasswordActive ? register : register({
+                                        validate: {
+                                            notSame: v => v !== getValues('oldPass') || 'The new password must not match the old one',
+                                            pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v) || 'Password must include [a-zA-z0-9!@#$%^&*]'
+                                        }
+                                    })
                                 }}
                                 error={!!errors.newPass}
+                                helperText={errors.newPass?.message}
+                                isPassword
                             />
                         </AccordionDetails>
                     </Accordion>
@@ -208,6 +266,7 @@ function Profile() {
                         disableElevation
                         type="submit"
                         name="save"
+                        disabled={!isDirty || !isValid}
                     >
                         Save
                     </Button>
@@ -224,15 +283,16 @@ function Profile() {
                     </Typography>
                     <Box className={classes.modalActive}>
                         <TextField
-                            className={classes.codeInput} 
-                            inputRef={ref} 
+                            className={classes.codeInput}
+                            inputRef={ref}
                             id="standard-basic"
                             label="code"
                         />
-                        <Button 
+                        <Button
                             variant="contained"
                             color="primary"
                             onClick={handleConfirm}
+                            disabled={!isDirty || !isValid}
                         >
                             send
                         </Button>

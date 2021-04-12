@@ -15,6 +15,10 @@ export function signIn({userName, password}) {
     return Auth.signIn(userName, password);
 }
 
+export function verifyCurrentUserAttributeSubmit({attr, code}) {
+    return Auth.verifyCurrentUserAttributeSubmit(attr, code);
+}
+
 export function updateUserAttributes(modifiedFields) {
     return Auth.currentAuthenticatedUser().then(user => {
         return Auth.updateUserAttributes(user, {
@@ -62,6 +66,13 @@ export function forgotPassword({userName}) {
 
 export function setNewPassword({ newPassword, userName, verificationCode}) {
     return Auth.forgotPasswordSubmit(userName, verificationCode, newPassword)
+}
+
+export function changePassword({ oldPass, newPass}) {
+    return Auth.currentAuthenticatedUser().then(user => {
+        return Auth.changePassword(user, oldPass, newPass)
+
+    })
 }
 
 export async function getJwtToken() {

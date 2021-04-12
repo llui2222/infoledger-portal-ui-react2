@@ -25,6 +25,9 @@ export const FORGOT_PASSWORD_FAILURE = 'FORGOT_PASSWORD_FAILURE';
 export const SET_NEW_PASSWORD_REQUEST = 'SET_NEW_PASSWORD_REQUEST';
 export const SET_NEW_PASSWORD_SUCCESS = 'SET_NEW_PASSWORD_SUCCESS';
 export const SET_NEW_PASSWORD_FAILURE = 'SET_NEW_PASSWORD_FAILURE';
+export const CHANGE_PASSWORD_REQUEST = 'CHANGE_PASSWORD_REQUEST';
+export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS';
+export const CHANGE_PASSWORD_FAILURE = 'CHANGE_PASSWORD_FAILURE';
 
 export const userRegister = (userName, password) => ({
     type: USER_REGISTER_REQUEST,
@@ -155,5 +158,19 @@ export const setNewPasswordSuccess = () => ({
 
 export const setNewPasswordFailure = error => ({
     type: SET_NEW_PASSWORD_FAILURE,
+    error
+});
+
+export const changePassword = payload => ({
+    type: CHANGE_PASSWORD_REQUEST,
+    payload
+});
+
+export const changePasswordSuccess = () => ({
+    type: CHANGE_PASSWORD_SUCCESS,
+});
+
+export const changePasswordFailure = error => ({
+    type: CHANGE_PASSWORD_FAILURE,
     error
 });
