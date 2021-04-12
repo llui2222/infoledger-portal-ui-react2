@@ -41,6 +41,11 @@ const menuItems = [
         url: '/logout',
         icon: ExitToApp,
     },
+    {
+        name: 'Doc',
+        url: '/investment/document',
+        icon: ExitToApp,
+    },
 ]
 
 const useStyles = makeStyles((theme) => ({
