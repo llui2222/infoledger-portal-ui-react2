@@ -2,13 +2,22 @@ import React from "react";
 import {Typography, Box, IconButton, FormControl, OutlinedInput, InputAdornment} from '@material-ui/core';
 import {Search} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     pageHeader: {
-        display: 'flex'
+        display: 'flex',
+        alignItems: 'center'
     },
-    pageHeaderTitle: {
+    pageHeaderTitleWrapper: {
         marginRight: 'auto'
+    },
+    PageHeaderBackBtn: {
+        display: 'block',
+        padding: 0,
+        textAlign: 'left',
+        textTransform: 'capitalize'
     },
     search: {
         display: 'flex',
@@ -27,20 +36,36 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function PageHeader({children, title, isSearch = true}) {
+function PageHeader({children, title, isBackBtn = false, isSearch = true}) {
 
     const classes = useStyles();
+    const history = useHistory();
+
+    const handleBack = () => {
+        history.goBack()
+    }
 
     return (
         <Box className={classes.pageHeader}>
-            <Typography
-                variant="h4"
-                gutterBottom
-                className={classes.pageHeaderTitle}
-            >
-                {title}
-            </Typography>
-
+            <Box className={classes.pageHeaderTitleWrapper}>
+                {
+                    isBackBtn && (
+                        <Button
+                            className={classes.PageHeaderBackBtn}
+                            onClick={handleBack}
+                            data-testid="backBtn"
+                        >
+                            {'<-back'}
+                        </Button>
+                    )
+                }
+                <Typography
+                    variant="h4"
+                    gutterBottom
+                >
+                    {title}
+                </Typography>
+            </Box>
             <Box className={classes.customButtons}>
                 {children}
             </Box>
@@ -60,7 +85,6 @@ function PageHeader({children, title, isSearch = true}) {
                     />
                 </FormControl>
             }
-
         </Box>
     );
 }

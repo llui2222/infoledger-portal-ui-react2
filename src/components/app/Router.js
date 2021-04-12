@@ -15,6 +15,7 @@ import SetNewPassword from "../user/SetNewPassword";
 import CompanyCreate from "../company/CompanyCreate";
 import Contacts from "../contacts/Contacts";
 import Notifications from "../Notifications";
+import Document from "../investment/Document";
 
 function Router() {
     return (
@@ -37,6 +38,9 @@ function Router() {
             </ProtectedRoute>
             <ProtectedRoute path="/contacts">
                 <Contacts/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/investment/document">
+                <Document/>
             </ProtectedRoute>
             <UnauthorizedRoute path="/login">
                 <Login/>
