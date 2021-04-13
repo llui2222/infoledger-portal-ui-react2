@@ -7,17 +7,19 @@ import {
 } from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
-import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
+import PublishIcon from '@material-ui/icons/Publish';
 import {useForm} from "react-hook-form";
+import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {
-    currentAuthenticatedUser,
+    currentAuthenticatedUser, currentUserInfo,
 } from "../../redux/api/auth";
 import PageContainer from "../common/containers/PageContainer";
 import PageHeader from "../common/PageHeader";
 import TextInputWithAdornment from "../shared/TextInputWithAdornment";
-import {changePassword, confirmChangedEmail, confirmEmail, updateUserAttributes} from "../../redux/actions/user";
+import {changePassword, confirmChangedEmail, updateUserAttributes} from "../../redux/actions/user";
 import {cleanProperty} from "../../utils/cleanProperty";
 import Typography from "@material-ui/core/Typography";
+import avatar from '../../assets/default_avatar.jpg'
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -58,6 +60,27 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    imgBox: {
+        height: 100,
+        width: 100,
+        overflow: 'hidden',
+        borderRadius: '50%',
+        position: 'relative',
+        '& img': {
+            maxHeight: '100px'
+        }
+    },
+    uploadBtn: {
+        position: 'absolute',
+        bottom: 0,
+        width: 100,
+        opacity: .6
+    },
+    avatar: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover'
     }
 }));
 
@@ -65,6 +88,7 @@ function Profile() {
 
     const [activeFields, setActiveFields] = useState({})
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+    const [file, setFile] = useState(null)
     const dispatch = useDispatch();
     const classes = useStyles();
     const ref = useRef(null);
@@ -134,10 +158,43 @@ function Profile() {
         setIsConfirmModalOpen(false)
     }
 
+    const uploadImg = (evt) => {
+        let reader = new FileReader();
+        let file = evt.target.files[0];
+
+        reader.onloadend = () => {
+            setFile({
+                file: file,
+                imagePreviewUrl: reader.result
+            });
+        }
+
+        reader.readAsDataURL(file)
+    }
+
     return (
         <>
             <PageContainer>
                 <PageHeader title="Profile" isSearch={false}/>
+                <Box className={classes.imgBox}>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        className={classes.uploadBtn}
+                    >
+                        <PublishIcon/>
+                        <input
+                            type="file"
+                            hidden
+                            onChange={uploadImg}
+                        />
+                    </Button>
+                    {
+                        file
+                            ? <img className={classes.avatar} src={file.imagePreviewUrl} alt="sadasdsa"/>
+                            : <img src={avatar} alt="default avatar"/>
+                    }
+                </Box>
                 <FormControl
                     component="form"
                     onSubmit={handleSubmit(onSubmit)}
