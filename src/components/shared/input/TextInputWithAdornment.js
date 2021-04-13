@@ -11,14 +11,14 @@ const FieldState = {
 
 const TextInputWithAdornment = (props) => {
 
-    const {onEditChange, disabled, isPassword, ...rest} = props
+    const {onEditChange, disabled = true, isPassword, ...rest} = props
     const [isEdit, setIsEdit] = useState(false)
     const [status, setStatus] = useState(FieldState.DEFAULT)
     const [isShowPassword, setIsShowPassword] = useState(false)
     const ref = useRef(null)
 
     useEffect(() => {
-        setIsEdit(disabled)
+        setIsEdit(!disabled)
     }, [])
 
     const handleSwitchEdit = () => {

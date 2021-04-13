@@ -15,7 +15,7 @@ import {
 } from "../../redux/api/auth";
 import PageContainer from "../common/containers/PageContainer";
 import PageHeader from "../common/PageHeader";
-import TextInputWithAdornment from "../shared/TextInputWithAdornment";
+import TextInputWithAdornment from "../shared/input/TextInputWithAdornment";
 import {changePassword, confirmChangedEmail, updateUserAttributes} from "../../redux/actions/user";
 import {cleanProperty} from "../../utils/cleanProperty";
 import Typography from "@material-ui/core/Typography";
