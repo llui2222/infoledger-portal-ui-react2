@@ -16,7 +16,6 @@ import {companyCreate, companyCreateSuccess, companyCreateFailure} from "../../r
 import { gql, useMutation } from '@apollo/client';
 import {saveProfile} from "../../graphql/mutations";
 import {showNotification} from "../../redux/actions/notifications";
-import Companies from "./Companies";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -88,8 +87,6 @@ function CompanyCreate() {
 
     return (
         <CenteredContainer>
-
-            <Companies/>
 
             <FormControl
                 component="form"
