@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     Button, Divider,
@@ -9,13 +9,12 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useForm} from "react-hook-form";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {
-    currentAuthenticatedUser, currentUserInfo
+    currentAuthenticatedUser
 } from "../../redux/api/auth";
 import PageContainer from "../common/containers/PageContainer";
 import PageHeader from "../common/PageHeader";
 import {changePassword, confirmChangedEmail, updateUserAttributes} from "../../redux/actions/user";
 import {cleanProperty} from "../../utils/cleanProperty";
-import Typography from "@material-ui/core/Typography";
 import Modal from "../shared/modal/Modal";
 
 const useStyles = makeStyles((theme) => ({
@@ -102,7 +101,6 @@ function Profile() {
     const [profile, setProfile] = useState(initialProfile)
     const dispatch = useDispatch();
     const classes = useStyles();
-    const ref = useRef(null);
 
     const {
         register,
@@ -110,17 +108,11 @@ function Profile() {
         errors,
         setValue,
         getValues,
-        formState: {
-            isDirty,
-            isValid
-        }
     } = useForm({
         mode: 'onBlur'
     });
-
-    useEffect(() => {
+    const getUserInfo = () => {
         currentAuthenticatedUser().then(user => {
-            console.log(`==========>user`, user)
             if (user.attributes) {
                 if (user.attributes.name) {
                     setValue('name', user.attributes.name, {shouldValidate: true});
@@ -136,45 +128,45 @@ function Profile() {
                 }
             }
         })
+    }
+    useEffect(() => {
+        getUserInfo()
     }, [])
 
 
     const onSubmit = data => {
-        const {name, family_name, address, email, oldPass, newPass} = data
-        console.log(`==========>data`, data)
-        // const formattedValues = cleanProperty(
-        //     {
-        //         name,
-        //         family_name,
-        //         address,
-        //         email
-        //     })
-        // if (Object.keys(formattedValues).length) {
-        //     dispatch(updateUserAttributes({
-        //             info: cleanProperty(
-        //                 {
-        //                     name,
-        //                     family_name,
-        //                     address,
-        //                     email
-        //                 }
-        //             ),
-        //             confirmationCallback: (name) => {
-        //                 setIsConfirmModalOpen(true)
-        //                 setActiveField(FormTypes.CODE)
-        //             }
-        //         }
-        //     ));
-        // }
-        // if (oldPass && newPass) {
-        //     dispatch(changePassword({oldPass, newPass}));
-        // }
-    }
-    const handleConfirm = () => {
-        dispatch(confirmChangedEmail({
-            attr: 'email',
-            code: ref.current.value
-        }));
+        const {name, family_name, address, email, oldPass, newPass, code} = data
+        if (activeField === FormTypes.PASSWORD) {
+            dispatch(changePassword({oldPass, newPass}));
+        } else if (activeField === FormTypes.CODE) {
+            dispatch(confirmChangedEmail({
+                attr: 'email',
+                code: code,
+                confirmationCallback: () => getUserInfo()
+            }));
+            setIsConfirmModalOpen(false)
+        } else {
+            const formattedValues = cleanProperty(
+                {
+                    name,
+                    family_name,
+                    address,
+                    email
+                })
+            if (Object.keys(formattedValues).length) {
+                dispatch(updateUserAttributes({
+                        info: formattedValues,
+                        confirmationCallback: (type) => {
+                            if (type === 'code'){
+                                showModal(FormTypes.CODE)
+                            } else {
+                                getUserInfo()
+                            }
+                        }
+                    }
+                ));
+            }
+        }
         setIsConfirmModalOpen(false)
     }
 
@@ -185,24 +177,52 @@ function Profile() {
                     <Box className={classes.modalActive}>
                         <TextField
                             className={classes.codeInput}
-                            inputRef={ref}
+                            fullWidth
                             required
-                            id="standard-basic"
+                            key="code"
+                            id="code"
                             label="code"
                             inputProps={{
-                                name: "emailCode",
+                                name: "code",
+                                ref: register({required: true})
+                            }}
+                            error={!!errors.code}
+                        />
+                    </Box>
+                )
+            case FormTypes.NAME:
+                return (
+                    <Box>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="name"
+                            label="First name"
+                            type="text"
+                            id="name"
+                            inputProps={{
+                                name: "name",
                                 ref: register()
                             }}
-                            error={!!errors.emailCode}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
                         />
-                        {/*<Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="primary"*/}
-                        {/*    onClick={handleConfirm}*/}
-                        {/*    disabled={!isDirty || !isValid}*/}
-                        {/*>*/}
-                        {/*    send*/}
-                        {/*</Button>*/}
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="family_name"
+                            label="Last name"
+                            type="text"
+                            id="family_name"
+                            inputProps={{
+                                name: "family_name",
+                                ref: register()
+                            }}
+                            error={!!errors.family_name}
+                            helperText={errors.family_name?.message}
+                        />
                     </Box>
                 )
             case FormTypes.EMAIL:
@@ -211,6 +231,7 @@ function Profile() {
                         <TextField
                             fullWidth
                             required
+                            id="email"
                             label="Email"
                             inputProps={{
                                 name: "email",
@@ -224,63 +245,57 @@ function Profile() {
                             error={!!errors.email}
                             helperText={errors.email?.message}
                         />
-                        {/*<Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="primary"*/}
-                        {/*    onClick={handleConfirm}*/}
-                        {/*    disabled={!isDirty || !isValid}*/}
-                        {/*>*/}
-                        {/*    send*/}
-                        {/*</Button>*/}
                     </Box>
                 )
             case FormTypes.PASSWORD:
-                return <Box>
-                    <TextField
-                        borderBottom={1}
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Old Password"
-                        type="password"
-                        id="oldPass"
-                        autoComplete="current-password"
-                        inputProps={{
-                            name: "oldPass",
-                            ref: register({
-                                validate: {
-                                    pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
-                                        || 'Password must include [a-zA-z0-9!@#$%^&*]'
-                                }
-                            })
-                        }}
-                        error={!!errors.oldPass}
-                        helperText={errors.oldPass?.message}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="New Password"
-                        type="password"
-                        id="newPass"
-                        autoComplete="current-password"
-                        inputProps={{
-                            name: "newPass",
-                            ref: register({
-                                validate: {
-                                    pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
-                                        || 'Password must include [a-zA-z0-9!@#$%^&*]',
-                                    notSame: v => v !== getValues('oldPass') || 'The new password must not match the old one',
-                                }
-                            })
-                        }}
-                        error={!!errors.newPass}
-                        helperText={errors.newPass?.message}
-                    />
-                </Box>
+                return (
+                    <Box>
+                        <TextField
+                            borderBottom={1}
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Old Password"
+                            type="password"
+                            id="oldPass"
+                            autoComplete="current-password"
+                            inputProps={{
+                                name: "oldPass",
+                                ref: register({
+                                    validate: {
+                                        pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
+                                            || 'Password must include [a-zA-z0-9!@#$%^&*]'
+                                    }
+                                })
+                            }}
+                            error={!!errors.oldPass}
+                            helperText={errors.oldPass?.message}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="New Password"
+                            type="password"
+                            id="newPass"
+                            autoComplete="current-password"
+                            inputProps={{
+                                name: "newPass",
+                                ref: register({
+                                    validate: {
+                                        pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
+                                            || 'Password must include [a-zA-z0-9!@#$%^&*]',
+                                        notSame: v => v !== getValues('oldPass') || 'The new password must not match the old one',
+                                    }
+                                })
+                            }}
+                            error={!!errors.newPass}
+                            helperText={errors.newPass?.message}
+                        />
+                    </Box>
+                )
             default:
                 return null
         }
@@ -301,6 +316,19 @@ function Profile() {
                         autoComplete="first-name"
                         value={profile.name}
                         type="text"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button
+                                        className={classes.editButton}
+                                        variant="contained"
+                                        onClick={() => showModal(FormTypes.NAME)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                     <TextField
                         disabled
@@ -308,6 +336,19 @@ function Profile() {
                         autoComplete="last-name"
                         type="text"
                         value={profile.family_name}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button
+                                        className={classes.editButton}
+                                        variant="contained"
+                                        onClick={() => showModal(FormTypes.NAME)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                     <TextField
                         disabled
@@ -319,6 +360,7 @@ function Profile() {
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <Button
+                                        className={classes.editButton}
                                         variant="contained"
                                         onClick={() => {
                                             showModal(FormTypes.EMAIL)
@@ -344,7 +386,7 @@ function Profile() {
                                         variant="contained"
                                         onClick={() => showModal(FormTypes.PASSWORD)}
                                     >
-                                        Edit
+                                        Change password
                                     </Button>
                                 </InputAdornment>
                             )
@@ -397,3 +439,5 @@ function Profile() {
 }
 
 export default Profile;
+
+

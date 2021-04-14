@@ -30,7 +30,9 @@ export function* workerUpdateUser({
         yield call(api.updateUserAttributes, info);
         if (changedFields.includes('email')) {
             yield call(api.verifyCurrentUserAttribute, 'email')
-            confirmationCallback(info.email)
+            confirmationCallback('code')
+        } else {
+            confirmationCallback()
         }
         yield put(updateUserAttributesSuccess());
     } catch (error) {

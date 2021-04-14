@@ -8,7 +8,7 @@ import {
     CONFIRM_CHANGED_EMAIL_REQUEST,
     confirmChangedEmailSuccess,
     confirmChangedEmailFailure,
-    CONFIRM_CHANGED_EMAIL_FAILURE, CONFIRM_CHANGED_EMAIL_SUCCESS,
+    CONFIRM_CHANGED_EMAIL_FAILURE,
 } from "../actions/user";
 import {
     USERNAME_TO_CONFIRM,
@@ -42,6 +42,9 @@ export function* workerChangedEmailConfirm({payload}) {
                 variant: 'success'
             },
         }));
+        if (payload.confirmationCallback) {
+                payload.confirmationCallback()
+        }
     } catch (error) {
         yield put(confirmChangedEmailFailure(error));
     }
