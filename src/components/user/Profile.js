@@ -1,47 +1,38 @@
 import React, {useEffect, useRef, useState} from "react";
 import {
-    Accordion, AccordionDetails,
-    AccordionSummary, Box,
+    Box,
     Button,
-    FormControl, Modal, TextField,
+    FormControl, TextField,
 } from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
-import PublishIcon from '@material-ui/icons/Publish';
 import {useForm} from "react-hook-form";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {
-    currentAuthenticatedUser, currentUserInfo,
+    currentAuthenticatedUser, currentUserInfo
 } from "../../redux/api/auth";
 import PageContainer from "../common/containers/PageContainer";
 import PageHeader from "../common/PageHeader";
-import TextInputWithAdornment from "../shared/input/TextInputWithAdornment";
 import {changePassword, confirmChangedEmail, updateUserAttributes} from "../../redux/actions/user";
 import {cleanProperty} from "../../utils/cleanProperty";
 import Typography from "@material-ui/core/Typography";
-import avatar from '../../assets/default_avatar.jpg'
+import Modal from "../shared/modal/Modal";
 
 const useStyles = makeStyles((theme) => ({
+    defaultForm: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      flexDirection: 'column',
+        '& > *:not(:last-child)':{
+          marginBottom: 15
+        }
+    },
     form: {
         margin: 'auto',
         width: '100%'
     },
     submitButton: {
         margin: `${theme.spacing(1)}px 0 0 auto`
-    },
-    passwordAccordion: {
-        border: 'none!important',
-        background: 'none',
-        '&::before': {
-            display: 'none'
-        },
-        boxShadow: 'none',
-        '& div': {
-            padding: 0
-        },
-        "& .Mui-focused": {
-            backgroundColor: "inherit"
-        }
     },
     paper: {
         top: '50%',
@@ -61,34 +52,20 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    imgBox: {
-        height: 100,
-        width: 100,
-        overflow: 'hidden',
-        borderRadius: '50%',
-        position: 'relative',
-        '& img': {
-            maxHeight: '100px'
-        }
-    },
-    uploadBtn: {
-        position: 'absolute',
-        bottom: 0,
-        width: 100,
-        opacity: .6
-    },
-    avatar: {
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover'
-    }
 }));
+
+const initialProfile = {
+    firstName: '',
+    lastName: '',
+    login: '',
+    password: '**********',
+}
 
 function Profile() {
 
-    const [activeFields, setActiveFields] = useState({})
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
-    const [file, setFile] = useState(null)
+    const [activeField, setActiveField] = useState('confirmEmail')
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(true)
+    const [profile, setProfile] = useState(initialProfile)
     const dispatch = useDispatch();
     const classes = useStyles();
     const ref = useRef(null);
@@ -109,16 +86,16 @@ function Profile() {
 
     useEffect(() => {
         currentAuthenticatedUser().then(user => {
-            if (user.attributes) {
-                user.attributes.name && setValue('name', user.attributes.name, {shouldValidate: true});
-                user.attributes.family_name && setValue('family_name', user.attributes.family_name, {shouldValidate: true});
-                user.attributes.address && setValue('address', user.attributes.address, {shouldValidate: true});
-                user.attributes.email && user.attributes.email_verified && setValue('email', user.attributes.email, {shouldValidate: true});
-            }
+            console.log(`==========>user`, user)
+            // if (user.attributes) {
+            //     user.attributes.name && setValue('name', user.attributes.name, {shouldValidate: true});
+            //     user.attributes.family_name && setValue('family_name', user.attributes.family_name, {shouldValidate: true});
+            //     user.attributes.address && setValue('address', user.attributes.address, {shouldValidate: true});
+            //     user.attributes.email && user.attributes.email_verified && setValue('email', user.attributes.email, {shouldValidate: true});
+            // }
         })
     }, [])
 
-    const isPasswordActive = Object.keys(activeFields).includes('oldPass')
 
     const onSubmit = data => {
         const {name, family_name, address, email, oldPass, newPass} = data
@@ -158,163 +135,86 @@ function Profile() {
         setIsConfirmModalOpen(false)
     }
 
-    const uploadImg = (evt) => {
-        let reader = new FileReader();
-        let file = evt.target.files[0];
-
-        reader.onloadend = () => {
-            setFile({
-                file: file,
-                imagePreviewUrl: reader.result
-            });
+    const getForm = (formName) => {
+        switch (formName) {
+            case 'confirmEmail' :
+                return (
+                    <Box className={classes.modalActive}>
+                        <TextField
+                            className={classes.codeInput}
+                            inputRef={ref}
+                            id="standard-basic"
+                            label="code"
+                            inputProps={{
+                                name: "address",
+                                ref: register({
+                                    validate: {
+                                        pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.'
+                                    }
+                                })
+                            }}
+                            error={!!errors.address}
+                            helperText={errors.address?.message}
+                        />
+                        {/*<Button*/}
+                        {/*    variant="contained"*/}
+                        {/*    color="primary"*/}
+                        {/*    onClick={handleConfirm}*/}
+                        {/*    disabled={!isDirty || !isValid}*/}
+                        {/*>*/}
+                        {/*    send*/}
+                        {/*</Button>*/}
+                    </Box>
+                )
+            default:
+                return null
         }
-
-        reader.readAsDataURL(file)
     }
 
     return (
         <>
             <PageContainer>
                 <PageHeader title="Profile" isSearch={false}/>
-                <Box className={classes.imgBox}>
-                    <Button
-                        variant="contained"
-                        component="label"
-                        className={classes.uploadBtn}
-                    >
-                        <PublishIcon/>
-                        <input
-                            type="file"
-                            hidden
-                            onChange={uploadImg}
-                        />
-                    </Button>
-                    {
-                        file
-                            ? <img className={classes.avatar} src={file.imagePreviewUrl} alt="sadasdsa"/>
-                            : <img src={avatar} alt="default avatar"/>
-                    }
+                <Box className={classes.defaultForm}>
+                    <TextField
+                        disabled
+                        label="First Name"
+                        autoComplete="first-name"
+                        value={profile.firstName}
+                        type="text"
+                    />
+                    <TextField
+                        label="Last Name"
+                        autoComplete="last-name"
+                        type="text"
+                        value={profile.lastName}
+                    />
+                    <TextField
+                        label="Login"
+                        autoComplete="email"
+                        type="email"
+                    />
+                    <TextField
+                        label="Password"
+                        autoComplete="current-password"
+                        type="password"
+                        value={profile.password}
+                    />
                 </Box>
+
+                <EmailConfirmedMessage/>
+            </PageContainer>
+            <Modal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                title="some"
+            >
                 <FormControl
                     component="form"
                     onSubmit={handleSubmit(onSubmit)}
                     className={classes.form}
                 >
-
-                    <TextInputWithAdornment
-                        required
-                        id="first-name"
-                        label="First Name"
-                        autoComplete="first-name"
-                        inputProps={{
-                            name: "name",
-                            ref: register({
-                                validate: {
-                                    pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.',
-                                }
-                            })
-                        }}
-                        error={!!errors.name}
-                        helperText={errors.name?.message}
-                    />
-                    <TextInputWithAdornment
-                        required
-                        id="last-name"
-                        label="Last Name"
-                        autoComplete="last-name"
-                        type="text"
-                        inputProps={{
-                            name: "family_name",
-                            ref: register({
-                                validate: {
-                                    pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.'
-                                }
-                            }),
-                        }}
-                        error={!!errors.family_name}
-                        helperText={errors.family_name?.message}
-                    />
-                    <TextInputWithAdornment
-                        required
-                        id="address"
-                        label="Address"
-                        autoComplete="address"
-                        type="text"
-                        inputProps={{
-                            name: "address",
-                            ref: register({
-                                validate: {
-                                    pattern: v => /^[A-Za-z]+$/i.test(v) || 'Incorrect entry.'
-                                }
-                            })
-                        }}
-                        error={!!errors.address}
-                        helperText={errors.address?.message}
-                    />
-                    <TextInputWithAdornment
-                        required
-                        id="email"
-                        label="Email"
-                        autoComplete="email"
-                        type="email"
-                        inputProps={{
-                            name: "email",
-                            ref: register({
-                                validate: {
-                                    pattern: v => /^(.+@.+\..+)+$/i.test(v) || 'Incorrect entry.'
-                                }
-                            })
-                        }}
-                        error={!!errors.email}
-                        helperText={errors.email?.message}
-                    />
-                    <Accordion className={classes.passwordAccordion} expanded={isPasswordActive}>
-                        <AccordionSummary>
-                            <TextInputWithAdornment
-                                isPassword
-                                required={isPasswordActive}
-                                id="oldPass"
-                                label="Old password"
-                                onEditChange={(isActive) => setActiveFields(prevState => ({
-                                    ...prevState,
-                                    oldPass: isActive
-                                }))}
-                                autoComplete="current-password"
-                                inputProps={{
-                                    name: "oldPass",
-                                    ref: !isPasswordActive ? register : register({
-                                        validate: {
-                                            pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
-                                                || 'Password must include [a-zA-z0-9!@#$%^&*]'
-                                        }
-                                    })
-                                }}
-                                error={!!errors.oldPass}
-                                helperText={errors.oldPass?.message}
-                            />
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <TextInputWithAdornment
-                                required={isPasswordActive}
-                                disabled={!isPasswordActive}
-                                id="newPass"
-                                label="Password"
-                                autoComplete="new-password"
-                                inputProps={{
-                                    name: "newPass",
-                                    ref: !isPasswordActive ? register : register({
-                                        validate: {
-                                            notSame: v => v !== getValues('oldPass') || 'The new password must not match the old one',
-                                            pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v) || 'Password must include [a-zA-z0-9!@#$%^&*]'
-                                        }
-                                    })
-                                }}
-                                error={!!errors.newPass}
-                                helperText={errors.newPass?.message}
-                                isPassword
-                            />
-                        </AccordionDetails>
-                    </Accordion>
+                    {getForm(activeField)}
                     <Button
                         className={classes.submitButton}
                         variant="contained"
@@ -328,33 +228,6 @@ function Profile() {
                         Save
                     </Button>
                 </FormControl>
-                <EmailConfirmedMessage/>
-            </PageContainer>
-            <Modal
-                open={isConfirmModalOpen}
-                onClose={() => setIsConfirmModalOpen(false)}
-            >
-                <Box className={classes.paper}>
-                    <Typography variant="h4" component="h4" gutterBottom>
-                        confirm by code from your email
-                    </Typography>
-                    <Box className={classes.modalActive}>
-                        <TextField
-                            className={classes.codeInput}
-                            inputRef={ref}
-                            id="standard-basic"
-                            label="code"
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleConfirm}
-                            disabled={!isDirty || !isValid}
-                        >
-                            send
-                        </Button>
-                    </Box>
-                </Box>
             </Modal>
         </>
     );
