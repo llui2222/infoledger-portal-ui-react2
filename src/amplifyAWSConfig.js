@@ -10,6 +10,7 @@ const amplifyAWSConfig = {
     appSync: {
         region: 'us-east-1',
         graphqlEndpoint: "https://vwmp54jovnhudaimxhnulbcfmq.appsync-api.us-east-1.amazonaws.com/graphql",
+        // graphqlEndpoint: "http://localhost:4000/",
         authenticationType: "AMAZON_COGNITO_USER_POOLS",
     }
 };
