@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import SidebarMenu from "./SidebarMenu";
 import Router from "./Router";
 import Loader from "../common/Loader";
 import Notifier from "./Notifier";
@@ -18,7 +17,6 @@ function Header() {
 
     return (
         <div className={classes.root}>
-            <SidebarMenu/>
             <Router/>
             <Loader/>
             <Notifier/>

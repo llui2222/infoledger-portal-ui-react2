@@ -1,47 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import {
     Drawer,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
+    Avatar,
 } from '@material-ui/core';
-import { Notifications, ExitToApp, AccountCircle, Menu, Group, EnhancedEncryption, Business } from '@material-ui/icons';
+import { Notifications, Menu } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from 'react-router-dom';
+import {useHistory, useLocation} from 'react-router-dom';
 import Logo from "./Logo";
 import {useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 
 const drawerWidth = 240;
-
-const menuItems = [
-    {
-        name: 'Notifications',
-        url: '/',
-        icon: Notifications,
-    },
-    {
-        name: 'Profile',
-        url: '/profile',
-        icon: AccountCircle,
-    },
-    {
-        name: 'Encrypt Demo',
-        url: '/crypto',
-        icon: EnhancedEncryption,
-    },
-    {
-        name: 'Company',
-        url: '/company/create',
-        icon: Business,
-    },
-    {
-        name: 'Log out',
-        url: '/logout',
-        icon: ExitToApp,
-    },
-]
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -76,6 +49,18 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('sm')]: {
             marginLeft: theme.spacing(1),
         },
+    },
+    avatar: {
+        color: 'black',
+        [theme.breakpoints.down('xs')]: {
+            marginLeft: `-${theme.spacing(1)}px`,
+        },
+    },
+    selected: {
+        backgroundColor: '#646464',
+        '&:hover': {
+            backgroundColor: '#7a7a7a',
+        }
     }
 }));
 
@@ -84,7 +69,11 @@ function Header() {
     const classes = useStyles();
     const history = useHistory();
     const authState = useSelector(state => state.user.authState);
-    const [open, setOpen] = React.useState(false);
+    const companies = useSelector(state => state.companies.companies);
+    const [open, setOpen] = useState(false);
+    const location = useLocation();
+
+    console.log();
 
     const handleNavigate = url => {
         history.push(url);
@@ -98,10 +87,6 @@ function Header() {
         return null;
     }
 
-    const renderIcon = (Icon) => {
-        return <Icon className={classes.icon} />
-    }
-
     return(
         <Drawer
             variant="permanent"
@@ -111,16 +96,42 @@ function Header() {
             }}
         >
             <List>
+
                 <ListItem button onClick={toggleDrawer}>
                     <ListItemIcon><Menu className={classes.icon} /></ListItemIcon>
                     <ListItemText primary={<Logo/>} />
                 </ListItem>
-                {menuItems.map((item) => (
-                    <ListItem button key={item.url} onClick={() => handleNavigate(item.url)}>
-                        <ListItemIcon>{renderIcon(item.icon)}</ListItemIcon>
-                        <ListItemText primary={item.name} />
-                    </ListItem>
-                ))}
+
+                <ListItem
+                    button
+                    onClick={() => handleNavigate('/')}
+                    className={location.pathname === '/' && classes.selected}
+                >
+                    <ListItemIcon>
+                        <Notifications className={classes.icon}/>
+                    </ListItemIcon>
+                    <ListItemText primary='Notifications' />
+                </ListItem>
+
+                {companies.map((company) => {
+
+                    const splitName = company.displayName.split(' ');
+                    const shortName = splitName[0][0] + splitName[1][0];
+
+                    return (
+                        <ListItem
+                            button
+                            key={company.profileId}
+                            onClick={() => handleNavigate('/company/' + company.profileId)}
+                            className={location.pathname.startsWith('/company/') && classes.selected}
+                        >
+                            <ListItemIcon>
+                                <Avatar className={classes.avatar}>{shortName}</Avatar>
+                            </ListItemIcon>
+                            <ListItemText primary={company.displayName} />
+                        </ListItem>
+                    )
+                })}
             </List>
         </Drawer>
     );

@@ -3,7 +3,6 @@ import { Switch, Route } from "react-router-dom";
 import Login from "../user/Login";
 import LogOut from "../user/LogOut";
 import SignUp from "../user/SignUp";
-import Home from "../Home";
 import NotFound from "../NotFound";
 import ConfirmEmail from "../user/ConfirmEmail";
 import ProtectedRoute from "../user/ProtectedRoute";
@@ -15,6 +14,7 @@ import SetNewPassword from "../user/SetNewPassword";
 import CompanyCreate from "../company/CompanyCreate";
 import Contacts from "../contacts/Contacts";
 import Notifications from "../Notifications";
+import Company from "../company/Company";
 
 function Router() {
     return (
@@ -37,6 +37,9 @@ function Router() {
             </ProtectedRoute>
             <ProtectedRoute path="/contacts">
                 <Contacts/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/company/:companyID">
+                <Company/>
             </ProtectedRoute>
             <UnauthorizedRoute path="/login">
                 <Login/>
