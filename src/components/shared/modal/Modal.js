@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
         position: 'fixed',
         transform: 'translate(-50%, -50%)',
         backgroundColor: 'white',
-        padding: '15px'
+        padding: '15px',
+        minWidth: '30vw'
     },
 }))
 const Modal = (props) => {
