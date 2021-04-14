@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {
     Box,
     Button,
-    FormControl, TextField,
+    FormControl, InputAdornment, TextField,
 } from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
         width: '100%'
     },
     submitButton: {
-        margin: `${theme.spacing(1)}px 0 0 auto`
+       // margin: `${theme.spacing(1)}px 0 0 auto`
+        margin: '10px',
     },
     paper: {
         top: '50%',
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
     codeInput: {
         marginTop: 0,
-        marginRight: 15
+        marginRight: 15,
     },
     modalActive: {
         width: '100%',
@@ -52,6 +53,14 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    btnGroup: {
+        display: 'flex',
+        margin: 'auto',
+    },
+    editButton: {
+        padding: 0,
+    },
+
 }));
 
 const initialProfile = {
@@ -64,7 +73,7 @@ const initialProfile = {
 function Profile() {
 
     const [activeField, setActiveField] = useState('confirmEmail')
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(true)
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
     const [profile, setProfile] = useState(initialProfile)
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -166,11 +175,58 @@ function Profile() {
                         {/*</Button>*/}
                     </Box>
                 )
+            case 'changePassword':
+                return <Box >
+                        <TextField
+                          borderBottom={1}
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="password"
+                          label="Old Password"
+                          type="password"
+                          id="oldPass"
+                          autoComplete="current-password"
+                          inputProps={{
+                              name: "oldPass",
+                              ref: register({
+                                  validate: {
+                                      pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
+                                        || 'Password must include [a-zA-z0-9!@#$%^&*]'
+                                  }
+                              })
+                          }}
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="password"
+                          label="New Password"
+                          type="password"
+                          id="newPass"
+                          autoComplete="current-password"
+                          inputProps={{
+                              name: "newPass",
+                              ref: register({
+                                  validate: {
+                                      pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
+                                        || 'Password must include [a-zA-z0-9!@#$%^&*]',
+                                      notSame: v => v !== getValues('oldPass') || 'The new password must not match the old one',
+                                  }
+                              })
+                          }}
+                        />
+                </Box>
             default:
                 return null
         }
     }
 
+    const showModal = (name) => {
+        setIsConfirmModalOpen(true);
+        setActiveField(name);
+    }
     return (
         <>
             <PageContainer>
@@ -199,6 +255,15 @@ function Profile() {
                         autoComplete="current-password"
                         type="password"
                         value={profile.password}
+                        InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                  <Button onClick={() => showModal('changePassword')} variant="contained"  className={classes.editButton}>
+                                     Edit
+                                  </Button>
+                              </InputAdornment>
+                            )
+                        }}
                     />
                 </Box>
 
@@ -215,18 +280,30 @@ function Profile() {
                     className={classes.form}
                 >
                     {getForm(activeField)}
-                    <Button
-                        className={classes.submitButton}
-                        variant="contained"
-                        size="large"
-                        color="primary"
-                        disableElevation
-                        type="submit"
-                        name="save"
-                        disabled={!isDirty || !isValid}
-                    >
-                        Save
-                    </Button>
+                    <Box className={classes.btnGroup}>
+                        <Button
+                            className={classes.submitButton}
+                            variant="contained"
+                            size="large"
+                            color="primary"
+                            disableElevation
+                            type="submit"
+                            name="save"
+                            disabled={!isDirty || !isValid}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          className={classes.submitButton}
+                          name="cancel"
+                          size="large"
+                        >
+                            Cancel
+                        </Button>
+                    </Box>
                 </FormControl>
             </Modal>
         </>
