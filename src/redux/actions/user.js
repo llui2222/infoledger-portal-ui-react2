@@ -1,6 +1,9 @@
 export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST';
 export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS';
 export const USER_REGISTER_FAILURE = 'USER_REGISTER_FAILURE';
+export const CONFIRM_CHANGED_EMAIL_REQUEST = 'CONFIRM_CHANGED_EMAIL_REQUEST';
+export const CONFIRM_CHANGED_EMAIL_SUCCESS = 'CONFIRM_CHANGED_EMAIL_SUCCESS';
+export const CONFIRM_CHANGED_EMAIL_FAILURE = 'CONFIRM_CHANGED_EMAIL_FAILURE';
 export const CONFIRM_EMAIL_REQUEST = 'CONFIRM_EMAIL_REQUEST';
 export const CONFIRM_EMAIL_SUCCESS = 'CONFIRM_EMAIL_SUCCESS';
 export const CONFIRM_EMAIL_FAILURE = 'CONFIRM_EMAIL_FAILURE';
@@ -22,6 +25,9 @@ export const FORGOT_PASSWORD_FAILURE = 'FORGOT_PASSWORD_FAILURE';
 export const SET_NEW_PASSWORD_REQUEST = 'SET_NEW_PASSWORD_REQUEST';
 export const SET_NEW_PASSWORD_SUCCESS = 'SET_NEW_PASSWORD_SUCCESS';
 export const SET_NEW_PASSWORD_FAILURE = 'SET_NEW_PASSWORD_FAILURE';
+export const CHANGE_PASSWORD_REQUEST = 'CHANGE_PASSWORD_REQUEST';
+export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS';
+export const CHANGE_PASSWORD_FAILURE = 'CHANGE_PASSWORD_FAILURE';
 
 export const userRegister = (userName, password) => ({
     type: USER_REGISTER_REQUEST,
@@ -43,6 +49,20 @@ export const confirmEmail = (userName, confirmationCode) => ({
     type: CONFIRM_EMAIL_REQUEST,
     userName,
     confirmationCode
+});
+
+export const confirmChangedEmail = (payload) => ({
+    type: CONFIRM_CHANGED_EMAIL_REQUEST,
+    payload
+});
+
+export const confirmChangedEmailSuccess = () => ({
+    type: CONFIRM_CHANGED_EMAIL_SUCCESS
+});
+
+export const confirmChangedEmailFailure = error => ({
+    type: CONFIRM_CHANGED_EMAIL_FAILURE,
+    error
 });
 
 export const confirmEmailSuccess = () => ({
@@ -97,11 +117,9 @@ export const LogOutFailure = error => ({
     error
 });
 
-export const updateUserAttributes = (firstName, lastName, address) => ({
+export const updateUserAttributes = (payload) => ({
     type: UPDATE_USER_ATTRIBUTES_REQUEST,
-    firstName,
-    lastName,
-    address,
+    payload
 });
 
 export const updateUserAttributesSuccess = () => ({
@@ -140,5 +158,19 @@ export const setNewPasswordSuccess = () => ({
 
 export const setNewPasswordFailure = error => ({
     type: SET_NEW_PASSWORD_FAILURE,
+    error
+});
+
+export const changePassword = payload => ({
+    type: CHANGE_PASSWORD_REQUEST,
+    payload
+});
+
+export const changePasswordSuccess = () => ({
+    type: CHANGE_PASSWORD_SUCCESS,
+});
+
+export const changePasswordFailure = error => ({
+    type: CHANGE_PASSWORD_FAILURE,
     error
 });

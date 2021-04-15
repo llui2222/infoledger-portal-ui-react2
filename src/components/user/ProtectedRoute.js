@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import {Route, Redirect} from "react-router-dom";
+import React, {useEffect} from "react";
+import {Route, Redirect, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 import {gql, useQuery} from "@apollo/client";
@@ -21,15 +21,20 @@ const ProtectedRoute = ({children, ...rest}) => {
     const dispatch = useDispatch();
     const classes = useStyles();
     const authState = useSelector(state => state.user.authState);
-    const { loading, error, data } = useQuery(gql(allProfiles));
+    const history = useHistory();
+    const {loading, error, data} = useQuery(gql(allProfiles));
 
     useEffect(() => {
-        if(data) {
+        if (data) {
             dispatch(setCompanies(data.allProfiles));
+        }
+        if (!data?.allProfiles.length) {
+            history.push('/company/create')
         }
     }, [data])
 
-    if(error) {
+
+    if (error) {
         dispatch(showNotification({
             message: error.message,
             options: {
@@ -43,19 +48,16 @@ const ProtectedRoute = ({children, ...rest}) => {
     return (
         <Route {...rest}>
 
-            { loading ?
+            {loading ?
                 <CircularProgress className={classes.loader} color="inherit"/>
                 :
                 (!data || authState !== AUTHORIZED_AUTH_STATE) ?
                     null
                     :
-                    data.allProfiles.length === 0 ?
-                        <Redirect to='/company/create'/>
-                        :
-                        <>
-                            <SidebarMenu/>
-                            {children}
-                        </>
+                    <>
+                        <SidebarMenu/>
+                        {children}
+                    </>
             }
         </Route>
     )

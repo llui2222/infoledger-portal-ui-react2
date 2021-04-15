@@ -17,7 +17,7 @@ import {
 import {
     watchEmailConfirm,
     watchEmailConfirmSuccess,
-    watchEmailConfirmFailure
+    watchEmailConfirmFailure, watchChangedEmailConfirm
 } from "./emailConfirmSaga";
 import {
     watchGetAuth,
@@ -27,7 +27,7 @@ import {
 import {
     watchUpdateUser,
     watchUpdateUserAttributesSuccess,
-    watchUpdateUserAttributesFailure
+    watchUpdateUserAttributesFailure, watchUpdateUserPassword
 } from "./updateUserSaga";
 import {
     watchEncryptMessage,
@@ -80,5 +80,7 @@ export default function* rootSaga() {
         watchSetNewPassword(),
         watchSetNewPasswordSuccess(),
         watchSetNewPasswordFailure(),
+        watchChangedEmailConfirm(),
+        watchUpdateUserPassword(),
     ])
 };

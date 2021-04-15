@@ -15,12 +15,14 @@ export function signIn({userName, password}) {
     return Auth.signIn(userName, password);
 }
 
-export function updateUserAttributes({firstName, lastName, address}) {
+export function verifyCurrentUserAttributeSubmit({attr, code}) {
+    return Auth.verifyCurrentUserAttributeSubmit(attr, code);
+}
+
+export function updateUserAttributes(modifiedFields) {
     return Auth.currentAuthenticatedUser().then(user => {
         return Auth.updateUserAttributes(user, {
-            'name': firstName,
-            'family_name': lastName,
-            'address': address
+            ...modifiedFields
         }).catch(error => {
             return error;
         })
@@ -29,6 +31,21 @@ export function updateUserAttributes({firstName, lastName, address}) {
 
 export function currentAuthenticatedUser() {
     return Auth.currentAuthenticatedUser();
+}
+
+export function currentUserInfo() {
+    return Auth.currentUserInfo();
+}
+
+export function verifyCurrentUserAttribute(attr) {
+    return Auth.currentAuthenticatedUser().then(user => {
+        return Auth.verifyUserAttribute(user, attr);
+    })
+}
+export function verifyUserAttributeSubmit(attr, code) {
+    return Auth.currentAuthenticatedUser().then(user => {
+        return Auth.verifyUserAttributeSubmit(user, attr, code);
+    })
 }
 
 export function currentCredentials() {
@@ -49,6 +66,13 @@ export function forgotPassword({userName}) {
 
 export function setNewPassword({ newPassword, userName, verificationCode}) {
     return Auth.forgotPasswordSubmit(userName, verificationCode, newPassword)
+}
+
+export function changePassword({ oldPass, newPass}) {
+    return Auth.currentAuthenticatedUser().then(user => {
+        return Auth.changePassword(user, oldPass, newPass)
+
+    })
 }
 
 export async function getJwtToken() {

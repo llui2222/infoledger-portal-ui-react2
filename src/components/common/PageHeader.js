@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function PageHeader({children, title, isBackBtn = false}) {
+function PageHeader({children, title, isBackBtn = false, isSearch = true}) {
 
     const classes = useStyles();
     const history = useHistory();
@@ -70,18 +70,21 @@ function PageHeader({children, title, isBackBtn = false}) {
                 {children}
             </Box>
 
-            <FormControl className={classes.search}>
-                <OutlinedInput
-                    id="filled-adornment-password"
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton type="submit" aria-label="search">
-                                <Search/>
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                />
-            </FormControl>
+            {
+                isSearch &&
+                <FormControl className={classes.search}>
+                    <OutlinedInput
+                        id="filled-adornment-password"
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton type="submit" aria-label="search">
+                                    <Search/>
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
+            }
         </Box>
     );
 }
