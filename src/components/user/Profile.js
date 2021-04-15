@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
         margin: 'auto',
-        width: '100%'
+        width: '100%',
+        minWidth: '40vw'
     },
     submitButton: {
         margin: `${theme.spacing(1)}px 0 0 auto`
@@ -113,10 +114,11 @@ function Profile() {
     });
     const getUserInfo = () => {
         currentAuthenticatedUser().then(user => {
+            console.log(`==========>user`, user)
             if (user.attributes) {
                 if (user.attributes.name) {
                     setValue('name', user.attributes.name, {shouldValidate: true});
-                    setProfile(prevState => ({...prevState, email: user.attributes.email}))
+                    setProfile(prevState => ({...prevState, name: user.attributes.name}))
                 }
                 if (user.attributes.family_name) {
                     setValue('family_name', user.attributes.family_name, {shouldValidate: true});
@@ -124,7 +126,7 @@ function Profile() {
                 }
                 if (user.attributes.email) {
                     setValue('email', user.attributes.email, {shouldValidate: true});
-                    setProfile(prevState => ({...prevState, name: user.attributes.name}))
+                    setProfile(prevState => ({...prevState, email: user.attributes.email}))
                 }
             }
         })
