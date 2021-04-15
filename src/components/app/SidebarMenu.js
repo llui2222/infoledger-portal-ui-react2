@@ -105,7 +105,7 @@ function Header() {
                 <ListItem
                     button
                     onClick={() => handleNavigate('/')}
-                    className={location.pathname === '/' && classes.selected}
+                    className={location.pathname === '/' ? classes.selected : ''}
                 >
                     <ListItemIcon>
                         <Notifications className={classes.icon}/>
@@ -123,7 +123,7 @@ function Header() {
                             button
                             key={company.profileId}
                             onClick={() => handleNavigate('/company/' + company.profileId)}
-                            className={location.pathname.startsWith('/company/') && classes.selected}
+                            className={location.pathname.startsWith('/company/') ? classes.selected : ''}
                         >
                             <ListItemIcon>
                                 <Avatar className={classes.avatar}>{shortName}</Avatar>
