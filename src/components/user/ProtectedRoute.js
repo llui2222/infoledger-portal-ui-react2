@@ -42,16 +42,20 @@ const ProtectedRoute = ({children, ...rest}) => {
 
     return (
         <Route {...rest}>
-            { loading && <CircularProgress className={classes.loader} color="inherit" />}
-            { (!data || authState !== AUTHORIZED_AUTH_STATE) && null }
 
-            { data && data.allProfiles.length === 0 ?
-                <Redirect to='/company/create'/>
-            :
-                <>
-                    <SidebarMenu/>
-                    {children}
-                </>
+            { loading ?
+                <CircularProgress className={classes.loader} color="inherit"/>
+                :
+                (!data || authState !== AUTHORIZED_AUTH_STATE) ?
+                    null
+                    :
+                    data.allProfiles.length === 0 ?
+                        <Redirect to='/company/create'/>
+                        :
+                        <>
+                            <SidebarMenu/>
+                            {children}
+                        </>
             }
         </Route>
     )
