@@ -11,21 +11,22 @@ import {throwError} from 'redux-saga-test-plan/providers';
 import {showNotification} from "../actions/notifications";
 
 const mockAction = {
-    firstName: 'TestUser',
-    lastName: 'TestUserLast',
-    address: 'Test Location 42',
-    companyName: 'Test Company Ltd.',
+    info: {
+        name: 'TestUser',
+        family_name: 'TestUserLast',
+    },
+    confirmationCallback: () => {}
 }
 
 describe('updateUserSaga', () => {
     it('should call api and dispatch success action', async () => {
 
-        return expectSaga(workerUpdateUser)
+        return expectSaga(workerUpdateUser, {payload: mockAction})
             .provide([
                 [matchers.call.fn(api.updateUserAttributes)],
             ])
             .put(updateUserAttributesSuccess())
-            .dispatch(updateUserAttributes(mockAction))
+            .dispatch(updateUserAttributes())
             .run();
     });
     it('should display message on success', () => {
@@ -44,12 +45,12 @@ describe('updateUserSaga', () => {
 
         const error = new Error('error');
 
-        return expectSaga(workerUpdateUser)
+        return expectSaga(workerUpdateUser, {payload: mockAction})
             .provide([
                 [matchers.call.fn(api.updateUserAttributes), throwError(error)],
             ])
             .put(updateUserAttributesFailure(error))
-            .dispatch(updateUserAttributes(mockAction))
+            .dispatch(updateUserAttributes())
             .run();
     });
 });

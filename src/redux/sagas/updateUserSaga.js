@@ -20,8 +20,8 @@ export function* watchUpdateUser() {
 
 export function* workerUpdateUser({
                                       payload: {
-                                          info, confirmationCallback = () => {
-                                          }
+                                          info,
+                                          confirmationCallback = () => {}
                                       }
                                   }) {
     try {

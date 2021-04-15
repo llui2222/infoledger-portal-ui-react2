@@ -144,7 +144,6 @@ function Profile() {
                 code: code,
                 confirmationCallback: () => getUserInfo()
             }));
-            setIsConfirmModalOpen(false)
         } else {
             const formattedValues = cleanProperty(
                 {
@@ -251,7 +250,6 @@ function Profile() {
                 return (
                     <Box>
                         <TextField
-                            borderBottom={1}
                             margin="normal"
                             required
                             fullWidth
