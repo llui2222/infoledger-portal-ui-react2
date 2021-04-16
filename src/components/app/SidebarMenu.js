@@ -116,7 +116,7 @@ function Header() {
                 {companies.map((company) => {
 
                     const splitName = company.displayName.split(' ');
-                    const shortName = splitName[0][0] + splitName[1][0];
+                    const shortName = splitName.length > 1?  splitName[0] + splitName[1]: splitName[0];
 
                     return (
                         <ListItem
