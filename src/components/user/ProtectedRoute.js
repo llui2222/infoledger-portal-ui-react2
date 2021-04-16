@@ -27,9 +27,9 @@ const ProtectedRoute = ({children, ...rest}) => {
     useEffect(() => {
         if (data) {
             dispatch(setCompanies(data.allProfiles));
-        }
-        if (!data?.allProfiles.length) {
-            history.push('/company/create')
+            if (!data.allProfiles.length) {
+                history.push('/company/create')
+            }
         }
     }, [data])
 
