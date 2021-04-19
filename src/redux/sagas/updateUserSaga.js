@@ -4,19 +4,36 @@ import {
     UPDATE_USER_ATTRIBUTES_SUCCESS,
     UPDATE_USER_ATTRIBUTES_FAILURE,
     updateUserAttributesSuccess,
-    updateUserAttributesFailure
+    updateUserAttributesFailure,
+    CHANGE_PASSWORD_REQUEST,
+    CHANGE_PASSWORD_SUCCESS,
+    CHANGE_PASSWORD_FAILURE,
+    changePasswordSuccess, changePasswordFailure
 } from "../actions/user";
 import * as api from '../api/auth';
-import { workerFailure } from "./common";
+import {workerFailure} from "./common";
 import {showNotification} from "../actions/notifications";
 
 export function* watchUpdateUser() {
     yield takeLatest(UPDATE_USER_ATTRIBUTES_REQUEST, workerUpdateUser);
 }
 
-export function* workerUpdateUser(action) {
+export function* workerUpdateUser({
+                                      payload: {
+                                          info,
+                                          confirmationCallback = () => {}
+                                      }
+                                  }) {
     try {
-        yield call(api.updateUserAttributes, action);
+
+        const changedFields = Object.keys(info)
+        yield call(api.updateUserAttributes, info);
+        if (changedFields.includes('email')) {
+            yield call(api.verifyCurrentUserAttribute, 'email')
+            confirmationCallback('code')
+        } else {
+            confirmationCallback()
+        }
         yield put(updateUserAttributesSuccess());
     } catch (error) {
         yield put(updateUserAttributesFailure(error));
@@ -24,7 +41,7 @@ export function* workerUpdateUser(action) {
 }
 
 export function* watchUpdateUserAttributesSuccess() {
-    yield takeLatest(UPDATE_USER_ATTRIBUTES_SUCCESS, workerUpdateUserAttributesSuccess);
+    yield takeLatest([UPDATE_USER_ATTRIBUTES_SUCCESS, CHANGE_PASSWORD_SUCCESS], workerUpdateUserAttributesSuccess);
 }
 
 export function* workerUpdateUserAttributesSuccess() {
@@ -38,5 +55,19 @@ export function* workerUpdateUserAttributesSuccess() {
 }
 
 export function* watchUpdateUserAttributesFailure() {
-    yield takeLatest(UPDATE_USER_ATTRIBUTES_FAILURE, workerFailure);
+    yield takeLatest([UPDATE_USER_ATTRIBUTES_FAILURE,CHANGE_PASSWORD_FAILURE], workerFailure);
+}
+
+export function* workerChangePassword({payload: {oldPass, newPass}}) {
+    try {
+        yield call(api.changePassword, oldPass, newPass)
+        yield put(changePasswordSuccess())
+    } catch (e) {
+        yield put(changePasswordFailure())
+    }
+
+}
+
+export function* watchUpdateUserPassword() {
+    yield takeLatest(CHANGE_PASSWORD_REQUEST, workerChangePassword);
 }
