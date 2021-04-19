@@ -9,6 +9,7 @@ import {
     Description,
 } from '@material-ui/icons';
 import {makeStyles} from "@material-ui/core/styles";
+import {useLocation} from "react-router-dom";
 
 const menuItems = [
     {
@@ -53,11 +54,19 @@ const useStyles = makeStyles((theme) => ({
 function EngineerMenu() {
 
     const classes = useStyles();
+    const location = useLocation();
 
     const renderIcon = (Icon) => {
         return <Icon className={classes.icon} />
     }
 
+    const isLocalEnv = () => {
+        return (location.hostname === "localhost" || location.hostname === "127.0.0.1");
+    }
+
+    if(!isLocalEnv) {
+        return null;
+    }
 
     return (
         <Box className={classes.engineerMenu}>
