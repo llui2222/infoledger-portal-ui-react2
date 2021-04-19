@@ -2,17 +2,15 @@ import React, {useState} from "react";
 import {
     Drawer,
     List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
     Avatar,
 } from '@material-ui/core';
 import { Notifications, Menu } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
-import {useHistory, useLocation} from 'react-router-dom';
 import Logo from "./Logo";
 import {useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
+import MenuItem from "./MenuItem";
+import EngineerMenu from "./EngineerMenu";
 
 const drawerWidth = 240;
 
@@ -55,29 +53,15 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('xs')]: {
             marginLeft: `-${theme.spacing(1)}px`,
         },
-    },
-    selected: {
-        backgroundColor: '#646464',
-        '&:hover': {
-            backgroundColor: '#7a7a7a',
-        }
     }
 }));
 
-function Header() {
+function SidebarMenu() {
 
     const classes = useStyles();
-    const history = useHistory();
     const authState = useSelector(state => state.user.authState);
     const companies = useSelector(state => state.companies.companies);
     const [open, setOpen] = useState(false);
-    const location = useLocation();
-
-    console.log();
-
-    const handleNavigate = url => {
-        history.push(url);
-    }
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -97,21 +81,19 @@ function Header() {
         >
             <List>
 
-                <ListItem button onClick={toggleDrawer}>
-                    <ListItemIcon><Menu className={classes.icon} /></ListItemIcon>
-                    <ListItemText primary={<Logo/>} />
-                </ListItem>
-
-                <ListItem
-                    button
-                    onClick={() => handleNavigate('/')}
-                    className={location.pathname === '/' ? classes.selected : ''}
+                <MenuItem
+                    itemAction={toggleDrawer}
+                    text={<Logo/>}
                 >
-                    <ListItemIcon>
-                        <Notifications className={classes.icon}/>
-                    </ListItemIcon>
-                    <ListItemText primary='Notifications' />
-                </ListItem>
+                    <Menu className={classes.icon} />
+                </MenuItem>
+
+                <MenuItem
+                    url={'/'}
+                    text='Notifications'
+                >
+                    <Notifications className={classes.icon}/>
+                </MenuItem>
 
                 {companies.map((company) => {
 
@@ -119,22 +101,22 @@ function Header() {
                     const shortName = splitName.length > 1?  splitName[0] + splitName[1]: splitName[0];
 
                     return (
-                        <ListItem
-                            button
+
+                        <MenuItem
+                            url={'/company/' + company.profileId}
+                            text={company.displayName}
                             key={company.profileId}
-                            onClick={() => handleNavigate('/company/' + company.profileId)}
-                            className={location.pathname.startsWith('/company/') ? classes.selected : ''}
                         >
-                            <ListItemIcon>
-                                <Avatar className={classes.avatar}>{shortName}</Avatar>
-                            </ListItemIcon>
-                            <ListItemText primary={company.displayName} />
-                        </ListItem>
+                            <Avatar className={classes.avatar}>{shortName}</Avatar>
+                        </MenuItem>
                     )
                 })}
+
+                <EngineerMenu/>
+
             </List>
         </Drawer>
     );
 }
 
-export default Header;
+export default SidebarMenu;
