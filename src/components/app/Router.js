@@ -11,7 +11,6 @@ import Profile from "../user/Profile";
 import EncryptDemo from "../EncryptDemo";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
-import CompanyCreate from "../company/CompanyCreate";
 import Contacts from "../contacts/Contacts";
 import Notifications from "../Notifications";
 import Company from "../company/Company";
@@ -29,9 +28,6 @@ function Router() {
             </ProtectedRoute>
             <ProtectedRoute path="/profile">
                 <Profile/>
-            </ProtectedRoute>
-            <ProtectedRoute path="/company/create">
-                <CompanyCreate/>
             </ProtectedRoute>
             <ProtectedRoute path="/crypto">
                 <EncryptDemo/>

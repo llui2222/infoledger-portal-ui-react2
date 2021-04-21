@@ -1,6 +1,6 @@
 import React from "react";
 import {Divider, Box} from '@material-ui/core';
-import MenuItem from "./MenuItem";
+import SidebarMenuItem from "./SidebarMenuItem";
 import {
     AccountCircle,
     EnhancedEncryption,
@@ -24,7 +24,7 @@ const menuItems = [
     },
     {
         name: 'Company',
-        url: '/company/create',
+        url: '/company/create-company',
         icon: Business,
     },
     {
@@ -72,13 +72,13 @@ function EngineerMenu() {
         <Box className={classes.engineerMenu}>
             <Divider />
             {menuItems.map((menuItem) =>
-                <MenuItem
+                <SidebarMenuItem
                     url={menuItem.url}
                     text={menuItem.name}
                     key={menuItem.name}
                 >
                     {renderIcon(menuItem.icon)}
-                </MenuItem>
+                </SidebarMenuItem>
             )}
         </Box>
     )

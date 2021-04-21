@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Logo from "./Logo";
 import {useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
-import MenuItem from "./MenuItem";
+import SidebarMenuItem from "./SidebarMenuItem";
 import EngineerMenu from "./EngineerMenu";
 
 const drawerWidth = 240;
@@ -67,7 +67,7 @@ function SidebarMenu() {
         setOpen(!open);
     };
 
-    if(authState !== AUTHORIZED_AUTH_STATE) {
+    if(authState !== AUTHORIZED_AUTH_STATE || companies.length === 0) {
         return null;
     }
 
@@ -81,34 +81,37 @@ function SidebarMenu() {
         >
             <List>
 
-                <MenuItem
+                <SidebarMenuItem
                     itemAction={toggleDrawer}
                     text={<Logo/>}
                 >
                     <Menu className={classes.icon} />
-                </MenuItem>
+                </SidebarMenuItem>
 
-                <MenuItem
+                <SidebarMenuItem
                     url={'/'}
                     text='Notifications'
                 >
                     <Notifications className={classes.icon}/>
-                </MenuItem>
+                </SidebarMenuItem>
 
                 {companies.map((company) => {
 
+                    if(!company) {
+                        return null;
+                    }
+
                     const splitName = company.displayName.split(' ');
-                    const shortName = splitName.length > 1?  splitName[0] + splitName[1]: splitName[0];
+                    const shortName = splitName.length > 1?  splitName[0][0] + splitName[1][0]: splitName[0][0];
 
                     return (
-
-                        <MenuItem
+                        <SidebarMenuItem
                             url={'/company/' + company.profileId}
                             text={company.displayName}
                             key={company.profileId}
                         >
-                            <Avatar className={classes.avatar}>{shortName}</Avatar>
-                        </MenuItem>
+                            <Avatar className={classes.avatar}>{shortName.toUpperCase()}</Avatar>
+                        </SidebarMenuItem>
                     )
                 })}
 

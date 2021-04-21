@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function MenuItem({itemAction, url, text, children}) {
+function SidebarMenuItem({itemAction, url, text, children}) {
 
     const classes = useStyles();
     const history = useHistory();
@@ -36,4 +36,4 @@ function MenuItem({itemAction, url, text, children}) {
     );
 }
 
-export default MenuItem;
+export default SidebarMenuItem;
