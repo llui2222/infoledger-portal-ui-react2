@@ -22,11 +22,20 @@ function SidebarMenuItem({itemAction, url, text, children}) {
         history.push(url);
     }
 
+    const getActiveClass = () => {
+        if(url === location.pathname) {
+            return classes.selected;
+        } else if (location.pathname.indexOf(url) > -1 && url !== '/') {
+            return classes.selected;
+        }
+        return '';
+    }
+
     return (
         <ListItem
             button
             onClick={itemAction ? itemAction : () => handleNavigate(url)}
-            className={location.pathname === url ? classes.selected : ''}
+            className={getActiveClass()}
         >
             <ListItemIcon>
                 {children}

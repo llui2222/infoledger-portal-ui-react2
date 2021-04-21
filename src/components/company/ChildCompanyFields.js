@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ChildCompanyFields = ({ errors, control, register }) => {
+const ChildCompanyFields = ({ errors, control, register, trigger, setValue }) => {
 
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -24,7 +24,7 @@ const ChildCompanyFields = ({ errors, control, register }) => {
     return (
         <>
             <Box className={step === 0 ? '' : classes.hidden}>
-                <BaseCompanyFields control={control} errors={errors} register={register} />
+                <BaseCompanyFields control={control} errors={errors} register={register} trigger={trigger} setValue={setValue} />
             </Box>
 
             <Box className={step === 1 ? '' : classes.hidden}>

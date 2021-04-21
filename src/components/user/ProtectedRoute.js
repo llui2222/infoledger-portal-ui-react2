@@ -28,7 +28,7 @@ const ProtectedRoute = ({children, ...rest}) => {
         if (data && data.allProfiles) {
             dispatch(setCompanies(data.allProfiles));
             if (!data.allProfiles.length || !data.allProfiles[0]) {
-                history.push('/company/create-company')
+                history.push('/create-company')
             }
         }
     }, [data])
@@ -49,7 +49,7 @@ const ProtectedRoute = ({children, ...rest}) => {
         <Route {...rest}>
 
             {loading ?
-                <CircularProgress className={classes.loader} color="inherit"/>
+                null
                 :
                 (!data || authState !== AUTHORIZED_AUTH_STATE) ?
                     null

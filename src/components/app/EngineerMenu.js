@@ -24,7 +24,7 @@ const menuItems = [
     },
     {
         name: 'Company',
-        url: '/company/create-company',
+        url: '/create-company',
         icon: Business,
     },
     {

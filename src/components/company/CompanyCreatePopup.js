@@ -86,7 +86,7 @@ function CompanyCreatePopup() {
     });
 
     React.useEffect(() => {
-        if(location.pathname === '/company/create-company') {
+        if(location.pathname.includes('/create-company') ) {
             setOpen(true);
         }
     }, [location])
@@ -144,9 +144,9 @@ function CompanyCreatePopup() {
     },[step]);
 
     const handleCancel = () => {
+        setOpen(false);
         reset();
         dispatch(resetForm());
-        window.location = '/';
     }
 
     const handleNextClick = () => {
@@ -185,7 +185,7 @@ function CompanyCreatePopup() {
                             setValue={setValue}
                         />
                         :
-                        <ChildCompanyFields control={control} errors={errors} register={register}/>
+                        <ChildCompanyFields control={control} errors={errors} register={register} trigger={trigger} setValue={setValue}/>
                     }
 
                 </FormControl>
