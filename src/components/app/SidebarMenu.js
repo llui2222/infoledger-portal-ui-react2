@@ -71,6 +71,10 @@ function SidebarMenu() {
         return null;
     }
 
+    if(companies[0].typeOfBusiness !== 'SERVICE_COMPANY') {
+        return null;
+    }
+
     return(
         <Drawer
             variant="permanent"
