@@ -12,7 +12,7 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {handleNext, reset as resetForm, setAllSteps, nextStep} from "../../redux/actions/stepForm";
-import {useLocation} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import BaseCompanyFields from "./BaseCompanyFields";
 import ChildCompanyFields from "./ChildCompanyFields";
 import {gql, useMutation} from "@apollo/client";
@@ -47,24 +47,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function CompanyCreatePopup({parentCompany}) {
+function CompanyCreatePopup() {
 
     const classes = useStyles();
     const dispatch = useDispatch();
     const location = useLocation();
+    const history = useHistory();
     const [open, setOpen] = useState(true);
     const firstRender = useRef(true);
 
     const allSteps = useSelector(state => state.stepForm.allSteps);
     const step = useSelector(state => state.stepForm.step);
-    const companies = useSelector(state => state.companies.companies);
     const next = useSelector(state => state.stepForm.next);
 
     const [addCompany, { error, data }] = useMutation(gql(saveProfile));
 
     const haveSteps = allSteps.length > 1;
     const haveMoreSteps = allSteps.length > step+1;
-    const haveNoCompany = companies.length === 0;
+    const rootCompany = useSelector(state => state.companies.rootCompany);
 
     const {
         register,
@@ -72,12 +72,12 @@ function CompanyCreatePopup({parentCompany}) {
         getValues,
         control,
         trigger,
-        reset,
-        setValue
+        reset
     } = useForm({
         mode: 'onChange',
         defaultValues: {
             companyName: '',
+            accountType: '',
             companyType: '',
             typeOfBusiness: '',
             baseCurrency: '',
@@ -88,12 +88,12 @@ function CompanyCreatePopup({parentCompany}) {
     });
 
     useEffect(() => {
-        if(haveNoCompany) {
+        if(!rootCompany) {
             dispatch(setAllSteps(['Company']));
         } else {
             dispatch(setAllSteps(['Company', 'Business Address']));
         }
-    }, [])
+    }, [!rootCompany])
 
     React.useEffect(() => {
         if(location.pathname.includes('/create-company') ) {
@@ -132,6 +132,8 @@ function CompanyCreatePopup({parentCompany}) {
 
         if( step >= allSteps.length && allSteps.length !== 0 ) {
 
+            setOpen(false);
+
             dispatch(companyCreate);
 
             const formValues = getValues();
@@ -139,20 +141,14 @@ function CompanyCreatePopup({parentCompany}) {
             const newProfile = { variables: {
                     profile: {
                         profileName: formValues.companyName,
-                        profileType: formValues.companyType,
-                        typeOfBusiness: formValues.typeOfBusiness,
-                        billingAddress: {
-                            country:  formValues.country.name,
-                        }
+                        currency: formValues.baseCurrency
                     }
                 }
             };
 
-            if(!haveNoCompany && parentCompany) {
-                delete newProfile.variables.profile.billingAddress;
-                newProfile.variables.profile.parentProfileId = parentCompany.profileId;
-                newProfile.variables.profile.profileType = 'CLIENT';
-                newProfile.variables.profile.currency = formValues.baseCurrency;
+            if(rootCompany) {
+                newProfile.variables.profile.parentProfileId = rootCompany.profileId;
+                newProfile.variables.profile.profileType = 'COMPANY';
                 newProfile.variables.profile.businessAddress = {
                     country: formValues.country.name,
                     streetAddress: formValues.street1 + ' ' + formValues.street2,
@@ -160,11 +156,33 @@ function CompanyCreatePopup({parentCompany}) {
                     postalCode: formValues.postalCode,
                     phoneNumber: formValues.phone,
                 };
+            } else {
+
+                newProfile.variables.profile.billingAddress = {
+                    country:  formValues.country.name,
+                }
+
+                switch (formValues.accountType) {
+                    case 'ORGANIZATION':
+                        newProfile.variables.profile.profileType = 'ORGANIZATION';
+                        newProfile.variables.profile.typeOfBusiness = 'ASSET_OWNER';
+                        break;
+                    case 'INDIVIDUAL_INVESTOR':
+                        newProfile.variables.profile.profileType = 'INDIVIDUAL_INVESTOR';
+                        newProfile.variables.profile.typeOfBusiness = 'ASSET_OWNER';
+                        break;
+                    case 'SERVICE_COMPANY':
+                        newProfile.variables.profile.profileType = 'ORGANIZATION';
+                        newProfile.variables.profile.typeOfBusiness = 'SERVICE_COMPANY';
+                        break;
+                }
             }
 
             addCompany(newProfile).then(companyCreated => {
-                if(companyCreated.data && companyCreated.data.saveProfile && companyCreated.data.saveProfile.profileId) {
+                if(!rootCompany) {
                     window.location = '/company/' + companyCreated.data.saveProfile.profileId;
+                } else {
+                    history.push(`/company/${rootCompany.profileId}/settings`);
                 }
             }).catch(error => {
                 console.log(error);
@@ -178,14 +196,12 @@ function CompanyCreatePopup({parentCompany}) {
 
         const step1Fields = [
             "companyName",
-            "typeOfBusiness",
+            "baseCurrency",
             "country",
         ];
 
-        if(haveNoCompany) {
-            step1Fields.push("companyType");
-        } else {
-            step1Fields.push("baseCurrency");
+        if(!rootCompany) {
+            step1Fields.push("accountType");
         }
 
         const step2Fields = [
@@ -213,6 +229,10 @@ function CompanyCreatePopup({parentCompany}) {
     }, [next]);
 
     const handleCancel = () => {
+
+        if(!rootCompany) {
+            return;
+        }
         setOpen(false);
         reset();
         dispatch(resetForm());
@@ -245,12 +265,11 @@ function CompanyCreatePopup({parentCompany}) {
                     component="form"
                     className={classes.form}
                 >
-                    { haveNoCompany ?
+                    { !rootCompany ?
                         <BaseCompanyFields
                             control={control}
                             errors={errors}
                             register={register}
-                            setValue={setValue}
                         />
                         :
                         <ChildCompanyFields
@@ -266,9 +285,11 @@ function CompanyCreatePopup({parentCompany}) {
 
             <DialogActions>
 
-                <Button onClick={handleCancel} color="primary">
-                    Cancel
-                </Button>
+                { !rootCompany &&
+                    <Button onClick={handleCancel} color="primary">
+                        Cancel
+                    </Button>
+                }
 
                 { haveMoreSteps ?
                     <Button onClick={handleNextClick} variant="contained" color="primary">

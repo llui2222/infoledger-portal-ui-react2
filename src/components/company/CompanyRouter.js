@@ -1,5 +1,6 @@
 import React from "react";
 import {
+    Redirect,
     Route,
     Switch, useParams,
     useRouteMatch
@@ -14,19 +15,24 @@ function CompanyRouter() {
 
     let { path } = useRouteMatch();
     let { companyID } = useParams();
-    const companies = useSelector(state => state.companies.companies);
+    const childCompanies = useSelector(state => state.companies.childCompanies);
+    const rootCompany = useSelector(state => state.companies.rootCompany);
 
-    if(companies.length === 0) {
+    if(!rootCompany) {
         return null;
     }
 
-    const company = companies.find(company => {
+    const company = rootCompany.profileId === companyID ? rootCompany : childCompanies.find(company => {
         return company.profileId === companyID
     });
 
+    if(!company) {
+        return <Redirect to={'/company/' + rootCompany.profileId}/>;
+    }
+
     return (
         <>
-            <CompanySidebar company={company} />
+            <CompanySidebar company={rootCompany.typeOfBusiness === 'SERVICE_COMPANY' ? company : rootCompany } />
             <Switch>
                 <Route path={`${path}/settings`}>
                     <CompanySettings company={company}/>
@@ -36,7 +42,7 @@ function CompanyRouter() {
                 </Route>
             </Switch>
             <Route path={`${path}/settings/create-company`}>
-                <CompanyCreatePopup parentCompany={company}/>
+                <CompanyCreatePopup/>
             </Route>
         </>
     );

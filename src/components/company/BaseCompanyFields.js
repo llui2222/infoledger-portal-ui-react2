@@ -1,23 +1,18 @@
-import React, {useState} from 'react';
-import {FormControl, InputLabel, MenuItem, Select, TextField} from '@material-ui/core';
+import React from 'react';
+import {FormControl, InputLabel, MenuItem, Select, TextField, Grid} from '@material-ui/core';
 import {Controller} from "react-hook-form";
 import countries from "../../data/countries";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import {useSelector} from "react-redux";
 
-const companyTypes = [
+const accountTypes = [
     {
         type: 'ORGANIZATION',
-        label: 'Organization'
+        label: 'Asset Owner Organization'
     },
     {
         type: 'INDIVIDUAL_INVESTOR',
         label: 'Individual Investor'
-    }
-];
-const TypesOfBusiness = [
-    {
-        type: 'ASSET_OWNER',
-        label: 'Asset Owner'
     },
     {
         type: 'SERVICE_COMPANY',
@@ -25,22 +20,13 @@ const TypesOfBusiness = [
     }
 ];
 
-const BaseCompanyFields = ({ errors, control, register, setValue }) => {
+const currencies = [
+    'USD', 'EUR', 'CAD', 'MXN'
+];
 
-    const [typeOfBusinessDisabled, setTypeOfBusinessDisabled] = useState(false);
+const BaseCompanyFields = ({ errors, control, register }) => {
 
-    const handleCompanyTypeChange = e => {
-
-        const companyType = e.target.value;
-
-        if(companyType && companyType === "INDIVIDUAL_INVESTOR") {
-            setValue('typeOfBusiness', 'ASSET_OWNER', { shouldValidate: true });
-            setTypeOfBusinessDisabled(true)
-        } else {
-            setTypeOfBusinessDisabled(false)
-            setValue('typeOfBusiness', '');
-        }
-    }
+    const rootCompany = useSelector(state => state.companies.rootCompany);
 
     return (
         <>
@@ -62,73 +48,77 @@ const BaseCompanyFields = ({ errors, control, register, setValue }) => {
                 error={!!errors.companyName}
             />
 
-            <FormControl
-                variant="outlined"
-                margin="normal"
-                error={!!errors.companyType}
-                fullWidth
-                required
-            >
-                <InputLabel id="profile-type-label">Company Type</InputLabel>
+            { !rootCompany &&
+                <FormControl
+                    variant="outlined"
+                    margin="normal"
+                    error={!!errors.accountType}
+                    fullWidth
+                    required
+                >
+                    <InputLabel id="account-type-label">Account Type</InputLabel>
 
-                <Controller
-                    control={control}
-                    name="companyType"
-                    type="select"
-                    rules={{ required: true }}
-                    as={<Select
+                    <Controller
+                        control={control}
+                        name="accountType"
+                        type="select"
+                        rules={{ required: true }}
+                        as={<Select
+                            required
+                            labelId="account-type-label"
+                            id="account-type"
+                            label="Account Type"
+                            inputProps={{
+                                name: "accountType"
+                            }}
+                        >
+                            {accountTypes.map( accountType =>
+                                <MenuItem value={accountType.type} key={accountType.type}>
+                                    {accountType.label}
+                                </MenuItem>
+                            )}
+                        </Select>
+                        }
+                    />
+
+                </FormControl>
+            }
+
+            <Grid container spacing={0}>
+                <Grid item xs={12} sm={6}>
+                    <FormControl
+                        variant="outlined"
+                        margin="normal"
+                        error={!!errors.baseCurrency}
+                        fullWidth
                         required
-                        labelId="profile-type-label"
-                        id="profile-type"
-                        label="Company Type"
-                        inputProps={{
-                            name: "companyType",
-                            onChange: handleCompanyTypeChange
-                        }}
                     >
-                        {companyTypes.map( companyType =>
-                            <MenuItem value={companyType.type} key={companyType.type}>
-                                {companyType.label}
-                            </MenuItem>
-                        )}
-                    </Select>
-                    }
-                />
+                        <InputLabel id="base-currency-label">Base Currency</InputLabel>
 
-            </FormControl>
+                        <Controller
+                            control={control}
+                            name="baseCurrency"
+                            type="select"
+                            rules={{ required: true }}
+                            as={<Select
+                                required
+                                labelId="base-currency-label"
+                                id="base-currency"
+                                label="Base Currency"
+                                inputProps={{
+                                    name: "baseCurrency"
+                                }}
+                            >
+                                {currencies.map(currency =>
+                                    <MenuItem key={currency} value={currency}>{currency}</MenuItem>
+                                )}
+                            </Select>
+                            }
+                        />
 
-            <FormControl
-                variant="outlined"
-                margin="normal"
-                error={!!errors.typeOfBusiness}
-                fullWidth
-                required
-                disabled={typeOfBusinessDisabled}
-            >
-                <InputLabel id="type-of-business-label">Type of Business</InputLabel>
-
-                <Controller
-                    control={control}
-                    name="typeOfBusiness"
-                    type="select"
-                    rules={{ required: true }}
-                    as={<Select
-                        required
-                        labelId="type-of-business-label"
-                        id="type-of-business"
-                        label="Type of Business"
-                        inputProps={{
-                            name: "companyType"
-                        }}
-                    >
-                        {TypesOfBusiness.map(type =>
-                            <MenuItem key={type.type} value={type.type}>{type.label}</MenuItem>
-                        )}
-                    </Select>
-                    }
-                />
-
-            </FormControl>
+                    </FormControl>
+                </Grid>
+            </Grid>
 
             <Controller
                 onChange={([, data]) => data}
@@ -161,6 +151,6 @@ const BaseCompanyFields = ({ errors, control, register, setValue }) => {
             />
         </>
     )
-};
+}
 
 export default BaseCompanyFields;

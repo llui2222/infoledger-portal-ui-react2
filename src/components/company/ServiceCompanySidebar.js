@@ -55,17 +55,15 @@ function ServiceCompanySidebar() {
 
     const classes = useStyles();
     const authState = useSelector(state => state.user.authState);
-    const companies = useSelector(state => state.companies.companies);
+    const childCompanies = useSelector(state => state.companies.childCompanies);
     const rootCompany = useSelector(state => state.companies.rootCompany);
     const [open, setOpen] = useState(false);
-
-    const childCompanies = companies.filter(company => company.profileId !== rootCompany.profileId)
 
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
-    if(authState !== AUTHORIZED_AUTH_STATE || companies.length === 0) {
+    if(authState !== AUTHORIZED_AUTH_STATE || !rootCompany) {
         return null;
     }
 

@@ -13,7 +13,7 @@ const ProtectedRoute = ({children, ...rest}) => {
     const dispatch = useDispatch();
     const authState = useSelector(state => state.user.authState);
     const history = useHistory();
-    const {loading, error, data} = useQuery(gql(allProfiles));
+    const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
         if (data && data.allProfiles) {

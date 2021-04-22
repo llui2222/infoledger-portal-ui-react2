@@ -14,6 +14,7 @@ import PageContainer from "./common/containers/PageContainer";
 import PageHeader from "./common/PageHeader";
 import {makeStyles} from "@material-ui/core/styles";
 import NotificationsList from "./NotificationsList";
+import CompanySidebar from "./company/CompanySidebar";
 
 const useStyles = makeStyles((theme) => ({
     inviteButton: {
@@ -122,69 +123,72 @@ function Notifications() {
     }
 
     return (
-        <PageContainer>
-            <PageHeader title='Notifications'>
-                <Button
-                    variant="outlined"
-                    color="default"
-                    startIcon={<Tune />}
-                    className={classes.inviteButton}
-                    onClick={() => setShowFilters(!showFilters)}
-                >
-                    Filter
-                </Button>
-            </PageHeader>
-            <Box className={classes.quickFilters}>
-                <FormControl variant="outlined" className={classes.filterButton}>
-                    <InputLabel id="company-filter-label">Companies</InputLabel>
-                    <Select
-                        labelId="company-filter-label"
-                        id="company-filter"
-                        multiple
-                        value={companies}
-                        onChange={e => setCompanies(e.target.value)}
-                        renderValue={(selected) => selected.join(', ')}
-                        MenuProps={MenuProps}
-                        label="Companies"
-                        classes={{
-                            root: classes.filterRoot
-                        }}
+        <>
+            <CompanySidebar />
+            <PageContainer>
+                <PageHeader title='Notifications'>
+                    <Button
+                        variant="outlined"
+                        color="default"
+                        startIcon={<Tune />}
+                        className={classes.inviteButton}
+                        onClick={() => setShowFilters(!showFilters)}
                     >
-                        {getAllCompanies(mockNotifications).map((company) => (
-                            <MenuItem key={company} value={company}>
-                                <Checkbox checked={companies.indexOf(company) > -1} />
-                                <ListItemText primary={company} />
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                        Filter
+                    </Button>
+                </PageHeader>
+                <Box className={classes.quickFilters}>
+                    <FormControl variant="outlined" className={classes.filterButton}>
+                        <InputLabel id="company-filter-label">Companies</InputLabel>
+                        <Select
+                            labelId="company-filter-label"
+                            id="company-filter"
+                            multiple
+                            value={companies}
+                            onChange={e => setCompanies(e.target.value)}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                            label="Companies"
+                            classes={{
+                                root: classes.filterRoot
+                            }}
+                        >
+                            {getAllCompanies(mockNotifications).map((company) => (
+                                <MenuItem key={company} value={company}>
+                                    <Checkbox checked={companies.indexOf(company) > -1} />
+                                    <ListItemText primary={company} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-                <Button
-                    variant="outlined"
-                    color="default"
-                    endIcon={<Typography variant='h6' className={classes.quickFilterButton}>8</Typography>}
-                    className={classes.filterButton}
-                >
-                    New Messages
-                </Button>
+                    <Button
+                        variant="outlined"
+                        color="default"
+                        endIcon={<Typography variant='h6' className={classes.quickFilterButton}>8</Typography>}
+                        className={classes.filterButton}
+                    >
+                        New Messages
+                    </Button>
 
-                <Button
-                    variant="outlined"
-                    color="default"
-                    endIcon={<Typography variant='h6' className={classes.quickFilterButton}>2</Typography>}
-                    className={classes.filterButton}
-                >
-                    Active Transactions
-                </Button>
-            </Box>
-            { showFilters &&
-                <Box>
-                    Filters
+                    <Button
+                        variant="outlined"
+                        color="default"
+                        endIcon={<Typography variant='h6' className={classes.quickFilterButton}>2</Typography>}
+                        className={classes.filterButton}
+                    >
+                        Active Transactions
+                    </Button>
                 </Box>
-            }
+                { showFilters &&
+                    <Box>
+                        Filters
+                    </Box>
+                }
 
-            <NotificationsList notifications={mockNotifications}/>
-        </PageContainer>
+                <NotificationsList notifications={mockNotifications}/>
+            </PageContainer>
+        </>
     );
 }
 
