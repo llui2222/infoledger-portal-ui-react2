@@ -59,12 +59,13 @@ function CompanyCreatePopup() {
     const allSteps = useSelector(state => state.stepForm.allSteps);
     const step = useSelector(state => state.stepForm.step);
     const next = useSelector(state => state.stepForm.next);
+    const rootCompany = useSelector(state => state.companies.rootCompany);
+    const refetch = useSelector(state => state.companies.refetch);
 
     const [addCompany, { error, data }] = useMutation(gql(saveProfile));
 
     const haveSteps = allSteps.length > 1;
     const haveMoreSteps = allSteps.length > step+1;
-    const rootCompany = useSelector(state => state.companies.rootCompany);
 
     const {
         register,
@@ -183,6 +184,7 @@ function CompanyCreatePopup() {
                     window.location = '/company/' + companyCreated.data.saveProfile.profileId;
                 } else {
                     history.push(`/company/${rootCompany.profileId}/settings`);
+                    refetch();
                 }
             }).catch(error => {
                 console.log(error);

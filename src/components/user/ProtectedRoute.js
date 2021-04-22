@@ -17,7 +17,7 @@ const ProtectedRoute = ({children, ...rest}) => {
 
     useEffect(() => {
         if (data && data.allProfiles) {
-            dispatch(setCompanies(data.allProfiles));
+            dispatch(setCompanies(data.allProfiles, refetch));
             if (!data.allProfiles.length || !data.allProfiles[0]) {
                 history.push('/create-company')
             }

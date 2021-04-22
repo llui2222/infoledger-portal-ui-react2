@@ -2,7 +2,8 @@ import { SET_COMPANIES } from '../actions/company';
 
 const initialState = {
     childCompanies: [],
-    rootCompany: undefined
+    rootCompany: undefined,
+    refetch: () => {}
 }
 
 const companiesReducer = (state = initialState, action) => {
@@ -12,7 +13,7 @@ const companiesReducer = (state = initialState, action) => {
                 return company.parentProfileId === null;
             })
             const childCompanies = action.companies.filter(company => company.profileId !== rootCompany.profileId)
-            return {...state, childCompanies: childCompanies, rootCompany: rootCompany}
+            return {...state, childCompanies: childCompanies, rootCompany: rootCompany, refetch: action.refetch}
         }
         default:
             return state;

@@ -16,7 +16,8 @@ export const companyCreateFailure = error => ({
     error
 });
 
-export const setCompanies = companies => ({
+export const setCompanies = (companies, refetch) => ({
     type: SET_COMPANIES,
-    companies
+    companies,
+    refetch
 });
