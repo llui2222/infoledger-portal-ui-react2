@@ -2,15 +2,16 @@ import React, {useState} from "react";
 import {
     Drawer,
     List,
-    Avatar,
+    Divider,
 } from '@material-ui/core';
 import { Notifications, Menu } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/core/styles";
-import Logo from "./Logo";
+import Logo from "../app/Logo";
 import {useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
-import SidebarMenuItem from "./SidebarMenuItem";
-import EngineerMenu from "./EngineerMenu";
+import SidebarMenuItem from "../app/SidebarMenuItem";
+import EngineerMenu from "../app/EngineerMenu";
+import ServiceCompanySidebarItem from "./ServiceCompanySidebarItem";
 
 const drawerWidth = 240;
 
@@ -48,20 +49,17 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: theme.spacing(1),
         },
     },
-    avatar: {
-        color: 'black',
-        [theme.breakpoints.down('xs')]: {
-            marginLeft: `-${theme.spacing(1)}px`,
-        },
-    }
 }));
 
-function SidebarMenu() {
+function ServiceCompanySidebar() {
 
     const classes = useStyles();
     const authState = useSelector(state => state.user.authState);
     const companies = useSelector(state => state.companies.companies);
+    const rootCompany = useSelector(state => state.companies.rootCompany);
     const [open, setOpen] = useState(false);
+
+    const childCompanies = companies.filter(company => company.profileId !== rootCompany.profileId)
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -71,7 +69,7 @@ function SidebarMenu() {
         return null;
     }
 
-    if(companies[0].typeOfBusiness !== 'SERVICE_COMPANY') {
+    if(rootCompany.typeOfBusiness !== 'SERVICE_COMPANY') {
         return null;
     }
 
@@ -99,23 +97,17 @@ function SidebarMenu() {
                     <Notifications className={classes.icon}/>
                 </SidebarMenuItem>
 
-                {companies.map((company) => {
+                <ServiceCompanySidebarItem company={rootCompany}/>
+                <Divider />
+
+                {childCompanies.map((company) => {
 
                     if(!company) {
                         return null;
                     }
 
-                    const splitName = company.displayName.split(' ');
-                    const shortName = splitName.length > 1?  splitName[0][0] + splitName[1][0]: splitName[0][0];
-
                     return (
-                        <SidebarMenuItem
-                            url={'/company/' + company.profileId}
-                            text={company.displayName}
-                            key={company.profileId}
-                        >
-                            <Avatar className={classes.avatar}>{shortName.toUpperCase()}</Avatar>
-                        </SidebarMenuItem>
+                        <ServiceCompanySidebarItem key={company.profileId} company={company}/>
                     )
                 })}
 
@@ -126,4 +118,4 @@ function SidebarMenu() {
     );
 }
 
-export default SidebarMenu;
+export default ServiceCompanySidebar;

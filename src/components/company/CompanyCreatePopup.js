@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
-import {handleNext, reset as resetForm } from "../../redux/actions/stepForm";
+import {handleNext, reset as resetForm, setAllSteps, nextStep} from "../../redux/actions/stepForm";
 import {useLocation} from "react-router-dom";
 import BaseCompanyFields from "./BaseCompanyFields";
 import ChildCompanyFields from "./ChildCompanyFields";
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function CompanyCreatePopup() {
+function CompanyCreatePopup({parentCompany}) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -58,6 +58,7 @@ function CompanyCreatePopup() {
     const allSteps = useSelector(state => state.stepForm.allSteps);
     const step = useSelector(state => state.stepForm.step);
     const companies = useSelector(state => state.companies.companies);
+    const next = useSelector(state => state.stepForm.next);
 
     const [addCompany, { error, data }] = useMutation(gql(saveProfile));
 
@@ -79,11 +80,20 @@ function CompanyCreatePopup() {
             companyName: '',
             companyType: '',
             typeOfBusiness: '',
+            baseCurrency: '',
             country: countries[0],
             address: '',
             postalCode: '',
         }
     });
+
+    useEffect(() => {
+        if(haveNoCompany) {
+            dispatch(setAllSteps(['Company']));
+        } else {
+            dispatch(setAllSteps(['Company', 'Business Address']));
+        }
+    }, [])
 
     React.useEffect(() => {
         if(location.pathname.includes('/create-company') ) {
@@ -138,6 +148,20 @@ function CompanyCreatePopup() {
                 }
             };
 
+            if(!haveNoCompany && parentCompany) {
+                delete newProfile.variables.profile.billingAddress;
+                newProfile.variables.profile.parentProfileId = parentCompany.profileId;
+                newProfile.variables.profile.profileType = 'CLIENT';
+                newProfile.variables.profile.currency = formValues.baseCurrency;
+                newProfile.variables.profile.businessAddress = {
+                    country: formValues.country.name,
+                    streetAddress: formValues.street1 + ' ' + formValues.street2,
+                    city: formValues.city,
+                    postalCode: formValues.postalCode,
+                    phoneNumber: formValues.phone,
+                };
+            }
+
             addCompany(newProfile).then(companyCreated => {
                 if(companyCreated.data && companyCreated.data.saveProfile && companyCreated.data.saveProfile.profileId) {
                     window.location = '/company/' + companyCreated.data.saveProfile.profileId;
@@ -147,6 +171,46 @@ function CompanyCreatePopup() {
             })
         }
     },[step]);
+
+
+
+    useEffect(() => {
+
+        const step1Fields = [
+            "companyName",
+            "typeOfBusiness",
+            "country",
+        ];
+
+        if(haveNoCompany) {
+            step1Fields.push("companyType");
+        } else {
+            step1Fields.push("baseCurrency");
+        }
+
+        const step2Fields = [
+            "street1",
+            "city",
+            "postalCode",
+            "phone",
+        ];
+
+        if(next > 0 && step === 0) {
+            trigger(step1Fields).then(valid => {
+                if(valid) {
+                    dispatch(nextStep());
+                }
+            })
+        }
+
+        if(next > 0 && step === 1) {
+            trigger(step2Fields).then(valid => {
+                if(valid) {
+                    dispatch(nextStep());
+                }
+            })
+        }
+    }, [next]);
 
     const handleCancel = () => {
         setOpen(false);
@@ -169,7 +233,7 @@ function CompanyCreatePopup() {
 
                 { haveSteps ?
                     <Stepper alternativeLabel activeStep={step} className={classes.stepper}>
-                        {allSteps.map(stepName =>
+                        {allSteps.map((stepName) =>
                             <Step key={stepName}>
                                 <StepLabel>{stepName}</StepLabel>
                             </Step>
@@ -186,11 +250,14 @@ function CompanyCreatePopup() {
                             control={control}
                             errors={errors}
                             register={register}
-                            trigger={trigger}
                             setValue={setValue}
                         />
                         :
-                        <ChildCompanyFields control={control} errors={errors} register={register} trigger={trigger} setValue={setValue}/>
+                        <ChildCompanyFields
+                            control={control}
+                            errors={errors}
+                            register={register}
+                        />
                     }
 
                 </FormControl>

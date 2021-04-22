@@ -36,7 +36,7 @@ function CompanyRouter() {
                 </Route>
             </Switch>
             <Route path={`${path}/settings/create-company`}>
-                <CompanyCreatePopup/>
+                <CompanyCreatePopup parentCompany={company}/>
             </Route>
         </>
     );

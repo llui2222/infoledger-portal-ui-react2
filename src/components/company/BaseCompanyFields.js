@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FormControl, InputLabel, MenuItem, Select, TextField} from '@material-ui/core';
 import {Controller} from "react-hook-form";
 import countries from "../../data/countries";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {useDispatch, useSelector} from "react-redux";
-import {nextStep, setAllSteps} from "../../redux/actions/stepForm";
 
 const companyTypes = [
     {
@@ -27,10 +25,8 @@ const TypesOfBusiness = [
     }
 ];
 
-const BaseCompanyFields = ({ errors, control, register, trigger, setValue }) => {
+const BaseCompanyFields = ({ errors, control, register, setValue }) => {
 
-    const dispatch = useDispatch();
-    const next = useSelector(state => state.stepForm.next);
     const [typeOfBusinessDisabled, setTypeOfBusinessDisabled] = useState(false);
 
     const handleCompanyTypeChange = e => {
@@ -38,27 +34,13 @@ const BaseCompanyFields = ({ errors, control, register, trigger, setValue }) => 
         const companyType = e.target.value;
 
         if(companyType && companyType === "INDIVIDUAL_INVESTOR") {
-            setValue('typeOfBusiness', 'ASSET_OWNER');
+            setValue('typeOfBusiness', 'ASSET_OWNER', { shouldValidate: true });
             setTypeOfBusinessDisabled(true)
         } else {
             setTypeOfBusinessDisabled(false)
             setValue('typeOfBusiness', '');
         }
     }
-
-    useEffect(() => {
-        dispatch(setAllSteps(['Company']));
-    }, [])
-
-    useEffect(() => {
-        if(next > 0) {
-            trigger(["companyName", "companyType", "typeOfBusiness", "country" ]).then(valid => {
-                if(valid) {
-                    dispatch(nextStep());
-                }
-            })
-        }
-    }, [next]);
 
     return (
         <>

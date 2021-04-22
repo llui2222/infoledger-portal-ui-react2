@@ -4,22 +4,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 import {gql, useQuery} from "@apollo/client";
 import {allProfiles} from "../../graphql/queries";
-import {CircularProgress} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import SidebarMenu from "../app/SidebarMenu";
+import ServiceCompanySidebar from "../company/ServiceCompanySidebar";
 import {showNotification} from "../../redux/actions/notifications";
 import {setCompanies} from "../../redux/actions/company";
-
-const useStyles = makeStyles((theme) => ({
-    loader: {
-        margin: `${theme.spacing(10)}px auto 0`
-    },
-}));
 
 const ProtectedRoute = ({children, ...rest}) => {
 
     const dispatch = useDispatch();
-    const classes = useStyles();
     const authState = useSelector(state => state.user.authState);
     const history = useHistory();
     const {loading, error, data} = useQuery(gql(allProfiles));
@@ -55,7 +46,7 @@ const ProtectedRoute = ({children, ...rest}) => {
                     null
                     :
                     <>
-                        <SidebarMenu/>
+                        <ServiceCompanySidebar/>
                         {children}
                     </>
             }
