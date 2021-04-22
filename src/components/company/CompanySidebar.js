@@ -35,39 +35,61 @@ function CompanySidebar({company}) {
             name: company.displayName,
             itemClass: classes.companyItem,
             textClass: classes.company,
-            url: '',
-            notSelected: true
+            notSelected: true,
+            access: ['SERVICE_COMPANY', 'INDIVIDUAL_INVESTOR']
         },
         {
-            name: 'Investments',
+            name: 'Investments'
         },
         {
-            name: 'Clients',
+            name: 'Clients'
         },
         {
             name: 'Dashboards',
+            access: ['INDIVIDUAL_INVESTOR']
         },
         {
             name: 'Contacts',
+            access: ['SERVICE_COMPANY', 'INDIVIDUAL_INVESTOR']
         },
         {
             name: 'Settings',
-            url: '/settings'
+            url: '/settings',
+            access: ['SERVICE_COMPANY', 'INDIVIDUAL_INVESTOR']
         }
     ];
 
     return (
         <List component="nav" className={classes.container}>
-            {menuItems.map(item =>
-                <ListItem
-                    button
-                    className={item.itemClass ? item.itemClass : ''}
-                    onClick={() => (item.url !== undefined ? handleNavigate(item.url) : undefined )}
-                    key={item.name}
-                    selected={!item.notSelected && location.pathname.endsWith(item.url)}
-                >
-                    <ListItemText primary={item.name} className={item.textClass ? item.textClass : ''} />
-                </ListItem>
+            {menuItems.map(item => {
+
+                if(
+                    company.typeOfBusiness === 'SERVICE_COMPANY' &&
+                    (!item.access || !item.access.includes('SERVICE_COMPANY'))
+                ) {
+                    return null;
+                }
+
+                if(
+                    company.profileType === 'INDIVIDUAL_INVESTOR' &&
+                    (!item.access || !item.access.includes('INDIVIDUAL_INVESTOR'))
+                ) {
+                    return null;
+                }
+
+                return(
+                    <ListItem
+                        button
+                        className={item.itemClass ? item.itemClass : ''}
+                        onClick={() => (item.url !== undefined ? handleNavigate(item.url) : undefined )}
+                        key={item.name}
+                        selected={!item.notSelected && location.pathname.endsWith(item.url)}
+                    >
+                        <ListItemText primary={item.name} className={item.textClass ? item.textClass : ''} />
+                    </ListItem>
+                );
+            }
+
             )}
         </List>
     );
