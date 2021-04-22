@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         minWidth: 100
     },
     quickFilters: {
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(3),
         marginBottom: theme.spacing(1),
     },
     filterButton: {

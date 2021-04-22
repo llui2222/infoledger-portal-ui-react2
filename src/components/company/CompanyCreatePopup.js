@@ -120,7 +120,7 @@ function CompanyCreatePopup() {
             return;
         }
 
-        if( step >= allSteps.length ) {
+        if( step >= allSteps.length && allSteps.length !== 0 ) {
 
             dispatch(companyCreate);
 
@@ -138,8 +138,13 @@ function CompanyCreatePopup() {
                 }
             };
 
-            addCompany(newProfile);
-            // handleCancel();
+            addCompany(newProfile).then(companyCreated => {
+                if(companyCreated.data && companyCreated.data.saveProfile && companyCreated.data.saveProfile.profileId) {
+                    window.location = '/company/' + companyCreated.data.saveProfile.profileId;
+                }
+            }).catch(error => {
+                console.log(error);
+            })
         }
     },[step]);
 

@@ -16,6 +16,16 @@ const companyTypes = [
         label: 'Individual Investor'
     }
 ];
+const TypesOfBusiness = [
+    {
+        type: 'ASSET_OWNER',
+        label: 'Asset Owner'
+    },
+    {
+        type: 'SERVICE_COMPANY',
+        label: 'Service Company'
+    }
+];
 
 const BaseCompanyFields = ({ errors, control, register, trigger, setValue }) => {
 
@@ -129,8 +139,9 @@ const BaseCompanyFields = ({ errors, control, register, trigger, setValue }) => 
                             name: "companyType"
                         }}
                     >
-                        <MenuItem value='ASSET_OWNER'>Asset Owner</MenuItem>
-                        <MenuItem value='SERVICE_COMPANY'>Service Company</MenuItem>
+                        {TypesOfBusiness.map(type =>
+                            <MenuItem key={type.type} value={type.type}>{type.label}</MenuItem>
+                        )}
                     </Select>
                     }
                 />
