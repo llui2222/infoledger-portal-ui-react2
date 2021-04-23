@@ -2,6 +2,7 @@ import React from 'react';
 import {FormControl, InputLabel, MenuItem, Select, TextField, Grid} from '@material-ui/core';
 import {Controller} from "react-hook-form";
 import countries from "../../data/countries";
+import currencies from "../../data/currencies";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {useSelector} from "react-redux";
 
@@ -20,13 +21,15 @@ const accountTypes = [
     }
 ];
 
-const currencies = [
-    'USD', 'EUR', 'CAD', 'MXN'
-];
-
 const BaseCompanyFields = ({ errors, control, register }) => {
 
     const rootCompany = useSelector(state => state.companies.rootCompany);
+    const currencyOptions = Object.entries(currencies).map(currency => ({
+        code: currency[0],
+        name: currency[1]
+    }));
+
+    const defaultCurrency = {code: '',name: ''};
 
     return (
         <>
@@ -49,74 +52,72 @@ const BaseCompanyFields = ({ errors, control, register }) => {
             />
 
             { !rootCompany &&
-                <FormControl
-                    variant="outlined"
-                    margin="normal"
-                    error={!!errors.accountType}
-                    fullWidth
-                    required
-                >
-                    <InputLabel id="account-type-label">Account Type</InputLabel>
+            <FormControl
+                variant="outlined"
+                margin="normal"
+                error={!!errors.accountType}
+                fullWidth
+                required
+            >
+                <InputLabel id="account-type-label">Account Type</InputLabel>
 
-                    <Controller
-                        control={control}
-                        name="accountType"
-                        type="select"
-                        rules={{ required: true }}
-                        as={<Select
-                            required
-                            labelId="account-type-label"
-                            id="account-type"
-                            label="Account Type"
-                            inputProps={{
-                                name: "accountType"
-                            }}
-                        >
-                            {accountTypes.map( accountType =>
-                                <MenuItem value={accountType.type} key={accountType.type}>
-                                    {accountType.label}
-                                </MenuItem>
-                            )}
-                        </Select>
-                        }
-                    />
+                <Controller
+                    control={control}
+                    name="accountType"
+                    type="select"
+                    rules={{ required: true }}
+                    as={<Select
+                        required
+                        labelId="account-type-label"
+                        id="account-type"
+                        label="Account Type"
+                        inputProps={{
+                            name: "accountType"
+                        }}
+                    >
+                        {accountTypes.map( accountType =>
+                            <MenuItem value={accountType.type} key={accountType.type}>
+                                {accountType.label}
+                            </MenuItem>
+                        )}
+                    </Select>
+                    }
+                />
 
-                </FormControl>
+            </FormControl>
             }
 
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={6}>
-                    <FormControl
-                        variant="outlined"
-                        margin="normal"
-                        error={!!errors.baseCurrency}
-                        fullWidth
-                        required
-                    >
-                        <InputLabel id="base-currency-label">Base Currency</InputLabel>
-
-                        <Controller
-                            control={control}
-                            name="baseCurrency"
-                            type="select"
-                            rules={{ required: true }}
-                            as={<Select
-                                required
-                                labelId="base-currency-label"
-                                id="base-currency"
-                                label="Base Currency"
-                                inputProps={{
-                                    name: "baseCurrency"
-                                }}
-                            >
-                                {currencies.map(currency =>
-                                    <MenuItem key={currency} value={currency}>{currency}</MenuItem>
+                    <Controller
+                        onChange={([, data]) => data}
+                        defaultValue={defaultCurrency}
+                        name="baseCurrency"
+                        control={control}
+                        rules={{
+                            required: true,
+                            validate: value => value !== defaultCurrency
+                        }}
+                        render={({ onChange, ...props }) => (
+                            <Autocomplete
+                                options={[defaultCurrency, ...currencyOptions]}
+                                getOptionLabel={option => option.code}
+                                renderOption={option => option.code}
+                                getOptionSelected={(option, value) => option.code === value.code}
+                                onChange={(e, data) => onChange(data)}
+                                {...props}
+                                renderInput={params => (
+                                    <TextField
+                                        {...params}
+                                        error={!!errors.baseCurrency}
+                                        margin="normal"
+                                        label="Base Currency"
+                                        variant="outlined"
+                                    />
                                 )}
-                            </Select>
-                            }
-                        />
-
-                    </FormControl>
+                            />
+                        )}
+                    />
                 </Grid>
             </Grid>
 

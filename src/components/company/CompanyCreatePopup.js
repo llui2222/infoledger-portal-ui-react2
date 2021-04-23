@@ -66,6 +66,7 @@ function CompanyCreatePopup() {
 
     const haveSteps = allSteps.length > 1;
     const haveMoreSteps = allSteps.length > step+1;
+    const defaultCurrency = {code: '',name: ''};
 
     const {
         register,
@@ -81,7 +82,7 @@ function CompanyCreatePopup() {
             accountType: '',
             companyType: '',
             typeOfBusiness: '',
-            baseCurrency: '',
+            baseCurrency: defaultCurrency,
             country: countries[0],
             address: '',
             postalCode: '',
@@ -180,8 +181,13 @@ function CompanyCreatePopup() {
             }
 
             addCompany(newProfile).then(companyCreated => {
+
+                clearForm();
+
                 if(!rootCompany) {
-                    window.location = '/company/' + companyCreated.data.saveProfile.profileId;
+                    refetch().then(() => {
+                        history.push(`/company/${companyCreated.data.saveProfile.profileId}/settings`);
+                    });
                 } else {
                     history.push(`/company/${rootCompany.profileId}/settings`);
                     refetch();
@@ -235,6 +241,10 @@ function CompanyCreatePopup() {
         if(!rootCompany) {
             return;
         }
+        clearForm();
+    }
+
+    const clearForm = () => {
         setOpen(false);
         reset();
         dispatch(resetForm());
