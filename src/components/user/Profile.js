@@ -16,6 +16,7 @@ import PageHeader from "../common/PageHeader";
 import {changePassword, confirmChangedEmail, updateUserAttributes} from "../../redux/actions/user";
 import {cleanProperty} from "../../utils/cleanProperty";
 import Modal from "../shared/modal/Modal";
+import FieldPassword from "../common/FieldPassword";
 
 const useStyles = makeStyles((theme) => ({
     defaultForm: {
@@ -251,13 +252,12 @@ function Profile() {
             case FormTypes.PASSWORD:
                 return (
                     <Box>
-                        <TextField
+                        <FieldPassword
                             margin="normal"
                             required
                             fullWidth
-                            name="password"
+                            name="oldPass"
                             label="Old Password"
-                            type="password"
                             id="oldPass"
                             autoComplete="current-password"
                             inputProps={{
@@ -269,16 +269,15 @@ function Profile() {
                                     }
                                 })
                             }}
-                            error={!!errors.oldPass}
+                            errors={errors}
                             helperText={errors.oldPass?.message}
                         />
-                        <TextField
+                        <FieldPassword
                             margin="normal"
                             required
                             fullWidth
-                            name="password"
+                            name="newPass"
                             label="New Password"
-                            type="password"
                             id="newPass"
                             autoComplete="current-password"
                             inputProps={{
@@ -291,7 +290,7 @@ function Profile() {
                                     }
                                 })
                             }}
-                            error={!!errors.newPass}
+                            errors={errors}
                             helperText={errors.newPass?.message}
                         />
                     </Box>

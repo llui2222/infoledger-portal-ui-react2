@@ -60,7 +60,7 @@ export function* watchUpdateUserAttributesFailure() {
 
 export function* workerChangePassword({payload: {oldPass, newPass}}) {
     try {
-        yield call(api.changePassword, oldPass, newPass)
+        yield call(api.changePassword, {oldPass, newPass})
         yield put(changePasswordSuccess())
     } catch (e) {
         yield put(changePasswordFailure())
