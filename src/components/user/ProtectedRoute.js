@@ -1,34 +1,25 @@
 import React, {useEffect} from "react";
-import {Route, Redirect, useHistory} from "react-router-dom";
+import {Route, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 import {gql, useQuery} from "@apollo/client";
 import {allProfiles} from "../../graphql/queries";
-import {CircularProgress} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import SidebarMenu from "../app/SidebarMenu";
+import ServiceCompanySidebar from "../company/ServiceCompanySidebar";
 import {showNotification} from "../../redux/actions/notifications";
 import {setCompanies} from "../../redux/actions/company";
-
-const useStyles = makeStyles((theme) => ({
-    loader: {
-        margin: `${theme.spacing(10)}px auto 0`
-    },
-}));
 
 const ProtectedRoute = ({children, ...rest}) => {
 
     const dispatch = useDispatch();
-    const classes = useStyles();
     const authState = useSelector(state => state.user.authState);
     const history = useHistory();
-    const {loading, error, data} = useQuery(gql(allProfiles));
+    const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
-        if (data) {
-            dispatch(setCompanies(data.allProfiles));
-            if (!data.allProfiles.length) {
-                history.push('/company/create')
+        if (data && data.allProfiles) {
+            dispatch(setCompanies(data.allProfiles, refetch));
+            if (!data.allProfiles.length || !data.allProfiles[0]) {
+                history.push('/create-company')
             }
         }
     }, [data])
@@ -49,13 +40,13 @@ const ProtectedRoute = ({children, ...rest}) => {
         <Route {...rest}>
 
             {loading ?
-                <CircularProgress className={classes.loader} color="inherit"/>
+                null
                 :
                 (!data || authState !== AUTHORIZED_AUTH_STATE) ?
                     null
                     :
                     <>
-                        <SidebarMenu/>
+                        <ServiceCompanySidebar/>
                         {children}
                     </>
             }

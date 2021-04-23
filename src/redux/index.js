@@ -10,6 +10,7 @@ import userReducer from "./reducers/userReducer";
 import notificationsReducer from "./reducers/notificationsReducer";
 import encryptionReducer from "./reducers/encryptionReducer";
 import companiesReducer from "./reducers/companiesReducer";
+import stepFormReducer from "./reducers/stepFormReducer";
 
 const rootReducer = (history) =>  combineReducers({
     router: connectRouter(history),
@@ -17,7 +18,8 @@ const rootReducer = (history) =>  combineReducers({
     user: userReducer,
     notifications: notificationsReducer,
     encryption: encryptionReducer,
-    companies: companiesReducer
+    companies: companiesReducer,
+    stepForm: stepFormReducer
 });
 
 export const history = createBrowserHistory();

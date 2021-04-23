@@ -11,11 +11,11 @@ import Profile from "../user/Profile";
 import EncryptDemo from "../EncryptDemo";
 import ForgotPassword from "../user/ForgotPassword";
 import SetNewPassword from "../user/SetNewPassword";
-import CompanyCreate from "../company/CompanyCreate";
 import Contacts from "../contacts/Contacts";
 import Notifications from "../Notifications";
-import Company from "../company/Company";
 import Document from "../investment/Document";
+import CompanyRouter from "../company/CompanyRouter";
+import CompanyCreatePopup from "../company/CompanyCreatePopup";
 
 function Router() {
     return (
@@ -30,9 +30,6 @@ function Router() {
             <ProtectedRoute path="/profile">
                 <Profile/>
             </ProtectedRoute>
-            <ProtectedRoute path="/company/create">
-                <CompanyCreate/>
-            </ProtectedRoute>
             <ProtectedRoute path="/crypto">
                 <EncryptDemo/>
             </ProtectedRoute>
@@ -43,7 +40,10 @@ function Router() {
                 <Document/>
             </ProtectedRoute>
             <ProtectedRoute path="/company/:companyID">
-                <Company/>
+                <CompanyRouter/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/create-company">
+                <CompanyCreatePopup/>
             </ProtectedRoute>
             <UnauthorizedRoute path="/login">
                 <Login/>
