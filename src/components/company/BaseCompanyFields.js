@@ -100,6 +100,7 @@ const BaseCompanyFields = ({ errors, control, register }) => {
                         }}
                         render={({ onChange, ...props }) => (
                             <Autocomplete
+                                disableClearable
                                 options={[defaultCurrency, ...currencyOptions]}
                                 getOptionLabel={option => option.code}
                                 renderOption={option => option.code}
@@ -132,6 +133,7 @@ const BaseCompanyFields = ({ errors, control, register }) => {
                 }}
                 render={({ onChange, ...props }) => (
                     <Autocomplete
+                        disableClearable
                         options={countries}
                         getOptionLabel={option => option.name}
                         renderOption={option => option.name}

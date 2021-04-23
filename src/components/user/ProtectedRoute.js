@@ -16,13 +16,13 @@ const ProtectedRoute = ({children, ...rest}) => {
     const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
-        if (data && data.allProfiles) {
+        if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles) {
             dispatch(setCompanies(data.allProfiles, refetch));
             if (!data.allProfiles.length || !data.allProfiles[0]) {
                 history.push('/create-company')
             }
         }
-    }, [data])
+    }, [data, authState])
 
 
     if (error) {
