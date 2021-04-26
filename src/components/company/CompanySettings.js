@@ -1,16 +1,28 @@
 import React from "react";
-import {Typography,Grid,Button, Chip} from '@material-ui/core';
+import {Typography, Grid, Button, Chip, TextField} from '@material-ui/core';
 import PageContainer from "../common/containers/PageContainer";
 import {Add} from "@material-ui/icons";
-import {useRouteMatch} from "react-router-dom";
+import {useLocation, useRouteMatch} from "react-router-dom";
 import {history} from "../../redux";
 import {useSelector} from "react-redux";
+import Link from "../common/Link";
+import BorderColorIcon from '@material-ui/icons/BorderColor';
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  editCompany: {
+    marginLeft: '10px',
+    color: 'black',
+  },
+}));
 
 function CompanySettings({ company }) {
+  const classes = useStyles();
 
     let { url } = useRouteMatch();
     const childCompanies = useSelector(state => state.companies.childCompanies);
-
+    const location = useLocation()
+  console.log(`==========>location`, location)
     const handleNavigate = path => {
         history.push(url + path);
     }
@@ -34,9 +46,16 @@ function CompanySettings({ company }) {
                         </Button>
                     }
                 </Grid>
+
                     {childCompanies.map(company =>
                         <Grid item key={company.profileId}>
+                            {/*<Link to={`${location.pathname}/${company.profileId}`}>*/}
+
                             <Chip label={company.displayName} />
+                          <Link to={`${location.pathname}/${company.profileId}`}>
+                            <BorderColorIcon  className={classes.editCompany}/>
+                          </Link>
+                            
                         </Grid>
                     )}
             </Grid>

@@ -9,6 +9,7 @@ import Company from "../company/Company";
 import CompanySettings from "./CompanySettings";
 import CompanyCreatePopup from "./CompanyCreatePopup";
 import CompanySidebar from "./CompanySidebar";
+import CompanySettingsEditor from './CompanySettingsEditor';
 import {useSelector} from "react-redux";
 
 function CompanyRouter() {
@@ -32,10 +33,14 @@ function CompanyRouter() {
 
     return (
         <>
+
             <CompanySidebar company={rootCompany.typeOfBusiness === 'SERVICE_COMPANY' ? company : rootCompany } />
             <Switch>
-                <Route path={`${path}/settings`}>
+                <Route exact path={`${path}/settings`}>
                     <CompanySettings company={company}/>
+                </Route>
+                <Route exact path={`${path}/settings/:companyId`}>
+                    <CompanySettingsEditor company={company}/>
                 </Route>
                 <Route path={`${path}`}>
                     <Company company={company}/>
