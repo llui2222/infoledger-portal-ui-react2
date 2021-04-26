@@ -55,6 +55,7 @@ function CompanyCreatePopup() {
     const history = useHistory();
     const [open, setOpen] = useState(true);
     const firstRender = useRef(true);
+    const [showCurrency, setShowCurrency] = useState(false);
 
     const allSteps = useSelector(state => state.stepForm.allSteps);
     const step = useSelector(state => state.stepForm.step);
@@ -142,11 +143,14 @@ function CompanyCreatePopup() {
 
             const newProfile = { variables: {
                     profile: {
-                        profileName: formValues.companyName,
-                        currency: formValues.baseCurrency
+                        profileName: formValues.companyName
                     }
                 }
             };
+
+            if(showCurrency) {
+                newProfile.variables.profile.currency = formValues.baseCurrency.code
+            }
 
             if(rootCompany) {
                 newProfile.variables.profile.parentProfileId = rootCompany.profileId;
@@ -204,9 +208,12 @@ function CompanyCreatePopup() {
 
         const step1Fields = [
             "companyName",
-            "baseCurrency",
             "country",
         ];
+
+        if(showCurrency) {
+            step1Fields.push("baseCurrency");
+        }
 
         if(!rootCompany) {
             step1Fields.push("accountType");
@@ -282,12 +289,16 @@ function CompanyCreatePopup() {
                             control={control}
                             errors={errors}
                             register={register}
+                            showCurrency={showCurrency}
+                            setShowCurrency={setShowCurrency}
                         />
                         :
                         <ChildCompanyFields
                             control={control}
                             errors={errors}
                             register={register}
+                            showCurrency={showCurrency}
+                            setShowCurrency={setShowCurrency}
                         />
                     }
 
