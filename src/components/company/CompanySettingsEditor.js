@@ -6,22 +6,22 @@ import WarningIcon from '@material-ui/icons/Warning';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import CreateIcon from '@material-ui/icons/Create';
+import SaveIcon from '@material-ui/icons/Save';
 import Typography from "@material-ui/core/Typography";
 import {useLocation} from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {Controller, useForm} from "react-hook-form";
 import currencies from "../../data/currencies";
 import countries from "../../data/countries";
+import {useSelector} from "react-redux";
+import {gql, useMutation} from "@apollo/client";
+import {saveProfile} from "../../graphql/mutations";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '80%',
     marginLeft: '10%',
     marginRight: '5%',
-  },
-  addressInput: {
-    width: '95%',
-   border: 'none',
   },
   InfoLedgerContainer: {
     display: 'flex',
@@ -56,31 +56,51 @@ const useStyles = makeStyles((theme) => ({
   },
   Btn: {
     marginLeft: 'auto',
+    marginRight: '20px',
   },
   currency: {
     fontWeight: 'bold',
+    marginBottom: '10px',
   },
   timeInput: {
     outline: 'none',
     border: 'none',
     background: '#fafafa',
   },
-  currencyInput: {
+  input: {
     outline: 'none',
     border: 'none',
     background: '#fafafa',
     color: 'black',
   },
+  currencyInputContainer: {
+    width: '500px',
+    display: 'flex,'
+  },
+  baseCurrencyInput: {
+   width: '30%',
+  },
+  countryInput: {
+    width: '90%',
+  },
+  businessInputs: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  BtnGroup: {
+    marginTop: '10px',
+  }
 }));
 
-
 const CompanySettingsEditor = ({company}) => {
+  const dataCompanies = useSelector(state => state?.companies);
   const classes = useStyles();
   const {pathname} = useLocation();
   const ref = useRef(null);
   const [timeDisabled, setTimeDisabled] = useState(true);
-  const [currencyDisabled, setCurrencyDisabled] = useState(true);
-  const [currencyValue, setCurrencyValue] = useState('USD');
+
+
+  // console.log(`==========>dataCompanies`, dataCompanies)
 
   const currencyOptions = Object.entries(currencies).map(currency => ({
     code: currency[0],
@@ -92,6 +112,7 @@ const CompanySettingsEditor = ({company}) => {
   const {
     errors,
     control,
+    watch,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -103,13 +124,38 @@ const CompanySettingsEditor = ({company}) => {
       country: countries[0],
       address: '',
       postalCode: '',
-    }
+    },
   });
-
+// console.log(`==========>watch('country)`, watch('country'))
   const id = useMemo(() => {
     const paths =  pathname.split('/')
     return paths[paths.length - 1];
   }, [pathname]);
+
+
+  let currency =  dataCompanies.childCompanies.find(company => company?.profileId === id)?.currency.match(/(?<=code=).*(?=,)/);
+  // console.log(`==========>currency`, currency)
+  const [currencyDisabled, setCurrencyDisabled] = useState(true);
+  const [currencyValue, setCurrencyValue] = useState(currency);
+  const [countryDisabled, setCountryDisabled] = useState(true);
+  let country = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress.country;
+  const [countryValue, setCountryValue] = useState(country);
+
+  let businessAddressObj = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress;
+  let businessAddressArr = Object.values(businessAddressObj);
+  console.log(`==========>businessAddressArr`, businessAddressObj);
+  const [postalCode, setPostalCode] = useState(businessAddressObj.postalCode);
+  const [streetAddress, setStreetAddress] = useState(businessAddressObj.streetAddress);
+  const [city, setCity] = useState(businessAddressObj.city);
+  const [addressDisabled, setAddressDisabled] = useState(true);
+  const [autofocus, setAutofocus] = useState(false);
+
+  // ["Address", "Russia", "Chechkova ", "Taganrog", "347900", "8-800-000-00-00"]
+
+
+  console.log(`==========>businessAddress`, businessAddressObj)
+  const [businessAddressValue, setBusinessAddressValue] = useState('not specified');
+
 
   const IdCopyHandler = () => {
     ref.current.select();
@@ -125,10 +171,36 @@ const CompanySettingsEditor = ({company}) => {
     setCurrencyDisabled(false);
   };
 
-  const currencyChangeHandler = (event) => {
-    // setCurrencyValue(event.target.value);
-   // setCurrencyDisabled(true);
-    console.log(`==========>event.target.value`, event.target.value)
+  const  saveCurrencyValueHandler = () => {
+    setCurrencyValue(watch('baseCurrency').code);
+    setCurrencyDisabled(true);
+  };
+
+  const cancelCurrencyChangeHandler = () => {
+    setCurrencyDisabled(true);
+  }
+
+  const setCountryHandler = () => {
+    setCountryDisabled(false);
+  };
+
+  const  saveCountryValueHandler = () => {
+    setCountryValue(watch('country').name);
+    setCountryDisabled(true);
+  };
+
+  const cancelCountryChangeHandler = () => {
+    setCountryDisabled(true);
+  };
+
+  const setAddressHandler = () => {
+    setAddressDisabled(false);
+    setAutofocus(true);
+  };
+
+  const cancelAddressChangeHandler = () => {
+    setAddressDisabled(true);
+    setPostalCode(postalCode);
   }
 
   return (
@@ -155,6 +227,7 @@ const CompanySettingsEditor = ({company}) => {
          <input
            className={classes.companyIdInput}
            ref={ref} value={id}
+
            onChange={() => {}}
          />
        </div>
@@ -213,7 +286,6 @@ const CompanySettingsEditor = ({company}) => {
       {/*//==============================================*/}
 
       {/*//================ Currency ====================*/}
-      <div   className={classes.messages}>
         <div>
           <Typography className={classes.currency}>
             About
@@ -221,15 +293,28 @@ const CompanySettingsEditor = ({company}) => {
           <Typography>
             Currency
           </Typography>
-
-          <input
-            className={classes.currencyInput}
-          type="text"
-
-            value={currencyValue}
-          />
           {
-            !currencyDisabled ? (
+            currencyDisabled &&
+              <div   className={classes.messages}>
+                  <input
+                  className={classes.input}
+                  type="text"
+                  disabled
+                  defaultValue={currencyValue}
+                  />
+                  <Button
+                    className={classes.Btn}
+                    variant="contained"
+                    size="small"
+                    onClick={setCurrencyHandler}
+                  >
+                    <CreateIcon/>
+                    Edit
+                  </Button>
+              </div>
+          }
+          {
+            !currencyDisabled && (
               <div>
                 <Controller
                   onChange={([, data]) => data}
@@ -241,7 +326,9 @@ const CompanySettingsEditor = ({company}) => {
                     validate: value => value !== defaultCurrency
                   }}
                   render={({ onChange, ...props }) => (
+
                     <Autocomplete
+                      className={classes.baseCurrencyInput}
                       disableClearable
                       options={[defaultCurrency, ...currencyOptions]}
                       getOptionLabel={option => option.code}
@@ -251,7 +338,6 @@ const CompanySettingsEditor = ({company}) => {
                       {...props}
                       renderInput={params => (
                         <TextField
-
                           {...params}
                           error={!!errors.baseCurrency}
                           margin="normal"
@@ -262,63 +348,196 @@ const CompanySettingsEditor = ({company}) => {
                     />
                   )}
                 />
+                <Button
+                  className={classes.Btn}
+                  variant="contained"
+                  size="small"
+                  onClick={saveCurrencyValueHandler}
+                >
+                  <SaveIcon/>
+                  Save
+                </Button>
+                <Button
+                  className={classes.Btn}
+                  variant="contained"
+                  size="small"
+                  onClick={cancelCurrencyChangeHandler}
+                >
+                  Cancel
+                </Button>
               </div>
-            ) : null
+            )
           }
         </div>
-        <Button
-          className={classes.Btn}
-          variant="contained"
-          size="small"
-          onClick={setCurrencyHandler}
-        >
-          <CreateIcon/>
-          Edit
-        </Button>
-      </div>
       <hr className={classes.hr}/>
 {/*//================================================*/}
 
 {/*//============== Country ========================*/}
-      <div   className={classes.messages}>
-        <div>
+      <div>
           <Typography>
             Country
           </Typography>
-          <Typography>
-            United States
-          </Typography>
-        </div>
-        <Button
-          className={classes.Btn}
-          variant="contained"
-          size="small"
-        >
-          <CreateIcon/>
-          Edit
-        </Button>
+        {
+          countryDisabled ?
+            <div   className={classes.messages}>
+              <input
+                className={classes.input}
+                type="text"
+                value={countryValue}
+                disabled
+              />
+              <Button
+                className={classes.Btn}
+                variant="contained"
+                size="small"
+                onClick={setCountryHandler}
+              >
+                <CreateIcon/>
+                Edit
+              </Button>
+            </div>
+            : null
+        }
+        {
+          !countryDisabled ? (
+            <div>
+              <Controller
+                onChange={([, data]) => data}
+                defaultValue={countries[0]}
+                name="country"
+                control={control}
+                rules={{
+                  required: true,
+                  validate: value => value !== countries[0]
+                }}
+                render={({ onChange, ...props }) => (
+                  <Autocomplete
+                    className={classes.countryInput}
+                    disableClearable
+                    options={countries}
+                    getOptionLabel={option => option.name}
+                    renderOption={option => option.name}
+                    onChange={(e, data) => onChange(data)}
+                    {...props}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        error={!!errors.country}
+                        margin="normal"
+                        label="Country"
+                        variant="outlined"
+                        autoComplete='new-password'
+                      />
+                    )}
+                  />
+                )}
+              />
+              <Button
+                className={classes.Btn}
+                variant="contained"
+                size="small"
+                onClick={saveCountryValueHandler}
+              >
+                <SaveIcon/>
+                Save
+              </Button>
+              <Button
+                className={classes.Btn}
+                variant="contained"
+                size="small"
+                onClick={cancelCountryChangeHandler}
+              >
+                Cancel
+              </Button>
+            </div>
+
+          ) : null
+        }
       </div>
       <hr className={classes.hr}/>
 {/*//================================================*/}
 
 {/*//================= Business address ==============*/}
-      <div   className={classes.messages}>
-        <div>
+      <div>
+
           <Typography>
             Business address
           </Typography>
-          <Typography>
-            Not specified
-          </Typography>
-        </div>
-        <Button
-          className={classes.Btn}
-          variant="contained"
-          size="small"
-        >
-          <CreateIcon/>
-          Edit
-        </Button>
+
+            <div   className={classes.messages}>
+              <div className={classes.businessInputs}>
+                  <label htmlFor="postalCode">Postal Code:</label>
+                  <input
+                    id="postalCode"
+                    className={classes.addressInput}
+                    type="text"
+                    defaultValue={postalCode}
+                    disabled={addressDisabled}
+                    // autoFocus={autofocus}
+                  />
+                <label htmlFor="street">Street:</label>
+                <input
+                  id="street"
+                  className={classes.addressInput}
+                  type="text"
+                  defaultValue={streetAddress}
+                  disabled={addressDisabled}
+                />
+                <label htmlFor="city">City:</label>
+                <input
+                  id="city"
+                  className={classes.addressInput}
+                  type="text"
+                  defaultValue={city}
+                  disabled={addressDisabled}
+                />
+                <label htmlFor="country">Country:</label>
+                <input
+                  id="country"
+                  className={classes.addressInput}
+                  type="text"
+                  defaultValue={countryValue}
+                  disabled={addressDisabled}
+                />
+                {! addressDisabled && (
+                  <div  className={classes.BtnGroup}>
+                    <Button
+                      className={classes.Btn}
+                      variant="contained"
+                      size="small"
+                      // onClick={saveAddressHandler}
+                    >
+                      <SaveIcon/>
+                      Save
+                    </Button>
+                    <Button
+                      className={classes.Btn}
+                      variant="contained"
+                      size="small"
+                      onClick={cancelAddressChangeHandler}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )
+                }
+              </div>
+              { addressDisabled && (
+                <Button
+                  className={classes.Btn}
+                  variant="contained"
+                  size="small"
+                  onClick={setAddressHandler}
+                >
+                  <CreateIcon/>
+                  Edit
+                </Button>
+                )
+              }
+
+            </div>
+
+
       </div>
       <hr className={classes.hr}/>
 

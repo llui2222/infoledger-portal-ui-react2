@@ -49,8 +49,6 @@ function CompanySettings({ company }) {
 
                     {childCompanies.map(company =>
                         <Grid item key={company.profileId}>
-                            {/*<Link to={`${location.pathname}/${company.profileId}`}>*/}
-
                             <Chip label={company.displayName} />
                           <Link to={`${location.pathname}/${company.profileId}`}>
                             <BorderColorIcon  className={classes.editCompany}/>
