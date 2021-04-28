@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useLayoutEffect, useMemo, useRef} from "react";
+import CompanyBusinessAddress from './CompanyBusinessAddress';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 import {Chip, InputAdornment, TextField} from "@material-ui/core";
@@ -14,8 +15,6 @@ import {Controller, useForm} from "react-hook-form";
 import currencies from "../../data/currencies";
 import countries from "../../data/countries";
 import {useSelector} from "react-redux";
-import {gql, useMutation} from "@apollo/client";
-import {saveProfile} from "../../graphql/mutations";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,16 +47,21 @@ const useStyles = makeStyles((theme) => ({
     width: '95%',
     alignItems: 'center',
   },
+  businessAddressInputs: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  Btn: {
+    marginLeft: 'auto',
+    marginRight: '20px',
+  },
   TextMessages: {
     marginRight: '10px',
   },
   rightArrow: {
     marginLeft: 'auto',
   },
-  Btn: {
-    marginLeft: 'auto',
-    marginRight: '20px',
-  },
+
   currency: {
     fontWeight: 'bold',
     marginBottom: '10px',
@@ -83,12 +87,15 @@ const useStyles = makeStyles((theme) => ({
   countryInput: {
     width: '90%',
   },
-  businessInputs: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
+
   BtnGroup: {
     marginTop: '10px',
+  },
+  // addressInputLabel: {
+  //  width: '20%',
+  // },
+  addressLabel: {
+    margin: 0,
   }
 }));
 
@@ -98,9 +105,6 @@ const CompanySettingsEditor = ({company}) => {
   const {pathname} = useLocation();
   const ref = useRef(null);
   const [timeDisabled, setTimeDisabled] = useState(true);
-
-
-  // console.log(`==========>dataCompanies`, dataCompanies)
 
   const currencyOptions = Object.entries(currencies).map(currency => ({
     code: currency[0],
@@ -126,36 +130,32 @@ const CompanySettingsEditor = ({company}) => {
       postalCode: '',
     },
   });
-// console.log(`==========>watch('country)`, watch('country'))
+
   const id = useMemo(() => {
     const paths =  pathname.split('/')
     return paths[paths.length - 1];
   }, [pathname]);
 
-
   let currency =  dataCompanies.childCompanies.find(company => company?.profileId === id)?.currency.match(/(?<=code=).*(?=,)/);
-  // console.log(`==========>currency`, currency)
+  let country = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress.country;
+  let businessAddressObj = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress;
+
   const [currencyDisabled, setCurrencyDisabled] = useState(true);
   const [currencyValue, setCurrencyValue] = useState(currency);
   const [countryDisabled, setCountryDisabled] = useState(true);
-  let country = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress.country;
   const [countryValue, setCountryValue] = useState(country);
-
-  let businessAddressObj = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress;
-  let businessAddressArr = Object.values(businessAddressObj);
-  console.log(`==========>businessAddressArr`, businessAddressObj);
   const [postalCode, setPostalCode] = useState(businessAddressObj.postalCode);
   const [streetAddress, setStreetAddress] = useState(businessAddressObj.streetAddress);
   const [city, setCity] = useState(businessAddressObj.city);
-  const [addressDisabled, setAddressDisabled] = useState(true);
-  const [autofocus, setAutofocus] = useState(false);
-
-  // ["Address", "Russia", "Chechkova ", "Taganrog", "347900", "8-800-000-00-00"]
-
-
-  console.log(`==========>businessAddress`, businessAddressObj)
-  const [businessAddressValue, setBusinessAddressValue] = useState('not specified');
-
+  const [countryName, setCountryName] = useState(businessAddressObj.country);
+  const [postalCodeDisabled, setPostalCodeDisabled] = useState(true);
+  const [streetAddressDisabled, setStreetAddressDisabled] = useState(true);
+  const [cityDisabled, setCityDisabled] = useState(true);
+  const [countryNameDisabled, setCountryNameDisabled] = useState(true);
+  const [newPostalCode, setNewPostalCode] = useState('');
+  const [newStreetAddress, setNewStreetAddress] = useState('');
+  const [newCity, setNewCity] = useState('');
+  const [newCountryName, setNewCountryName] = useState('');
 
   const IdCopyHandler = () => {
     ref.current.select();
@@ -180,7 +180,7 @@ const CompanySettingsEditor = ({company}) => {
     setCurrencyDisabled(true);
   }
 
-  const setCountryHandler = () => {
+  const setCountryValueHandler = () => {
     setCountryDisabled(false);
   };
 
@@ -193,15 +193,81 @@ const CompanySettingsEditor = ({company}) => {
     setCountryDisabled(true);
   };
 
-  const setAddressHandler = () => {
-    setAddressDisabled(false);
-    setAutofocus(true);
+  const setPostalCodeHandler = () => {
+    setPostalCodeDisabled(false);
   };
 
-  const cancelAddressChangeHandler = () => {
-    setAddressDisabled(true);
+  const cancelPostalCodeChangeHandler = () => {
     setPostalCode(postalCode);
-  }
+    setPostalCodeDisabled(true);
+  };
+
+  const changePostalCodeHandler = (e) => {
+    e.preventDefault();
+    setNewPostalCode(e.target.value);
+  };
+
+  const savePostalCodeHandler = () => {
+    setPostalCode(newPostalCode);
+    setPostalCodeDisabled(true);
+  };
+
+  const setStreetAddressHandler = () => {
+    setStreetAddressDisabled(false);
+  };
+
+  const cancelStreetAddressChangeHandler = () => {
+    setStreetAddress(streetAddress);
+    setStreetAddressDisabled(true);
+  };
+
+  const changeStreetAddressHandler = (e) => {
+    e.preventDefault();
+    setNewStreetAddress(e.target.value);
+  };
+
+  const saveStreetAddressHandler = () => {
+    setStreetAddress(newStreetAddress);
+    setStreetAddressDisabled(true);
+  };
+
+  const setCityHandler = () => {
+    setCityDisabled(false);
+  };
+
+  const cancelCityChangeHandler = () => {
+    setCity(city);
+    setCityDisabled(true);
+  };
+
+  const changeCityHandler = (e) => {
+    e.preventDefault();
+    setNewCity(e.target.value);
+  };
+
+  const saveCityHandler = () => {
+    setCity(newCity);
+    setCityDisabled(true);
+  };
+
+  const setCountryNameHandler = () => {
+    setCountryNameDisabled(false);
+  };
+
+  const cancelCountryNameChangeHandler = () => {
+    setCountryName(countryName);
+    setCountryNameDisabled(true);
+  };
+
+  const changeCountryNameHandler = (e) => {
+    e.preventDefault();
+    setNewCountryName(e.target.value);
+  };
+
+  const saveCountryNameHandler = () => {
+    setCountryName(newCountryName);
+    setCountryNameDisabled(true);
+  };
 
   return (
     <div className={classes.root}>
@@ -390,7 +456,7 @@ const CompanySettingsEditor = ({company}) => {
                 className={classes.Btn}
                 variant="contained"
                 size="small"
-                onClick={setCountryHandler}
+                onClick={setCountryValueHandler}
               >
                 <CreateIcon/>
                 Edit
@@ -399,7 +465,7 @@ const CompanySettingsEditor = ({company}) => {
             : null
         }
         {
-          !countryDisabled ? (
+          !countryDisabled && (
             <div>
               <Controller
                 onChange={([, data]) => data}
@@ -451,7 +517,7 @@ const CompanySettingsEditor = ({company}) => {
               </Button>
             </div>
 
-          ) : null
+          )
         }
       </div>
       <hr className={classes.hr}/>
@@ -459,92 +525,55 @@ const CompanySettingsEditor = ({company}) => {
 
 {/*//================= Business address ==============*/}
       <div>
-
           <Typography>
             Business address
           </Typography>
-
-            <div   className={classes.messages}>
-              <div className={classes.businessInputs}>
-                  <label htmlFor="postalCode">Postal Code:</label>
-                  <input
-                    id="postalCode"
-                    className={classes.addressInput}
-                    type="text"
-                    defaultValue={postalCode}
-                    disabled={addressDisabled}
-                    // autoFocus={autofocus}
-                  />
-                <label htmlFor="street">Street:</label>
-                <input
-                  id="street"
-                  className={classes.addressInput}
-                  type="text"
-                  defaultValue={streetAddress}
-                  disabled={addressDisabled}
-                />
-                <label htmlFor="city">City:</label>
-                <input
-                  id="city"
-                  className={classes.addressInput}
-                  type="text"
-                  defaultValue={city}
-                  disabled={addressDisabled}
-                />
-                <label htmlFor="country">Country:</label>
-                <input
-                  id="country"
-                  className={classes.addressInput}
-                  type="text"
-                  defaultValue={countryValue}
-                  disabled={addressDisabled}
-                />
-                {! addressDisabled && (
-                  <div  className={classes.BtnGroup}>
-                    <Button
-                      className={classes.Btn}
-                      variant="contained"
-                      size="small"
-                      // onClick={saveAddressHandler}
-                    >
-                      <SaveIcon/>
-                      Save
-                    </Button>
-                    <Button
-                      className={classes.Btn}
-                      variant="contained"
-                      size="small"
-                      onClick={cancelAddressChangeHandler}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )
-                }
-              </div>
-              { addressDisabled && (
-                <Button
-                  className={classes.Btn}
-                  variant="contained"
-                  size="small"
-                  onClick={setAddressHandler}
-                >
-                  <CreateIcon/>
-                  Edit
-                </Button>
-                )
-              }
-
-            </div>
-
-
+          <CompanyBusinessAddress
+            name="postalCode"
+            title="Postal Code: "
+            defaultValue={postalCode}
+            disabled={postalCodeDisabled}
+            setFieldHandler={setPostalCodeHandler}
+            changeFieldHandler={changePostalCodeHandler}
+            saveFieldHandler={savePostalCodeHandler}
+            cancelFieldHandler={cancelPostalCodeChangeHandler}
+          />
+          <CompanyBusinessAddress
+            name="streetAddress"
+            title="Street: "
+            defaultValue={streetAddress}
+            disabled={streetAddressDisabled}
+            setFieldHandler={setStreetAddressHandler}
+            changeFieldHandler={changeStreetAddressHandler}
+            saveFieldHandler={saveStreetAddressHandler}
+            cancelFieldHandler={cancelStreetAddressChangeHandler}
+          />
+        <CompanyBusinessAddress
+          name="city"
+          title="City: "
+          defaultValue={city}
+          disabled={cityDisabled}
+          setFieldHandler={setCityHandler}
+          changeFieldHandler={changeCityHandler}
+          saveFieldHandler={saveCityHandler}
+          cancelFieldHandler={cancelCityChangeHandler}
+        />
+        <CompanyBusinessAddress
+          name="country"
+          title="Country: "
+          defaultValue={countryName}
+          disabled={countryNameDisabled}
+          setFieldHandler={setCountryNameHandler}
+          changeFieldHandler={changeCountryNameHandler}
+          saveFieldHandler={saveCountryNameHandler}
+          cancelFieldHandler={cancelCountryNameChangeHandler}
+        />
       </div>
-      <hr className={classes.hr}/>
-
-
+        <hr className={classes.hr}/>
     </div>
-
   );
 };
 
 export default CompanySettingsEditor;
+
+
