@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, TextField, Grid} from '@material-ui/core';
 import {makeStyles} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
@@ -13,15 +13,25 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ChildCompanyFields = ({ errors, control, register }) => {
+const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCurrency }) => {
 
     const classes = useStyles();
     const step = useSelector(state => state.stepForm.step);
 
+    useEffect(() => {
+        setShowCurrency(true);
+    }, [])
+
     return (
         <>
             <Box className={step === 0 ? '' : classes.hidden}>
-                <BaseCompanyFields errors={errors} control={control} register={register} />
+                <BaseCompanyFields
+                    errors={errors}
+                    control={control}
+                    register={register}
+                    showCurrency={showCurrency}
+                    setShowCurrency={setShowCurrency}
+                />
             </Box>
 
             <Box className={step === 1 ? '' : classes.hidden}>

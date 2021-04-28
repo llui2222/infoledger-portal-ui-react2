@@ -99,9 +99,7 @@ function CompanyCreatePopup() {
     }, [!rootCompany])
 
     React.useEffect(() => {
-        if(location.pathname.includes('/create-company') ) {
-            setOpen(true);
-        }
+        setOpen(true);
     }, [location])
 
     useEffect(() => {
@@ -244,10 +242,6 @@ function CompanyCreatePopup() {
     }, [next]);
 
     const handleCancel = () => {
-
-        if(!rootCompany) {
-            return;
-        }
         clearForm();
     }
 
@@ -308,7 +302,7 @@ function CompanyCreatePopup() {
 
             <DialogActions>
 
-                { !rootCompany &&
+                { rootCompany &&
                     <Button onClick={handleCancel} color="primary">
                         Cancel
                     </Button>

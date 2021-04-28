@@ -4,6 +4,7 @@ import {render, cleanup, waitFor, fireEvent} from '@testing-library/react'
 import {Provider} from "react-redux";
 import Profile from "./Profile";
 import {store} from "../../redux";
+import {MockedProvider} from '@apollo/client/testing';
 
 afterEach(cleanup);
 jest.mock('../../redux/api/auth', () => {

@@ -115,7 +115,6 @@ function Profile() {
     });
     const getUserInfo = () => {
         currentAuthenticatedUser().then(user => {
-            console.log(`==========>user`, user)
             if (user.attributes) {
                 if (user.attributes.name) {
                     setValue('name', user.attributes.name, {shouldValidate: true});

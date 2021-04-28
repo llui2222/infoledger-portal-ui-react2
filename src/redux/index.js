@@ -1,26 +1,9 @@
-import { combineReducers } from "redux";
 import { createBrowserHistory } from 'history';
 import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
-
-import requestsReducer from "./reducers/requestsReducer";
-import userReducer from "./reducers/userReducer";
-import notificationsReducer from "./reducers/notificationsReducer";
-import encryptionReducer from "./reducers/encryptionReducer";
-import companiesReducer from "./reducers/companiesReducer";
-import stepFormReducer from "./reducers/stepFormReducer";
-
-const rootReducer = (history) =>  combineReducers({
-    router: connectRouter(history),
-    requests: requestsReducer,
-    user: userReducer,
-    notifications: notificationsReducer,
-    encryption: encryptionReducer,
-    companies: companiesReducer,
-    stepForm: stepFormReducer
-});
+import rootReducer from "./reducers/rootReducer";
 
 export const history = createBrowserHistory();
 export const sagaMiddleware = createSagaMiddleware();
