@@ -250,31 +250,11 @@ const CompanySettingsEditor = ({company}) => {
     setCityDisabled(true);
   };
 
-  const setCountryNameHandler = () => {
-    setCountryNameDisabled(false);
-  };
-
-  const cancelCountryNameChangeHandler = () => {
-    setCountryName(countryName);
-    setCountryNameDisabled(true);
-  };
-
-  const changeCountryNameHandler = (e) => {
-    e.preventDefault();
-    setNewCountryName(e.target.value);
-  };
-
-  const saveCountryNameHandler = () => {
-    setCountryName(newCountryName);
-    setCountryNameDisabled(true);
-  };
-
   return (
     <div className={classes.root}>
       <Button>&lsaquo;-Back></Button>
       <h1>New Fund</h1>
       <TextField
-        className={classes.addressInput}
         id="outlined-basic"
         label="Specify your address"
         variant="outlined"
@@ -528,46 +508,48 @@ const CompanySettingsEditor = ({company}) => {
           <Typography>
             Business address
           </Typography>
-          <CompanyBusinessAddress
-            name="postalCode"
-            title="Postal Code: "
-            defaultValue={postalCode}
-            disabled={postalCodeDisabled}
-            setFieldHandler={setPostalCodeHandler}
-            changeFieldHandler={changePostalCodeHandler}
-            saveFieldHandler={savePostalCodeHandler}
-            cancelFieldHandler={cancelPostalCodeChangeHandler}
-          />
-          <CompanyBusinessAddress
-            name="streetAddress"
-            title="Street: "
-            defaultValue={streetAddress}
-            disabled={streetAddressDisabled}
-            setFieldHandler={setStreetAddressHandler}
-            changeFieldHandler={changeStreetAddressHandler}
-            saveFieldHandler={saveStreetAddressHandler}
-            cancelFieldHandler={cancelStreetAddressChangeHandler}
-          />
-        <CompanyBusinessAddress
-          name="city"
-          title="City: "
-          defaultValue={city}
-          disabled={cityDisabled}
-          setFieldHandler={setCityHandler}
-          changeFieldHandler={changeCityHandler}
-          saveFieldHandler={saveCityHandler}
-          cancelFieldHandler={cancelCityChangeHandler}
-        />
-        <CompanyBusinessAddress
-          name="country"
-          title="Country: "
-          defaultValue={countryName}
-          disabled={countryNameDisabled}
-          setFieldHandler={setCountryNameHandler}
-          changeFieldHandler={changeCountryNameHandler}
-          saveFieldHandler={saveCountryNameHandler}
-          cancelFieldHandler={cancelCountryNameChangeHandler}
-        />
+
+
+
+            <CompanyBusinessAddress
+              name="postalCode"
+              title="Postal Code: "
+              defaultValue={postalCode}
+              disabled={postalCodeDisabled}
+               setFieldHandler={setPostalCodeHandler}
+              changeFieldHandler={changePostalCodeHandler}
+              saveFieldHandler={savePostalCodeHandler}
+              cancelFieldHandler={cancelPostalCodeChangeHandler}
+            />
+
+
+
+
+
+
+
+
+        {/*<CompanyBusinessAddress*/}
+        {/*    name="streetAddress"*/}
+        {/*    title="Street: "*/}
+        {/*    defaultValue={streetAddress}*/}
+        {/*    disabled={streetAddressDisabled}*/}
+        {/*    setFieldHandler={setStreetAddressHandler}*/}
+        {/*    changeFieldHandler={changeStreetAddressHandler}*/}
+        {/*    saveFieldHandler={saveStreetAddressHandler}*/}
+        {/*    cancelFieldHandler={cancelStreetAddressChangeHandler}*/}
+        {/*  />*/}
+        {/*<CompanyBusinessAddress*/}
+        {/*  name="city"*/}
+        {/*  title="City: "*/}
+        {/*  defaultValue={city}*/}
+        {/*  disabled={cityDisabled}*/}
+        {/*  setFieldHandler={setCityHandler}*/}
+        {/*  changeFieldHandler={changeCityHandler}*/}
+        {/*  saveFieldHandler={saveCityHandler}*/}
+        {/*  cancelFieldHandler={cancelCityChangeHandler}*/}
+        {/*/>*/}
+
       </div>
         <hr className={classes.hr}/>
     </div>

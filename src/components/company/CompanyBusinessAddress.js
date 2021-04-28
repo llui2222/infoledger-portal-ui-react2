@@ -3,6 +3,8 @@ import Button from "@material-ui/core/Button";
 import CreateIcon from "@material-ui/icons/Create";
 import SaveIcon from "@material-ui/icons/Save";
 import { makeStyles } from '@material-ui/core/styles';
+import {TextField} from "@material-ui/core";
+import {Controller, useForm} from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
   messages: {
@@ -26,19 +28,29 @@ const useStyles = makeStyles((theme) => ({
 
 const CompanyBusinessAddress = (props) => {
   const classes = useStyles();
+  const {
+    errors,
+    control,
+    watch,
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      postalCode: '',
+    }
+  });
 
   return (
         <div>
           {props.disabled ? (
             <div className={classes.messages}>
               <div className={classes.businessAddressInputs}>
-                <label htmlFor={props.name}>{props.title}</label>
-                <input
-                  id={props.name}
-                  type="text"
-                  defaultValue={props.defaultValue}
-                  disabled={props.disabled}
-                />
+                    <TextField
+                      id={props.name}
+                      label={props.title}
+                      type="text"
+                      defaultValue={props.defaultValue}
+                      disabled={props.disabled}
+                    />
               </div>
               <Button
                 className={classes.Btn}
@@ -55,12 +67,26 @@ const CompanyBusinessAddress = (props) => {
           {!props.disabled ? (
           <div   className={classes.messages}>
             <div className={classes.businessAddressInputs}>
-              <label htmlFor={props.name}>{props.title}</label>
-              <input
-                id={props.name}
-                type="text"
+
+
+              <Controller
                 defaultValue={props.defaultValue}
-                onChange={props.changeFieldHandler}
+                name="postalCode"
+                control={control}
+                render={(onChange) => (
+                  <TextField
+                    id={props.name}
+                    label={props.title}
+                    type="text"
+                    defaultValue={props.defaultValue}
+                    // disabled={props.disabled}
+                    onChange={props.changeFieldHandler }
+                    onChangeText={value => onChange(value)}
+                  />
+                )}
+                name="postalCode"
+                rules={{ required: true }}
+                defaultValue={props.defaultValue}
               />
               <div  className={classes.BtnGroup}>
                 <Button
