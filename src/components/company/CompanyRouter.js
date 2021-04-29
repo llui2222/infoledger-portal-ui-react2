@@ -33,22 +33,22 @@ function CompanyRouter() {
 
     return (
         <>
-
             <CompanySidebar company={rootCompany.typeOfBusiness === 'SERVICE_COMPANY' ? company : rootCompany } />
             <Switch>
                 <Route exact path={`${path}/settings`}>
                     <CompanySettings company={company}/>
                 </Route>
-                <Route exact path={`${path}/settings/:companyId`}>
+                <Route exact path={`${path}/settings/edit/:companyID`}>
                     <CompanySettingsEditor company={company}/>
                 </Route>
-                <Route path={`${path}`}>
+                <Route exact path={`${path}`}>
                     <Company company={company}/>
                 </Route>
+                <Route exact path={`${path}/settings/create-company`}>
+                    <CompanyCreatePopup/>
+                </Route>
             </Switch>
-            <Route path={`${path}/settings/create-company`}>
-                <CompanyCreatePopup/>
-            </Route>
+
         </>
     );
 }

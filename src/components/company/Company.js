@@ -11,8 +11,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Company({ company }) {
-    console.log(`==========>company`, company)
-
     const classes = useStyles();
 
     return (

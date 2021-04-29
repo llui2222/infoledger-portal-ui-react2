@@ -2,19 +2,23 @@ import React, {useState, useEffect, useLayoutEffect, useMemo, useRef} from "reac
 import CompanyBusinessAddress from './CompanyBusinessAddress';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
-import {Chip, InputAdornment, TextField} from "@material-ui/core";
+import {Chip, Grid, InputAdornment, TextField} from "@material-ui/core";
 import WarningIcon from '@material-ui/icons/Warning';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import CreateIcon from '@material-ui/icons/Create';
 import SaveIcon from '@material-ui/icons/Save';
 import Typography from "@material-ui/core/Typography";
-import {useLocation} from "react-router-dom";
+import {useLocation, useHistory} from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {Controller, useForm} from "react-hook-form";
 import currencies from "../../data/currencies";
 import countries from "../../data/countries";
 import {useSelector} from "react-redux";
+import Link from "../common/Link";
+import {gql, useMutation} from "@apollo/client";
+import {updateProfile} from "../../graphql/mutations";
+import BorderColorIcon from "@material-ui/icons/BorderColor";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +35,15 @@ const useStyles = makeStyles((theme) => ({
   },
   InfoLedgerId: {
     width: '90%',
+  },
+  companyTitle: {
+    display: 'flex',
+  },
+  companyTitleEdit: {
+    marginTop: '10px',
+  },
+  companyName: {
+    margin: '0 20px 30px 0',
   },
   companyIdInput: {
     outline: 'none',
@@ -91,9 +104,6 @@ const useStyles = makeStyles((theme) => ({
   BtnGroup: {
     marginTop: '10px',
   },
-  // addressInputLabel: {
-  //  width: '20%',
-  // },
   addressLabel: {
     margin: 0,
   }
@@ -101,10 +111,15 @@ const useStyles = makeStyles((theme) => ({
 
 const CompanySettingsEditor = ({company}) => {
   const dataCompanies = useSelector(state => state?.companies);
+  const rootCompany = useSelector(state => state?.companies.rootCompany);
+
+  const history = useHistory();
   const classes = useStyles();
   const {pathname} = useLocation();
   const ref = useRef(null);
   const [timeDisabled, setTimeDisabled] = useState(true);
+  const [updateCompany] = useMutation(gql(updateProfile));
+
 
   const currencyOptions = Object.entries(currencies).map(currency => ({
     code: currency[0],
@@ -117,6 +132,7 @@ const CompanySettingsEditor = ({company}) => {
     errors,
     control,
     watch,
+    getValues,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -131,36 +147,53 @@ const CompanySettingsEditor = ({company}) => {
     },
   });
 
+
+
   const id = useMemo(() => {
     const paths =  pathname.split('/')
     return paths[paths.length - 1];
   }, [pathname]);
 
+  console.log(`==========>dataCompanies`, dataCompanies)
+  let companyName = dataCompanies.childCompanies.find(company => company?.profileId === id)?.displayName;
   let currency =  dataCompanies.childCompanies.find(company => company?.profileId === id)?.currency.match(/(?<=code=).*(?=,)/);
   let country = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress.country;
   let businessAddressObj = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress;
 
+  const [isCompanyTitleEdit, setIsCompanyTitleEdit] = useState('false');
   const [currencyDisabled, setCurrencyDisabled] = useState(true);
   const [currencyValue, setCurrencyValue] = useState(currency);
   const [countryDisabled, setCountryDisabled] = useState(true);
   const [countryValue, setCountryValue] = useState(country);
-  const [postalCode, setPostalCode] = useState(businessAddressObj.postalCode);
-  const [streetAddress, setStreetAddress] = useState(businessAddressObj.streetAddress);
-  const [city, setCity] = useState(businessAddressObj.city);
-  const [countryName, setCountryName] = useState(businessAddressObj.country);
+  console.log(`==========>countryValue`, countryValue)
+  const [postalCode, setPostalCode] = useState(businessAddressObj?.postalCode);
+  const [streetAddress, setStreetAddress] = useState(businessAddressObj?.streetAddress);
+  const [city, setCity] = useState(businessAddressObj?.city);
   const [postalCodeDisabled, setPostalCodeDisabled] = useState(true);
   const [streetAddressDisabled, setStreetAddressDisabled] = useState(true);
   const [cityDisabled, setCityDisabled] = useState(true);
-  const [countryNameDisabled, setCountryNameDisabled] = useState(true);
   const [newPostalCode, setNewPostalCode] = useState('');
   const [newStreetAddress, setNewStreetAddress] = useState('');
   const [newCity, setNewCity] = useState('');
-  const [newCountryName, setNewCountryName] = useState('');
+
+  // useEffect(() => {
+  //   const formValues = getValues();
+  //   console.log(`==========>formValues`, formValues);
+  //
+  //   const updateCompany = {
+  //     country: countryValue,
+  //   }
+  //   console.log(`==========>updateCompany`, updateCompany)
+  // }, [countryValue])
 
   const IdCopyHandler = () => {
     ref.current.select();
     document.execCommand('copy');
     ref.current.blur();
+  };
+
+  const isCompanyTitleEditHandler = () => {
+    setIsCompanyTitleEdit(!isCompanyTitleEdit);
   };
 
   const setTimeHandler = () => {
@@ -183,10 +216,19 @@ const CompanySettingsEditor = ({company}) => {
   const setCountryValueHandler = () => {
     setCountryDisabled(false);
   };
-
+  
   const  saveCountryValueHandler = () => {
-    setCountryValue(watch('country').name);
-    setCountryDisabled(true);
+    updateCompany({variables: {
+        profileId: rootCompany.profileId,
+        profile: {
+          profileName: getValues(companyName),
+          currency: getValues(currency),
+          businessAddress: {
+            country: watch('country').name
+          }
+        }
+      }
+    })
   };
 
   const cancelCountryChangeHandler = () => {
@@ -204,12 +246,15 @@ const CompanySettingsEditor = ({company}) => {
 
   const changePostalCodeHandler = (e) => {
     e.preventDefault();
-    setNewPostalCode(e.target.value);
+      setNewPostalCode(e.target.value);
   };
 
   const savePostalCodeHandler = () => {
-    setPostalCode(newPostalCode);
+    if (newPostalCode.length !== 0) {
+      setPostalCode(newPostalCode);
+    }
     setPostalCodeDisabled(true);
+
   };
 
   const setStreetAddressHandler = () => {
@@ -227,7 +272,9 @@ const CompanySettingsEditor = ({company}) => {
   };
 
   const saveStreetAddressHandler = () => {
-    setStreetAddress(newStreetAddress);
+    if (newStreetAddress.length !== 0) {
+      setStreetAddress(newStreetAddress);
+    }
     setStreetAddressDisabled(true);
   };
 
@@ -246,14 +293,70 @@ const CompanySettingsEditor = ({company}) => {
   };
 
   const saveCityHandler = () => {
-    setCity(newCity);
+    if (newCity.length !== 0) {
+      setCity(newCity);
+    }
     setCityDisabled(true);
   };
 
+    const BusinessAddressInfo =  [
+      {
+        name: 'postalCode',
+        title: 'Postal Code: ',
+        defaultValue: postalCode,
+        disabled: postalCodeDisabled,
+        setFieldHandler: setPostalCodeHandler,
+        changeFieldHandler: changePostalCodeHandler,
+        saveFieldHandler: savePostalCodeHandler,
+        cancelFieldHandler: cancelPostalCodeChangeHandler,
+      },
+      {
+        name: 'streetAddress',
+        title: 'Street: ',
+        defaultValue: streetAddress,
+        disabled: streetAddressDisabled,
+        setFieldHandler: setStreetAddressHandler,
+        changeFieldHandler: changeStreetAddressHandler,
+        saveFieldHandler: saveStreetAddressHandler,
+        cancelFieldHandler: cancelStreetAddressChangeHandler,
+      },
+      {
+        name: 'city',
+        title: 'City: ',
+        defaultValue: city,
+        disabled: cityDisabled,
+        setFieldHandler: setCityHandler,
+        changeFieldHandler: changeCityHandler,
+        saveFieldHandler: saveCityHandler,
+        cancelFieldHandler: cancelCityChangeHandler,
+      },
+    ];
+
   return (
     <div className={classes.root}>
-      <Button>&lsaquo;-Back></Button>
-      <h1>New Fund</h1>
+        <Button
+          onClick={() => {
+          history.goBack();
+        }}
+        >
+          &lsaquo;-Back>
+        </Button>
+      {
+        isCompanyTitleEdit ? (
+          <div className={classes.companyTitle}>
+            <Typography variant="h4" className={classes.companyName}>{companyName}</Typography>
+            <BorderColorIcon className={classes.companyTitleEdit} onClick={isCompanyTitleEditHandler}/>
+          </div>
+        ) : (
+          <TextField />
+        )
+
+      }
+      {/*<div className={classes.companyTitle}>*/}
+      {/*  <Typography variant="h4" className={classes.companyName}>{companyName}</Typography>*/}
+      {/*  <BorderColorIcon className={classes.companyTitleEdit}/>*/}
+      {/*</div>*/}
+
       <TextField
         id="outlined-basic"
         label="Specify your address"
@@ -424,7 +527,7 @@ const CompanySettingsEditor = ({company}) => {
             Country
           </Typography>
         {
-          countryDisabled ?
+          countryDisabled && (
             <div   className={classes.messages}>
               <input
                 className={classes.input}
@@ -442,7 +545,7 @@ const CompanySettingsEditor = ({company}) => {
                 Edit
               </Button>
             </div>
-            : null
+          )
         }
         {
           !countryDisabled && (
@@ -496,7 +599,6 @@ const CompanySettingsEditor = ({company}) => {
                 Cancel
               </Button>
             </div>
-
           )
         }
       </div>
@@ -508,48 +610,30 @@ const CompanySettingsEditor = ({company}) => {
           <Typography>
             Business address
           </Typography>
-
-
-
+        {
+          BusinessAddressInfo.map(({
+            name,
+            title,
+            defaultValue,
+            disabled,
+            setFieldHandler,
+            changeFieldHandler,
+            saveFieldHandler,
+            cancelFieldHandler
+          }) => (
             <CompanyBusinessAddress
-              name="postalCode"
-              title="Postal Code: "
-              defaultValue={postalCode}
-              disabled={postalCodeDisabled}
-               setFieldHandler={setPostalCodeHandler}
-              changeFieldHandler={changePostalCodeHandler}
-              saveFieldHandler={savePostalCodeHandler}
-              cancelFieldHandler={cancelPostalCodeChangeHandler}
+              key={name}
+              name={name}
+              title={title}
+              defaultValue={defaultValue}
+              disabled={disabled}
+              setFieldHandler={setFieldHandler}
+              changeFieldHandler={changeFieldHandler}
+              saveFieldHandler={saveFieldHandler}
+              cancelFieldHandler={cancelFieldHandler}
             />
-
-
-
-
-
-
-
-
-        {/*<CompanyBusinessAddress*/}
-        {/*    name="streetAddress"*/}
-        {/*    title="Street: "*/}
-        {/*    defaultValue={streetAddress}*/}
-        {/*    disabled={streetAddressDisabled}*/}
-        {/*    setFieldHandler={setStreetAddressHandler}*/}
-        {/*    changeFieldHandler={changeStreetAddressHandler}*/}
-        {/*    saveFieldHandler={saveStreetAddressHandler}*/}
-        {/*    cancelFieldHandler={cancelStreetAddressChangeHandler}*/}
-        {/*  />*/}
-        {/*<CompanyBusinessAddress*/}
-        {/*  name="city"*/}
-        {/*  title="City: "*/}
-        {/*  defaultValue={city}*/}
-        {/*  disabled={cityDisabled}*/}
-        {/*  setFieldHandler={setCityHandler}*/}
-        {/*  changeFieldHandler={changeCityHandler}*/}
-        {/*  saveFieldHandler={saveCityHandler}*/}
-        {/*  cancelFieldHandler={cancelCityChangeHandler}*/}
-        {/*/>*/}
-
+          ))
+        }
       </div>
         <hr className={classes.hr}/>
     </div>
@@ -557,5 +641,3 @@ const CompanySettingsEditor = ({company}) => {
 };
 
 export default CompanySettingsEditor;
-
-

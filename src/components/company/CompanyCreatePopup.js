@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
         textAlign: 'left'
     },
+    backBtn: {
+        marginRight: '350px',
+    },
 }));
 
 function CompanyCreatePopup() {
@@ -304,13 +307,38 @@ function CompanyCreatePopup() {
                 }
 
                 { haveMoreSteps ?
-                    <Button onClick={handleNextClick} variant="contained" color="primary">
-                        Next
-                    </Button>
+                  <div>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.backBtn}
+                        onClick={() => {
+                            history.goBack();
+                        }}
+                      >
+                        Back
+                      </Button>
+                      <Button onClick={handleNextClick} variant="contained" color="primary">
+                          Next
+                      </Button>
+
+                  </div>
                     :
+                  <div>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.backBtn}
+                        onClick={() => {
+                            history.goBack();
+                        }}
+                      >
+                          Back
+                      </Button>
                     <Button onClick={handleNextClick} variant="contained" color="primary">
                         Add
                     </Button>
+                  </div>
                 }
 
             </DialogActions>

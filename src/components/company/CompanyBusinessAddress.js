@@ -71,7 +71,7 @@ const CompanyBusinessAddress = (props) => {
 
               <Controller
                 defaultValue={props.defaultValue}
-                name="postalCode"
+                name={props.name}
                 control={control}
                 render={(onChange) => (
                   <TextField
@@ -79,25 +79,25 @@ const CompanyBusinessAddress = (props) => {
                     label={props.title}
                     type="text"
                     defaultValue={props.defaultValue}
-                    // disabled={props.disabled}
                     onChange={props.changeFieldHandler }
-                    onChangeText={value => onChange(value)}
                   />
                 )}
-                name="postalCode"
+                name={props.name}
                 rules={{ required: true }}
                 defaultValue={props.defaultValue}
               />
               <div  className={classes.BtnGroup}>
-                <Button
-                  className={classes.Btn}
-                  variant="contained"
-                  size="small"
-                  onClick={props.saveFieldHandler}
-                >
-                  <SaveIcon/>
-                  Save
-                </Button>
+
+                  <Button
+                    className={classes.Btn}
+                    variant="contained"
+                    size="small"
+                    onClick={props.saveFieldHandler}
+                  >
+
+                    <SaveIcon/>
+                    Save
+                  </Button>
                 <Button
                   className={classes.Btn}
                   variant="contained"

@@ -20,6 +20,7 @@ function CompanySettings({ company }) {
   const classes = useStyles();
 
     let { url } = useRouteMatch();
+    console.log(`==========>url`, url)
     const childCompanies = useSelector(state => state.companies.childCompanies);
     const location = useLocation()
   console.log(`==========>location`, location)
@@ -49,11 +50,12 @@ function CompanySettings({ company }) {
 
                     {childCompanies.map(company =>
                         <Grid item key={company.profileId}>
-                            <Chip label={company.displayName} />
-                          <Link to={`${location.pathname}/${company.profileId}`}>
-                            <BorderColorIcon  className={classes.editCompany}/>
+                          <Link to={`${location.pathname}/edit/${company.profileId}`}>
+                            <Chip label={company.displayName}
+                              onDelete={()=>{}}
+                              deleteIcon={<BorderColorIcon />}/>
                           </Link>
-                            
+                            {/*<BorderColorIcon  className={classes.editCompany}/>*/}
                         </Grid>
                     )}
             </Grid>
