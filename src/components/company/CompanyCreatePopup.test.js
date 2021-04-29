@@ -1,15 +1,12 @@
 import React from 'react';
-import * as reactRedux from 'react-redux'
 import '@testing-library/jest-dom/extend-expect';
-import {cleanup, screen, waitFor} from '@testing-library/react'
+import {cleanup, screen, waitFor, fireEvent} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import CompanyCreatePopup from "./CompanyCreatePopup";
 import {MockedProvider} from "@apollo/client/testing";
 import {gql} from "@apollo/client/core";
 import {allProfiles} from "../../graphql/queries";
 import {renderWithReduxRouter} from "../../helpers/testHelpers";
-import {companyCreateFailure} from "../../redux/actions/company";
-import {handleNext} from "../../redux/actions/stepForm";
 
 const graphQlMocks = [
     {
@@ -26,12 +23,7 @@ const graphQlMocks = [
     }
 ];
 
-const mockDispatchFn = jest.fn();
-
 const renderComponent = initialState => {
-
-    const useDispatchSpy = jest.spyOn(reactRedux, 'useDispatch');
-    useDispatchSpy.mockReturnValue(mockDispatchFn);
 
     return renderWithReduxRouter(
         <MockedProvider mocks={graphQlMocks} addTypename={false}>
@@ -42,6 +34,23 @@ const renderComponent = initialState => {
             initialState: initialState
         }
     );
+}
+
+const autocompleteSetValue = async (autocomplete, input, value) => {
+    autocomplete.focus();
+    fireEvent.change(input, { target: { value: value } });
+
+    await waitFor(() => {
+        fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    })
+
+    await waitFor(() => {
+        fireEvent.keyDown(autocomplete, { key: 'Enter' })
+    })
+
+    await waitFor(() => {
+        expect(input.value).toEqual(value)
+    })
 }
 
 describe('CompanyCreatePopup Root', () => {
@@ -74,12 +83,14 @@ describe('CompanyCreatePopup Root', () => {
         expect(screen.queryByText('Business Address')).toBeNull();
     });
 
-    it('Next button handled', async () => {
+    it('All fields should be invalid', async () => {
 
         userEvent.click(screen.getByRole('button', { name: 'Add' }));
 
         await waitFor(() => {
-            expect(mockDispatchFn).toHaveBeenCalledWith(handleNext());
+            expect(screen.getByRole('label', { name: /Company Name/i })).toHaveClass('Mui-error');
+            expect(screen.getByRole('label', { name: /Account Type/i })).toHaveClass('Mui-error');
+            expect(screen.getByRole('label', { name: /Country/i })).toHaveClass('Mui-error');
         })
     });
 })
@@ -93,10 +104,7 @@ describe('CompanyCreatePopup Child', () => {
             }
         },
         stepForm: {
-            allSteps: [
-                'Test Step 1',
-                'Test Step 2'
-            ],
+            allSteps: [],
             step: 0,
             next: 0
         }
@@ -108,9 +116,10 @@ describe('CompanyCreatePopup Child', () => {
 
     afterEach(cleanup);
 
+
     it('Company Create modal rendered', async () => {
-        expect(screen.getByText(/Test Step 1/i)).toBeInTheDocument();
-        expect(screen.getByText(/Test Step 2/i)).toBeInTheDocument();
+        expect(screen.getByTestId(/Company/i)).toBeInTheDocument();
+        expect(screen.getByTestId(/Business Address/i)).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Add' })).toBeNull();
@@ -125,13 +134,56 @@ describe('CompanyCreatePopup Child', () => {
         expect(popupBackdrop).not.toBeVisible();
     });
 
-    // it('Base Fields Rendered', async () => {
-    //
-    //     expect(screen.getByLabelText(/Company Name/i)).toBeInTheDocument();
-    //     expect(screen.getByLabelText(/Company Name/i)).toBeRequired();
-    //     expect(screen.getByLabelText(/Account Type/i)).toBeInTheDocument();
-    //     expect(screen.getByLabelText(/Country/i)).toBeInTheDocument();
-    //     expect(screen.queryByLabelText(/Currency/i)).toBeNull();
-    //     expect(screen.queryByLabelText(/Street 1/i)).toBeNull();
-    // });
+    it('All fields should be invalid', async () => {
+
+        userEvent.click(screen.getByRole('button', { name: 'Next' }));
+
+        await waitFor(() => {
+            expect(screen.getByRole('label', { name: /Company Name/i })).toHaveClass('Mui-error');
+            expect(screen.getByRole('label', { name: /Base Currency/i })).toHaveClass('Mui-error');
+            expect(screen.getByRole('label', { name: /Country/i })).toHaveClass('Mui-error');
+        })
+    });
+
+    it('First Step Fields Rendered', () => {
+
+        expect(screen.getByLabelText(/Company Name/i)).toBeVisible();
+        expect(screen.getByLabelText(/Country/i)).toBeVisible();
+        expect(screen.queryByLabelText(/Currency/i)).toBeVisible();
+
+        expect(screen.queryByLabelText(/Street 1/i)).not.toBeVisible();
+        expect(screen.queryByLabelText(/Street 2/i)).not.toBeVisible();
+        expect(screen.queryByLabelText(/City/i)).not.toBeVisible();
+        expect(screen.queryByLabelText(/Postal Code/i)).not.toBeVisible();
+        expect(screen.queryByLabelText(/Phone Number/i)).not.toBeVisible();
+    });
+
+    it('Second Step Fields Rendered', async () => {
+
+        const companyNameField = screen.getByLabelText(/Company Name/i);
+        const currencyAutocomplete = screen.getByTestId('currency-autocomplete');
+        const currencyField = screen.getByLabelText(/Currency/i);
+        const countryAutocomplete = screen.getByTestId('country-autocomplete');
+        const countryField = screen.getByLabelText(/Country/i);
+
+        userEvent.type(companyNameField, 'Test company');
+
+        await autocompleteSetValue(currencyAutocomplete, currencyField, 'USD');
+        await autocompleteSetValue(countryAutocomplete, countryField, 'Belarus');
+
+        userEvent.click(screen.getByRole('button', { name: 'Next' }));
+
+        await waitFor(() => {
+
+            expect(screen.queryByLabelText(/Street 1/i)).toBeVisible();
+            expect(screen.queryByLabelText(/Street 2/i)).toBeVisible();
+            expect(screen.queryByLabelText(/City/i)).toBeVisible();
+            expect(screen.queryByLabelText(/Postal Code/i)).toBeVisible();
+            expect(screen.queryByLabelText(/Phone Number/i)).toBeVisible();
+
+            expect(companyNameField).not.toBeVisible();
+            expect(countryField).not.toBeVisible();
+            expect(currencyField).not.toBeVisible();
+        })
+    });
 })
