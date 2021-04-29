@@ -109,7 +109,9 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                             control={control}
                             rules={{
                                 required: true,
-                                validate: value => value !== defaultCurrency
+                                validate: value => {
+                                    return value.code !== defaultCurrency.code;
+                                }
                             }}
                             render={({ onChange, ...props }) => (
                                 <Autocomplete
