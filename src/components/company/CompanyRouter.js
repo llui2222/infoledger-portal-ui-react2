@@ -11,6 +11,8 @@ import CompanyCreatePopup from "./CompanyCreatePopup";
 import CompanySidebar from "./CompanySidebar";
 import CompanySettingsEditor from './CompanySettingsEditor';
 import {useSelector} from "react-redux";
+import CompanyAccount from "./CompanyAccount";
+import Profile from "../user/Profile";
 
 function CompanyRouter() {
 
@@ -40,6 +42,12 @@ function CompanyRouter() {
                 </Route>
                 <Route exact path={`${path}/settings/edit/:companyID`}>
                     <CompanySettingsEditor company={company}/>
+                </Route>
+                <Route exact path={`${path}/settings/account`}>
+                    <CompanyAccount company={company}/>
+                </Route>
+                <Route exact path={`${path}/settings/profile`}>
+                    <Profile/>
                 </Route>
                 <Route exact path={`${path}`}>
                     <Company company={company}/>

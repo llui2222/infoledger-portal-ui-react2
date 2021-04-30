@@ -7,6 +7,7 @@ import {
 import {useDispatch} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
 import {useForm} from "react-hook-form";
+import { useHistory} from "react-router-dom";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {
     currentAuthenticatedUser
@@ -95,7 +96,6 @@ const modalTitle = {
     [FormTypes.EMAIL]: 'Change email',
 }
 
-
 function Profile() {
 
     const [activeField, setActiveField] = useState(null)
@@ -103,6 +103,7 @@ function Profile() {
     const [profile, setProfile] = useState(initialProfile)
     const dispatch = useDispatch();
     const classes = useStyles();
+    const history = useHistory();
 
     const {
         register,
@@ -115,7 +116,6 @@ function Profile() {
     });
     const getUserInfo = () => {
         currentAuthenticatedUser().then(user => {
-            console.log(`==========>user`, user)
             if (user.attributes) {
                 if (user.attributes.name) {
                     setValue('name', user.attributes.name, {shouldValidate: true});
@@ -135,7 +135,6 @@ function Profile() {
     useEffect(() => {
         getUserInfo()
     }, [])
-
 
     const onSubmit = data => {
         const {name, family_name, address, email, oldPass, newPass, code} = data
@@ -307,6 +306,13 @@ function Profile() {
     return (
         <>
             <PageContainer>
+              <Button
+                onClick={() => {
+                  history.goBack();
+                }}
+              >
+                &lsaquo;-Back>
+              </Button>
                 <PageHeader title="Profile" isSearch={false}/>
                 <Box className={classes.defaultForm}>
                     <TextField
@@ -392,7 +398,6 @@ function Profile() {
                         }}
                     />
                 </Box>
-
                 <EmailConfirmedMessage/>
             </PageContainer>
             <Modal
@@ -438,5 +443,3 @@ function Profile() {
 }
 
 export default Profile;
-
-
