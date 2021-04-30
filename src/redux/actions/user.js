@@ -136,8 +136,9 @@ export const forgotPassword = (userName) => ({
     userName,
 });
 
-export const forgotPasswordSuccess = () => ({
-    type: FORGOT_PASSWORD_SUCCESS
+export const forgotPasswordSuccess = userName => ({
+    type: FORGOT_PASSWORD_SUCCESS,
+    userName
 });
 
 export const forgotPasswordFailure = error => ({

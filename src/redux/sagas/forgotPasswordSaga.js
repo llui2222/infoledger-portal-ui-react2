@@ -18,7 +18,7 @@ export function* watchForgotPassword() {
 export function* workerForgotPassword(action) {
     try {
         yield call(api.forgotPassword, action);
-        yield put(forgotPasswordSuccess(action));
+        yield put(forgotPasswordSuccess(action.userName));
     } catch (error) {
         yield put(forgotPasswordFailure(error));
     }
