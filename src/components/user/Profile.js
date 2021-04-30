@@ -115,7 +115,6 @@ function Profile() {
     });
     const getUserInfo = () => {
         currentAuthenticatedUser().then(user => {
-            console.log(`==========>user`, user)
             if (user.attributes) {
                 if (user.attributes.name) {
                     setValue('name', user.attributes.name, {shouldValidate: true});
@@ -163,6 +162,7 @@ function Profile() {
                                 showModal(FormTypes.CODE)
                             } else {
                                 getUserInfo()
+                                window.location.reload(); //todo: remove after IL-265
                             }
                         }
                     }

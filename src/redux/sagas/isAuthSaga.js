@@ -1,4 +1,4 @@
-import {put, all, call, takeEvery, takeLatest} from 'redux-saga/effects';
+import {put, call, takeEvery, takeLatest} from 'redux-saga/effects';
 import {
     IS_AUTHENTICATED_REQUEST,
     IS_AUTHENTICATED_FAILURE,
@@ -10,7 +10,6 @@ import * as api from '../api/auth';
 import { workerFailure } from "./common";
 import {history} from "../index";
 import {routesNotAuthorizedOnly} from "../../utils/constants";
-import {fieldsRequired} from "../../utils/constants";
 
 export function* watchGetAuth() {
     yield takeEvery(IS_AUTHENTICATED_REQUEST, workerGetAuth);
@@ -41,9 +40,7 @@ export function* watchGetAuthSuccess() {
     yield takeLatest(IS_AUTHENTICATED_SUCCESS, workerGetAuthSuccess);
 }
 
-export function* workerGetAuthSuccess(action) {
-
-    yield all(fieldsRequired.map(attr => call(redirectToCompleteProfile, attr, action.user.attributes)));
+export function* workerGetAuthSuccess() {
 
     if(isCurrentRouteInUnauthorizedList()) {
         yield history.push('/');
@@ -52,10 +49,4 @@ export function* workerGetAuthSuccess(action) {
 
 const isCurrentRouteInUnauthorizedList = () => {
     return routesNotAuthorizedOnly.includes(history.location.pathname);
-}
-
-const redirectToCompleteProfile = (attr, attributes) => {
-    if(!attributes[attr] && history.location.pathname !== '/profile') {
-        history.push('/profile');
-    }
 }
