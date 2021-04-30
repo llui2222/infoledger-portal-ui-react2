@@ -32,7 +32,7 @@ export function* watchGetAuthFailure() {
 
 export function* workerGetAuthFailure() {
     yield workerFailure();
-    if(!isCurrentRouteInUnauthorizedList) {
+    if(!isCurrentRouteInUnauthorizedList()) {
         yield history.push('/login');
     }
 }
@@ -45,12 +45,14 @@ export function* workerGetAuthSuccess(action) {
 
     yield all(fieldsRequired.map(attr => call(redirectToCompleteProfile, attr, action.user.attributes)));
 
-    if(isCurrentRouteInUnauthorizedList) {
+    if(isCurrentRouteInUnauthorizedList()) {
         yield history.push('/');
     }
 }
 
-const isCurrentRouteInUnauthorizedList = routesNotAuthorizedOnly.includes(history.location.pathname);
+const isCurrentRouteInUnauthorizedList = () => {
+    return routesNotAuthorizedOnly.includes(history.location.pathname);
+}
 
 const redirectToCompleteProfile = (attr, attributes) => {
     if(!attributes[attr] && history.location.pathname !== '/profile') {
