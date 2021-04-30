@@ -22,7 +22,7 @@ function FieldPassword({
                            register,
                            required,
                            margin,
-                           labelWidth = 82,
+                           labelWidth = 120,
                            ...restProps
 }) {
 

@@ -85,7 +85,7 @@ function SetNewPassword() {
                     name='confirm-new-password'
                     label='Confirm New Password'
                     helperText='The passwords do not match'
-                    labelWidth={142}
+                    labelWidth={180}
                     autoComplete="new-password"
                     inputProps={{
                         name: 'confirm-password',
