@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Route, useHistory} from "react-router-dom";
+import {Route, useHistory, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 import {gql, useQuery} from "@apollo/client";
@@ -12,12 +12,16 @@ const ProtectedRoute = ({children, ...rest}) => {
 
     const dispatch = useDispatch();
     const authState = useSelector(state => state.user.authState);
+    const location = useLocation();
     const history = useHistory();
     const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
         if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles) {
             dispatch(setCompanies(data.allProfiles, refetch));
+            if(location.pathname === '/profile') {
+                return;
+            }
             if (!data.allProfiles.length || !data.allProfiles[0]) {
                 history.push('/create-company')
             }
