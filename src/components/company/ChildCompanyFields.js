@@ -48,6 +48,9 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                         name: "street1",
                         ref: register({ required: true })
                     }}
+                    InputLabelProps={{
+                        role: "label"
+                    }}
                     error={!!errors.street1}
                 />
                 <TextField
@@ -61,6 +64,9 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                     inputProps={{
                         name: "street2",
                         ref: register()
+                    }}
+                    InputLabelProps={{
+                        role: "label"
                     }}
                     error={!!errors.street2}
                 />
@@ -80,6 +86,9 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                                 name: "city",
                                 ref: register({ required: true })
                             }}
+                            InputLabelProps={{
+                                role: "label"
+                            }}
                             error={!!errors.city}
                         />
                     </Grid>
@@ -96,6 +105,9 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                             inputProps={{
                                 name: "postalCode",
                                 ref: register({ required: true })
+                            }}
+                            InputLabelProps={{
+                                role: "label"
                             }}
                             error={!!errors.postalCode}
                         />
@@ -118,6 +130,9 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                                     maxLength: 20,
                                     pattern: /[\d+()-]/i
                                 })
+                            }}
+                            InputLabelProps={{
+                                role: "label"
                             }}
                             error={!!errors.phone}
                         />
