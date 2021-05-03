@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, TextField, Grid} from '@material-ui/core';
 import {makeStyles} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
@@ -13,15 +13,25 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ChildCompanyFields = ({ errors, control, register }) => {
+const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCurrency }) => {
 
     const classes = useStyles();
     const step = useSelector(state => state.stepForm.step);
 
+    useEffect(() => {
+        setShowCurrency(true);
+    }, [])
+
     return (
         <>
             <Box className={step === 0 ? '' : classes.hidden}>
-                <BaseCompanyFields errors={errors} control={control} register={register} />
+                <BaseCompanyFields
+                    errors={errors}
+                    control={control}
+                    register={register}
+                    showCurrency={showCurrency}
+                    setShowCurrency={setShowCurrency}
+                />
             </Box>
 
             <Box className={step === 1 ? '' : classes.hidden}>
@@ -38,6 +48,9 @@ const ChildCompanyFields = ({ errors, control, register }) => {
                         name: "street1",
                         ref: register({ required: true })
                     }}
+                    InputLabelProps={{
+                        role: "label"
+                    }}
                     error={!!errors.street1}
                 />
                 <TextField
@@ -51,6 +64,9 @@ const ChildCompanyFields = ({ errors, control, register }) => {
                     inputProps={{
                         name: "street2",
                         ref: register()
+                    }}
+                    InputLabelProps={{
+                        role: "label"
                     }}
                     error={!!errors.street2}
                 />
@@ -70,6 +86,9 @@ const ChildCompanyFields = ({ errors, control, register }) => {
                                 name: "city",
                                 ref: register({ required: true })
                             }}
+                            InputLabelProps={{
+                                role: "label"
+                            }}
                             error={!!errors.city}
                         />
                     </Grid>
@@ -86,6 +105,9 @@ const ChildCompanyFields = ({ errors, control, register }) => {
                             inputProps={{
                                 name: "postalCode",
                                 ref: register({ required: true })
+                            }}
+                            InputLabelProps={{
+                                role: "label"
                             }}
                             error={!!errors.postalCode}
                         />
@@ -108,6 +130,9 @@ const ChildCompanyFields = ({ errors, control, register }) => {
                                     maxLength: 20,
                                     pattern: /[\d+()-]/i
                                 })
+                            }}
+                            InputLabelProps={{
+                                role: "label"
                             }}
                             error={!!errors.phone}
                         />

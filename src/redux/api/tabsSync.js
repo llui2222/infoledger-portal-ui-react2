@@ -43,5 +43,5 @@ export function onMessage(callback) {
 }
 
 function notSupported() {
-    console.log('BroadcastChannel is not supported');
+    // console.log('BroadcastChannel is not supported');
 }
