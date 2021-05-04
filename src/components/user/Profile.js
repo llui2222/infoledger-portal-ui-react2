@@ -162,6 +162,7 @@ function Profile() {
                                 showModal(FormTypes.CODE)
                             } else {
                                 getUserInfo()
+                                window.location.reload(); //todo: remove after IL-265
                             }
                         }
                     }

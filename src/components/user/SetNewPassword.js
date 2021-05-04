@@ -25,13 +25,17 @@ function SetNewPassword() {
         mode: 'onChange'
     });
 
-    password.current = watch('password', '');
+    password.current = watch('newPassword', '');
 
     const onSubmit = data => {
-        dispatch(setNewPassword(userName, data.verificationCode, data.password));
+        dispatch(setNewPassword(userName, data.verificationCode, data.newPassword));
     }
 
-    if(!userName) {
+    const onError = error => {
+        console.log('error', error);
+    }
+
+    if(!userName || userName === 'undefined') {
         return <Redirect to='/forgot-password'/>
     }
 
@@ -43,7 +47,7 @@ function SetNewPassword() {
         <CenteredContainer>
             <FormControl
                 component="form"
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(onSubmit, onError)}
             >
                 <Typography variant="h3" gutterBottom>
                     Set New Password
@@ -71,7 +75,7 @@ function SetNewPassword() {
                     register={register}
                     errors={errors}
                     margin='normal'
-                    name='new-password'
+                    name='newPassword'
                     label='New Password'
                     defaultValue=''
                     autoComplete="new-password"
@@ -82,10 +86,10 @@ function SetNewPassword() {
                     register={register}
                     errors={errors}
                     margin='normal'
-                    name='confirm-new-password'
+                    name='confirm-newPassword'
                     label='Confirm New Password'
                     helperText='The passwords do not match'
-                    labelWidth={142}
+                    labelWidth={180}
                     autoComplete="new-password"
                     inputProps={{
                         name: 'confirm-password',

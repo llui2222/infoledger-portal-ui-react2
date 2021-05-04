@@ -59,6 +59,9 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                         required: true
                     })
                 }}
+                InputLabelProps={{
+                    role: "label"
+                }}
                 error={!!errors.companyName}
             />
 
@@ -70,7 +73,7 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                     fullWidth
                     required
                 >
-                    <InputLabel id="account-type-label">Account Type</InputLabel>
+                    <InputLabel id="account-type-label" role='label'>Account Type</InputLabel>
 
                     <Controller
                         control={control}
@@ -109,7 +112,9 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                             control={control}
                             rules={{
                                 required: true,
-                                validate: value => value !== defaultCurrency
+                                validate: value => {
+                                    return value.code !== defaultCurrency.code;
+                                }
                             }}
                             render={({ onChange, ...props }) => (
                                 <Autocomplete
@@ -120,6 +125,7 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                                     getOptionSelected={(option, value) => option.code === value.code}
                                     onChange={(e, data) => onChange(data)}
                                     {...props}
+                                    data-testid="currency-autocomplete"
                                     renderInput={params => (
                                         <TextField
                                             {...params}
@@ -127,6 +133,9 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                                             margin="normal"
                                             label="Base Currency"
                                             variant="outlined"
+                                            InputLabelProps={{
+                                                role: "label"
+                                            }}
                                         />
                                     )}
                                 />
@@ -143,7 +152,7 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                 control={control}
                 rules={{
                     required: true,
-                    validate: value => value !== countries[0]
+                    validate: value => value.name !== countries[0].name
                 }}
                 render={({ onChange, ...props }) => (
                     <Autocomplete
@@ -153,6 +162,7 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                         renderOption={option => option.name}
                         onChange={(e, data) => onChange(data)}
                         {...props}
+                        data-testid="country-autocomplete"
                         renderInput={params => (
                             <TextField
                                 {...params}
@@ -161,6 +171,9 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                                 label="Country"
                                 variant="outlined"
                                 autoComplete='new-password'
+                                InputLabelProps={{
+                                    role: "label"
+                                }}
                             />
                         )}
                     />

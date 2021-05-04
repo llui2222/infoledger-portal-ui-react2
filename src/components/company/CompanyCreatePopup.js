@@ -70,7 +70,7 @@ function CompanyCreatePopup() {
 
     const haveSteps = allSteps.length > 1;
     const haveMoreSteps = allSteps.length > step+1;
-    const defaultCurrency = {code: '',name: ''};
+    const defaultCurrency = {code: '', name: ''};
 
     const {
         register,
@@ -102,9 +102,7 @@ function CompanyCreatePopup() {
     }, [!rootCompany])
 
     React.useEffect(() => {
-        if(location.pathname.includes('/create-company') ) {
-            setOpen(true);
-        }
+        setOpen(true);
     }, [location])
 
     useEffect(() => {
@@ -247,10 +245,6 @@ function CompanyCreatePopup() {
     }, [next]);
 
     const handleCancel = () => {
-
-        if(!rootCompany) {
-            return;
-        }
         clearForm();
     }
 
@@ -277,7 +271,7 @@ function CompanyCreatePopup() {
                     <Stepper alternativeLabel activeStep={step} className={classes.stepper}>
                         {allSteps.map((stepName) =>
                             <Step key={stepName}>
-                                <StepLabel>{stepName}</StepLabel>
+                                <StepLabel data-testid={stepName}>{stepName}</StepLabel>
                             </Step>
                         )}
                     </Stepper> : null
@@ -311,7 +305,7 @@ function CompanyCreatePopup() {
 
             <DialogActions>
 
-                { !rootCompany &&
+                { rootCompany &&
                     <Button onClick={handleCancel} color="primary">
                         Cancel
                     </Button>

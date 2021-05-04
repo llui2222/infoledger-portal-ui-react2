@@ -20,7 +20,7 @@ describe('forgotPasswordSaga', () => {
             .provide([
                 [matchers.call.fn(api.forgotPassword), mockUser],
             ])
-            .put(forgotPasswordSuccess(mockUser))
+            .put(forgotPasswordSuccess(mockUser.userName))
             .dispatch(forgotPassword())
             .run();
     });
