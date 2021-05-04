@@ -140,7 +140,9 @@ const CompanySettingsEditor = ({company}) => {
   }, [pathname]);
 
   let companyName = dataCompanies.childCompanies.find(company => company?.profileId === id)?.displayName;
+  let companyId = dataCompanies.childCompanies.find(company => company?.profileId === id)?.profileId;
   let country = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress.country;
+  let companyProfileType = dataCompanies.childCompanies.find(company => company?.profileId === id)?.profileType;
   let businessAddressObj = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress;
 
   const [isCompanyTitleEdit, setIsCompanyTitleEdit] = useState('false');
@@ -192,17 +194,26 @@ const CompanySettingsEditor = ({company}) => {
     setCountryDisabled(false);
   };
   
+  console.log(`==========>businessAddressObj.streetAddress`, businessAddressObj?.streetAddress)
+  
   const  saveCountryValueHandler = () => {
-    updateCompany({variables: {
-        profileId: rootCompany.profileId,
+    updateCompany({
+      variables: {
+        profileId: companyId,
         profile: {
-          profileName: getValues(companyName),
+          profileType: companyProfileType,
+          profileName: '34566',
+          parentProfileId: rootCompany.profileId,
           businessAddress: {
-            country: watch('country').name
-          }
+            country: 'russia',
+            streetAddress: 'chechova',
+            city: 'taganrog',
+            postalCode: '347900',
+            phoneNumber: '88009007658',
+          },
         }
       }
-    })
+     }).then(r => console.log(`==========>r`, r))
   };
 
   const cancelCountryChangeHandler = () => {
