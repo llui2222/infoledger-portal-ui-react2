@@ -1,7 +1,6 @@
 import {put} from 'redux-saga/effects';
 import {showNotification} from "../actions/notifications";
-
-function showErrorMessage(message) {
+export function showErrorMessage(message) {
     return put(showNotification({
         message: message,
         options: {
