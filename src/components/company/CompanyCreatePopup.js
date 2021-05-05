@@ -23,22 +23,8 @@ import {companyCreate, companyCreateFailure, companyCreateSuccess} from "../../r
 import {showNotification} from "../../redux/actions/notifications";
 
 const useStyles = makeStyles((theme) => ({
-    popupContent: {
-        padding: `${theme.spacing(2)}px ${theme.spacing(6)}px`,
-    },
     stepper: {
         marginTop: theme.spacing(2)
-    },
-    dialog: {
-        '& .MuiDialog-container .MuiPaper-root': {
-            overflow: 'visible'
-        }
-    },
-    dialogTitle: {
-        position: 'absolute',
-        top: -58,
-        paddingLeft: 2,
-        color: 'white'
     },
     form: {
         width: 400,
@@ -256,13 +242,13 @@ function CompanyCreatePopup() {
     }
 
     return (
-        <Dialog onClose={handleCancel} open={open} className={classes.dialog}>
+        <Dialog onClose={handleCancel} open={open}>
 
-            <DialogTitle onClose={handleCancel} className={classes.dialogTitle}>
+            <DialogTitle onClose={handleCancel}>
                 Add a Company
             </DialogTitle>
 
-            <DialogContent dividers className={classes.popupContent}>
+            <DialogContent dividers>
 
                 { haveSteps ?
                     <Stepper alternativeLabel activeStep={step} className={classes.stepper}>

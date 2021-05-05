@@ -6,6 +6,7 @@ import {useDispatch} from "react-redux";
 import ContactsList from "./ContactsList";
 import {CircularProgress} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import showErrorNotification from "../../utils/showErrorNotification";
 
 const useStyles = makeStyles((theme) => ({
     loader: {
@@ -24,16 +25,7 @@ function ContactsListContainer() {
 
     useEffect(() => {
         if(error) {
-
-            dispatch(
-                showNotification({
-                    message: error.message,
-                    options: {
-                        key: new Date().getTime() + Math.random(),
-                        variant: 'error'
-                    },
-                })
-            );
+            showErrorNotification(error);
         }
     }, [error])
 
