@@ -16,6 +16,7 @@ import Notifications from "../Notifications";
 import Document from "../investment/Document";
 import CompanyRouter from "../company/CompanyRouter";
 import CompanyCreatePopup from "../company/CompanyCreatePopup";
+import Mfa from "../user/Mfa";
 
 function Router() {
     return (
@@ -44,6 +45,9 @@ function Router() {
             </ProtectedRoute>
             <ProtectedRoute path="/create-company">
                 <CompanyCreatePopup/>
+            </ProtectedRoute>
+            <ProtectedRoute path="/mfa">
+                <Mfa/>
             </ProtectedRoute>
             <UnauthorizedRoute path="/login">
                 <Login/>
