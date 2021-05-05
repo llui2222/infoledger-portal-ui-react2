@@ -5,10 +5,11 @@ import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 import {gql, useQuery} from "@apollo/client";
 import {allProfiles} from "../../graphql/queries";
 import ServiceCompanySidebar from "../company/ServiceCompanySidebar";
-import {showNotification} from "../../redux/actions/notifications";
 import {setCompanies} from "../../redux/actions/company";
 import {fieldsRequired} from "../../utils/constants";
 import {currentAuthenticatedUser} from "../../redux/api/auth";
+import {setCurrentUser} from "../../redux/actions/user";
+import showErrorNotification from "../../utils/showErrorNotification";
 
 const ProtectedRoute = ({children, ...rest}) => {
 
@@ -20,40 +21,41 @@ const ProtectedRoute = ({children, ...rest}) => {
     const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
+        currentAuthenticatedUser().then(user => {
+            dispatch(setCurrentUser(user))
+        }).catch(error => {
+            dispatch(setCurrentUser(null));
+            console.log('currentAuthenticatedUser error', error);
+        })
+    }, []);
+
+    useEffect(() => {
         if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles) {
             dispatch(setCompanies(data.allProfiles, refetch));
 
             let profileComplete = true;
 
-            currentAuthenticatedUser().then(user => {
-                fieldsRequired.map(attr => {
-                    if(!user.attributes[attr]) {
-                        profileComplete = false;
-                    }
-                })
-
-                if(!profileComplete) {
-                    if(location.pathname !== '/profile') {
-                        history.push('/profile');
-                    }
-                } else if(!data.allProfiles.length || !data.allProfiles[0]) {
-                    if(location.pathname !== '/create-company') {
-                        history.push('/create-company');
-                    }
+            fieldsRequired.map(attr => {
+                if(!user.user.attributes[attr]) {
+                    profileComplete = false;
                 }
             })
+
+            if(!profileComplete) {
+                if(location.pathname !== '/profile') {
+                    history.push('/profile');
+                }
+            } else if(!data.allProfiles.length || !data.allProfiles[0]) {
+                if(location.pathname !== '/create-company') {
+                    history.push('/create-company');
+                }
+            }
         }
-    }, [data, authState])
+    }, [data, authState, user])
 
 
     if (error) {
-        dispatch(showNotification({
-            message: error.message,
-            options: {
-                key: new Date().getTime() + Math.random(),
-                variant: 'error'
-            },
-        }))
+        showErrorNotification(error);
         return null;
     }
 
