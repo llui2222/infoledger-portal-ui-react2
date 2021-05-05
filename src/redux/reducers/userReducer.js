@@ -5,7 +5,8 @@ import {
     IS_AUTHENTICATED_FAILURE,
     SIGN_IN_SUCCESS,
     FORGOT_PASSWORD_SUCCESS,
-    SET_CURRENT_USER
+    SET_CURRENT_USER,
+    SET_USER_MFA,
 } from '../actions/user';
 
 import {
@@ -17,7 +18,8 @@ import {
 const initialState = {
     emailConfirmed: false,
     authState: PENDING_AUTH_STATE,
-    user: null
+    user: null,
+    userMfa: null,
 }
 
 const userReducer = (state = initialState, action) => {
@@ -35,6 +37,8 @@ const userReducer = (state = initialState, action) => {
             return {...state, emailConfirmed: false, authState: AUTHORIZED_AUTH_STATE}
         case SET_CURRENT_USER:
             return {...state, user: action.userData}
+        case SET_USER_MFA:
+            return {...state, userMfa: action.userMfa}
         default:
             return state;
     }

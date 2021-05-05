@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Mfa() {
+function MfaSetup() {
 
     const classes = useStyles();
     const user = useSelector(state => state.user);
@@ -105,4 +105,4 @@ function Mfa() {
     );
 }
 
-export default Mfa;
+export default MfaSetup;
