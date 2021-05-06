@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Button from "@material-ui/core/Button";
 import CreateIcon from "@material-ui/icons/Create";
 import SaveIcon from "@material-ui/icons/Save";
 import { makeStyles } from '@material-ui/core/styles';
-import {TextField} from "@material-ui/core";
-import {Controller, useForm} from "react-hook-form";
+import { TextField } from "@material-ui/core";
+import { Controller, useForm } from "react-hook-form";
+import green from "@material-ui/core/colors/green";
+import { red } from "@material-ui/core/colors";
+
+const greenBtn = green[500];
+const redBtn = red[700];
 
 const useStyles = makeStyles((theme) => ({
   messages: {
@@ -20,6 +25,17 @@ const useStyles = makeStyles((theme) => ({
   Btn: {
     marginLeft: 'auto',
     marginRight: '20px',
+    color: 'white',
+  },
+  saveBtn: {
+    background: greenBtn,
+    color: 'white',
+    marginLeft: 'auto',
+    marginRight: '20px',
+  },
+  cancelBtn: {
+    background: redBtn,
+    color: 'white',
   },
   BtnGroup: {
     marginTop: '10px',
@@ -29,9 +45,7 @@ const useStyles = makeStyles((theme) => ({
 const CompanyBusinessAddress = (props) => {
   const classes = useStyles();
   const {
-    errors,
     control,
-    watch,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -40,77 +54,78 @@ const CompanyBusinessAddress = (props) => {
   });
 
   return (
-        <div>
-          {props.disabled ? (
-            <div className={classes.messages}>
-              <div className={classes.businessAddressInputs}>
-                    <TextField
-                      id={props.name}
-                      label={props.title}
-                      type="text"
-                      defaultValue={props.defaultValue}
-                      disabled={props.disabled}
-                    />
-              </div>
+    <div>
+      {props.disabled ? (
+        <div className={classes.messages}>
+          <div className={classes.businessAddressInputs}>
+            <TextField
+              id={props.name}
+              label={props.title}
+              type="text"
+              defaultValue={props.defaultValue}
+              disabled={props.disabled}
+            />
+          </div>
+          <Button
+            className={classes.Btn}
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={props.setFieldHandler}
+          >
+            <CreateIcon/>
+            Edit
+          </Button>
+        </div>
+      ) : null}
+      {
+        !props.disabled && (
+      <div   className={classes.messages}>
+        <div className={classes.businessAddressInputs}>
+          <Controller
+            defaultValue={props.defaultValue}
+            name={props.name}
+            control={control}
+            render={(onChange) => (
+              <TextField
+                id={props.name}
+                label={props.title}
+                type="text"
+                defaultValue={props.defaultValue}
+                onChange={props.changeFieldHandler }
+              />
+            )}
+            name={props.name}
+            rules={{ required: true }}
+            defaultValue={props.defaultValue}
+          />
+          <div  className={classes.BtnGroup}>
+
               <Button
                 className={classes.Btn}
                 variant="contained"
                 size="small"
-                onClick={props.setFieldHandler}
+                onClick={props.saveFieldHandler}
+                className={classes.saveBtn}
               >
-                <CreateIcon/>
-                Edit
+
+                <SaveIcon/>
+                Save
               </Button>
-            </div>
-          ) : null}
-
-          {!props.disabled ? (
-          <div   className={classes.messages}>
-            <div className={classes.businessAddressInputs}>
-
-
-              <Controller
-                defaultValue={props.defaultValue}
-                name={props.name}
-                control={control}
-                render={(onChange) => (
-                  <TextField
-                    id={props.name}
-                    label={props.title}
-                    type="text"
-                    defaultValue={props.defaultValue}
-                    onChange={props.changeFieldHandler }
-                  />
-                )}
-                name={props.name}
-                rules={{ required: true }}
-                defaultValue={props.defaultValue}
-              />
-              <div  className={classes.BtnGroup}>
-
-                  <Button
-                    className={classes.Btn}
-                    variant="contained"
-                    size="small"
-                    onClick={props.saveFieldHandler}
-                  >
-
-                    <SaveIcon/>
-                    Save
-                  </Button>
-                <Button
-                  className={classes.Btn}
-                  variant="contained"
-                  size="small"
-                  onClick={props.cancelFieldHandler}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
+            <Button
+              className={classes.cancelBtn}
+              variant="contained"
+              size="small"
+              onClick={props.cancelFieldHandler}
+            >
+              Cancel
+            </Button>
           </div>
-          ):null}
         </div>
+      </div>
+      )
+     }
+    </div>
   );
 };
 

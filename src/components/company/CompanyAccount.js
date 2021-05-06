@@ -1,11 +1,20 @@
-import React, {useState} from "react";
-import Button from "@material-ui/core/Button";
+import React, { useState } from 'react';
+import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory} from "react-router-dom";
-import Typography from "@material-ui/core/Typography";
-import BorderColorIcon from "@material-ui/icons/BorderColor";
-import {Avatar, Box, TextField} from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
+import { useHistory } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
+import { Avatar, Box, TextField } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
+import { useSelector } from 'react-redux';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { updateProfile } from '../../graphql/mutations';
+import { allProfiles } from '../../graphql/queries';
+import green from "@material-ui/core/colors/green";
+import { red } from "@material-ui/core/colors";
+
+const greenBtn = green[400];
+const redBtn = red[700];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +41,16 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
     marginRight: '20px',
   },
+  saveBtn: {
+    background: greenBtn,
+    color: 'white',
+    marginLeft: 'auto',
+    marginRight: '20px',
+  },
+  cancelBtn: {
+    background: redBtn,
+    color: 'white',
+  },
   messages: {
     display: 'flex',
     marginTop: '20px',
@@ -44,16 +63,22 @@ const useStyles = makeStyles((theme) => ({
   accountType: {
     fontSize: '1.2rem',
     marginTop: '10px',
-  }
+  },
+  backBtn: {
+    margin: '20px 0 30px 0',
+  },
 }));
 
 const CompanyAccount = ({company}) => {
   const classes = useStyles();
   const history = useHistory();
+  const [updateCompany] = useMutation(gql(updateProfile));
 
   const [isOrgNameEdit, setIsOrgNameEdit] = useState('false');
   const [newOrgName, setNewOrgName] = useState('');
-  const [orgName, setOrgName] = useState(company.displayName);
+  const [orgName, setOrgName] = useState(company?.displayName);
+  const {data, refetch: refetch1} = useQuery(gql(allProfiles));
+
   const isOrgNameEditHandler = () => {
     setIsOrgNameEdit(!isOrgNameEdit);
   };
@@ -67,6 +92,22 @@ const CompanyAccount = ({company}) => {
     if (newOrgName.length !== 0) {
       setOrgName(newOrgName);
     }
+    updateCompany({
+      variables: {
+        profileId: company.profileId,
+        profile: {
+          currency: company.currency,
+          profileName: newOrgName,
+          profileType: company.profileType,
+          typeOfBusiness: company.typeOfBusiness,
+          billingAddress: {
+            country: company.billingAddress.country,
+          }
+        }
+      }
+    }).then(() => {
+      refetch1()
+    })
     setIsOrgNameEdit(!isOrgNameEdit);
   };
 
@@ -77,11 +118,15 @@ const CompanyAccount = ({company}) => {
   return (
     <div className={classes.root}>
       <Button
+        className={classes.backBtn}
+        variant="contained"
+        color="primary"
+        size="small"
         onClick={() => {
           history.goBack();
         }}
       >
-        &lsaquo;-Back>
+        Back
       </Button>
       {
         isOrgNameEdit ? (
@@ -99,7 +144,7 @@ const CompanyAccount = ({company}) => {
             />
             <Box className={classes.btnGroup}>
               <Button
-                className={classes.Btn}
+                className={classes.saveBtn}
                 variant="contained"
                 size="small"
                 onClick={saveOrgName}
@@ -108,7 +153,7 @@ const CompanyAccount = ({company}) => {
                 Save
               </Button>
               <Button
-                className={classes.Btn}
+                className={classes.cancelBtn}
                 variant="contained"
                 size="small"
                 onClick={cancelOrgNameChangeHandler}
@@ -127,22 +172,29 @@ const CompanyAccount = ({company}) => {
         <hr/>
         <Box className={classes.field}>
           <Typography>Account type</Typography>
-          <Typography  className={classes.accountType}>{company.typeOfBusiness}</Typography>
+          <Typography  className={classes.accountType}>{company?.profileType}</Typography>
         </Box>
         <hr/>
         <Box className={classes.field}>
           <Typography>Billing address</Typography>
-          <Typography  className={classes.accountType}>
-            <span>{company.billingAddress.postalCode}, </span>
-            <span>{company.billingAddress.streetAddress}, </span>
-            <span>{company.billingAddress.city}, </span>
-            <span>{company.billingAddress.country}</span>
+          <Typography className={classes.accountType}>
+            {company?.billingAddress?.postalCode &&
+            <span>{company?.billingAddress?.postalCode}, </span>
+            }
+            {company?.billingAddress?.streetAddress &&
+            <span>{company?.billingAddress?.streetAddress}, </span>
+            }
+            {company?.billingAddress?.city &&
+            <span>{company?.billingAddress?.city}, </span>
+            }
+            {company?.billingAddress?.country &&
+            <span>{company?.billingAddress?.country}</span>
+            }
           </Typography>
         </Box>
         <hr/>
       </Box>
     </div>
-
   );
 };
 

@@ -232,6 +232,7 @@ function CompanyCreatePopup() {
 
     const handleCancel = () => {
         clearForm();
+        history.goBack();
     }
 
     const clearForm = () => {
@@ -292,23 +293,14 @@ function CompanyCreatePopup() {
             <DialogActions>
 
                 { rootCompany &&
-                    <Button onClick={handleCancel} color="primary">
+                    <Button onClick={handleCancel}
+                            color="primary">
                         Cancel
                     </Button>
                 }
 
                 { haveMoreSteps ?
                   <div>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.backBtn}
-                        onClick={() => {
-                            history.goBack();
-                        }}
-                      >
-                        Back
-                      </Button>
                       <Button onClick={handleNextClick} variant="contained" color="primary">
                           Next
                       </Button>
@@ -316,16 +308,6 @@ function CompanyCreatePopup() {
                   </div>
                     :
                   <div>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.backBtn}
-                        onClick={() => {
-                            history.goBack();
-                        }}
-                      >
-                          Back
-                      </Button>
                     <Button onClick={handleNextClick} variant="contained" color="primary">
                         Add
                     </Button>

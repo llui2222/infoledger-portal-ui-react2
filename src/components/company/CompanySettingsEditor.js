@@ -1,25 +1,33 @@
-import React, {useState, useEffect, useLayoutEffect, useMemo, useRef} from "react";
+import React, { useState, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useHistory } from 'react-router-dom';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import CompanyBusinessAddress from './CompanyBusinessAddress';
-import Button from "@material-ui/core/Button";
-import { makeStyles } from '@material-ui/core/styles';
-import {Box, Chip, Grid, InputAdornment, TextField} from "@material-ui/core";
+import Button from '@material-ui/core/Button';
+import { Box, Chip, TextField } from '@material-ui/core';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import CreateIcon from '@material-ui/icons/Create';
 import SaveIcon from '@material-ui/icons/Save';
-import Typography from "@material-ui/core/Typography";
-import {useLocation, useHistory} from "react-router-dom";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import {Controller, useForm} from "react-hook-form";
-import countries from "../../data/countries";
-import {useSelector} from "react-redux";
-import {gql, useMutation} from "@apollo/client";
-import {updateProfile} from "../../graphql/mutations";
-import BorderColorIcon from "@material-ui/icons/BorderColor";
+import Typography from '@material-ui/core/Typography';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Controller, useForm } from 'react-hook-form';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
+import { makeStyles } from '@material-ui/core/styles';
+import green from '@material-ui/core/colors/green';
+import countries from '../../data/countries';
+import currencies from "../../data/currencies";
+import { allProfiles } from "../../graphql/queries";
+import { updateProfile } from '../../graphql/mutations';
+import { red } from "@material-ui/core/colors";
+
+const greenBtn = green[400];
+const redBtn = red[700];
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '80%',
+    marginTop: '20px',
     marginLeft: '10%',
     marginRight: '5%',
   },
@@ -46,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
     outline: 'none',
     border: 'none',
     background: '#fafafa',
+    fontSize: '1rem',
+    margin: '10px 0 10px 0',
   },
   hr: {
     width: '95%',
@@ -64,14 +74,25 @@ const useStyles = makeStyles((theme) => ({
   Btn: {
     marginLeft: 'auto',
     marginRight: '20px',
+    color: 'white',
+  },
+  saveBtn: {
+    background: greenBtn,
+    color: 'white',
+    marginLeft: 'auto',
+    marginRight: '20px',
+  },
+  cancelBtn: {
+    background: redBtn,
+    color: 'white',
   },
   TextMessages: {
     marginRight: '10px',
+    marginBottom: '10px',
   },
   rightArrow: {
     marginLeft: 'auto',
   },
-
   currency: {
     fontWeight: 'bold',
     marginBottom: '10px',
@@ -86,6 +107,7 @@ const useStyles = makeStyles((theme) => ({
     border: 'none',
     background: '#fafafa',
     color: 'black',
+    fontSize: '1rem',
   },
   currencyInputContainer: {
     width: '500px',
@@ -97,16 +119,22 @@ const useStyles = makeStyles((theme) => ({
   countryInput: {
     width: '90%',
   },
-
+  backBtn: {
+    marginBottom: '30px',
+  },
   btnGroup: {
     marginTop: '10px',
   },
   addressLabel: {
     margin: 0,
-  }
+  },
+  bold: {
+    fontWeight: 'bold',
+    margin: '20px 0 20px 0',
+  },
 }));
 
-const CompanySettingsEditor = ({company}) => {
+const CompanySettingsEditor = () => {
   const dataCompanies = useSelector(state => state?.companies);
   const rootCompany = useSelector(state => state?.companies.rootCompany);
   const history = useHistory();
@@ -116,11 +144,17 @@ const CompanySettingsEditor = ({company}) => {
   const [timeDisabled, setTimeDisabled] = useState(true);
   const [updateCompany] = useMutation(gql(updateProfile));
 
+  const currencyOptions = Object.entries(currencies).map(currency => ({
+    code: currency[0],
+    name: currency[1]
+  }));
+
+  const defaultCurrency = {code: '',name: ''};
+
   const {
     errors,
     control,
     watch,
-    getValues,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -128,6 +162,7 @@ const CompanySettingsEditor = ({company}) => {
       accountType: '',
       companyType: '',
       typeOfBusiness: '',
+      currency: currencies[0],
       country: countries[0],
       address: '',
       postalCode: '',
@@ -139,15 +174,20 @@ const CompanySettingsEditor = ({company}) => {
     return paths[paths.length - 1];
   }, [pathname]);
 
-  let companyName = dataCompanies.childCompanies.find(company => company?.profileId === id)?.displayName;
-  let companyId = dataCompanies.childCompanies.find(company => company?.profileId === id)?.profileId;
-  let country = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress.country;
-  let companyProfileType = dataCompanies.childCompanies.find(company => company?.profileId === id)?.profileType;
-  let businessAddressObj = dataCompanies.childCompanies.find(company => company?.profileId === id)?.businessAddress;
+  let companyName = dataCompanies?.childCompanies?.find(company => company?.profileId === id)?.displayName;
+  let companyId = dataCompanies?.childCompanies?.find(company => company?.profileId === id)?.profileId;
+  let country = dataCompanies?.childCompanies?.find(company => company?.profileId === id)?.businessAddress.country;
+  let currency = dataCompanies?.childCompanies?.find(company => company?.profileId === id)?.currency;
+  let companyProfileType = dataCompanies?.childCompanies?.find(company => company?.profileId === id)?.profileType;
+  let businessAddressObj = dataCompanies?.childCompanies?.find(company => company?.profileId === id)?.businessAddress;
+
+  const companyType = dataCompanies?.rootCompany.profileType;
 
   const [isCompanyTitleEdit, setIsCompanyTitleEdit] = useState('false');
   const [countryDisabled, setCountryDisabled] = useState(true);
+  const [currencyDisabled, setCurrencyDisabled] = useState(true);
   const [countryValue, setCountryValue] = useState(country);
+  const [currencyValue, setCurrencyValue] = useState(currency);
   const [companyTitle, setCompanyTitle] = useState(companyName);
   const [newCompanyTitle, setNewCompanyTitle] = useState('');
   const [postalCode, setPostalCode] = useState(businessAddressObj?.postalCode);
@@ -159,6 +199,8 @@ const CompanySettingsEditor = ({company}) => {
   const [newPostalCode, setNewPostalCode] = useState('');
   const [newStreetAddress, setNewStreetAddress] = useState('');
   const [newCity, setNewCity] = useState('');
+
+  const {data, refetch} = useQuery(gql(allProfiles))
 
   const IdCopyHandler = () => {
     ref.current.select();
@@ -183,6 +225,26 @@ const CompanySettingsEditor = ({company}) => {
     if (newCompanyTitle.length !== 0) {
       setCompanyTitle(newCompanyTitle);
     }
+    updateCompany({
+      variables: {
+        profileId: companyId,
+        profile: {
+          currency: currencyValue,
+          profileType: companyProfileType,
+          profileName: newCompanyTitle,
+          parentProfileId: rootCompany.profileId,
+          businessAddress: {
+            country: countryValue,
+            streetAddress: streetAddress,
+            city: city,
+            postalCode: postalCode,
+            phoneNumber: businessAddressObj.phoneNumber,
+          },
+        }
+      }
+    }).then(() => {
+      refetch()
+    })
     setIsCompanyTitleEdit(!isCompanyTitleEdit);
   };
 
@@ -193,31 +255,65 @@ const CompanySettingsEditor = ({company}) => {
   const setCountryValueHandler = () => {
     setCountryDisabled(false);
   };
-  
-  console.log(`==========>businessAddressObj.streetAddress`, businessAddressObj?.streetAddress)
-  
+  const setCurrencyValueHandler = () => {
+    setCurrencyDisabled(false);
+  };
+
   const  saveCountryValueHandler = () => {
+     updateCompany({
+      variables: {
+        profileId: companyId,
+        profile: {
+          currency: currencyValue,
+          profileType: companyProfileType,
+          profileName: companyName,
+          parentProfileId: rootCompany.profileId,
+          businessAddress: {
+            country: watch('country').name,
+            streetAddress: streetAddress,
+            city: city,
+            postalCode: postalCode,
+            phoneNumber: businessAddressObj.phoneNumber,
+          },
+        }
+      }
+     }).then(() => {
+      refetch()
+    })
+    setCountryValue(watch('country').name);
+    setCountryDisabled(true);
+  };
+
+  const  saveCurrencyValueHandler = () => {
     updateCompany({
       variables: {
         profileId: companyId,
         profile: {
+          currency: watch('currency').code,
           profileType: companyProfileType,
-          profileName: '34566',
+          profileName: companyName,
           parentProfileId: rootCompany.profileId,
           businessAddress: {
-            country: 'russia',
-            streetAddress: 'chechova',
-            city: 'taganrog',
-            postalCode: '347900',
-            phoneNumber: '88009007658',
+            country: countryValue,
+            streetAddress: streetAddress,
+            city: city,
+            postalCode: postalCode,
+            phoneNumber: businessAddressObj.phoneNumber,
           },
         }
       }
-     }).then(r => console.log(`==========>r`, r))
+    }).then(() => {
+      refetch()
+    })
+    setCurrencyValue(watch('currency').code);
+    setCurrencyDisabled(true);
   };
 
   const cancelCountryChangeHandler = () => {
     setCountryDisabled(true);
+  };
+  const cancelCurrencyChangeHandler = () => {
+    setCurrencyDisabled(true);
   };
 
   const setPostalCodeHandler = () => {
@@ -239,6 +335,26 @@ const CompanySettingsEditor = ({company}) => {
       setPostalCode(newPostalCode);
     }
     setPostalCodeDisabled(true);
+    updateCompany({
+      variables: {
+        profileId: companyId,
+        profile: {
+          currency: currencyValue,
+          profileType: companyProfileType,
+          profileName: companyName,
+          parentProfileId: rootCompany.profileId,
+          businessAddress: {
+            country: countryValue,
+            city: city,
+            streetAddress: streetAddress,
+            postalCode: newPostalCode,
+            phoneNumber: businessAddressObj.phoneNumber,
+          },
+        }
+      }
+    }).then(() => {
+      refetch()
+    })
   };
 
   const setStreetAddressHandler = () => {
@@ -260,6 +376,26 @@ const CompanySettingsEditor = ({company}) => {
       setStreetAddress(newStreetAddress);
     }
     setStreetAddressDisabled(true);
+    updateCompany({
+      variables: {
+        profileId: companyId,
+        profile: {
+          currency: currencyValue,
+          profileType: companyProfileType,
+          profileName: companyName,
+          parentProfileId: rootCompany.profileId,
+          businessAddress: {
+            country: countryValue,
+            city: city,
+            streetAddress: newStreetAddress,
+            postalCode: postalCode,
+            phoneNumber: businessAddressObj.phoneNumber,
+          },
+        }
+      }
+    }).then(() => {
+      refetch()
+    })
   };
 
   const setCityHandler = () => {
@@ -281,6 +417,26 @@ const CompanySettingsEditor = ({company}) => {
       setCity(newCity);
     }
     setCityDisabled(true);
+    updateCompany({
+      variables: {
+        profileId: companyId,
+        profile: {
+          currency: currencyValue,
+          profileType: companyProfileType,
+          profileName: companyName,
+          parentProfileId: rootCompany.profileId,
+          businessAddress: {
+            country: countryValue,
+            city: newCity,
+            streetAddress: streetAddress,
+            postalCode: postalCode,
+            phoneNumber: businessAddressObj.phoneNumber,
+          },
+        }
+      }
+    }).then(() => {
+      refetch()
+    })
   };
 
     const BusinessAddressInfo =  [
@@ -319,45 +475,60 @@ const CompanySettingsEditor = ({company}) => {
   return (
     <div className={classes.root}>
         <Button
+          className={classes.backBtn}
+          variant="contained"
+          color="primary"
+          size="small"
           onClick={() => {
           history.goBack();
         }}
         >
-          &lsaquo;-Back>
+          Back
         </Button>
       {
-        isCompanyTitleEdit ? (
+        (isCompanyTitleEdit && companyType === 'ORGANIZATION') && (
           <Box className={classes.companyTitle}>
             <Typography variant="h4" className={classes.companyName}>{companyTitle}</Typography>
             <BorderColorIcon className={classes.companyTitleEdit} onClick={isCompanyTitleEditHandler}/>
           </Box>
-        ) : (
-          <Box>
-            <TextField
-              className={classes.companyTitleEditInput}
-              defaultValue={companyTitle}
-              onChange={changeCompanyTitleHandler}
-              autoFocus
-            />
-            <Box className={classes.btnGroup}>
-              <Button
-                className={classes.Btn}
-                variant="contained"
-                size="small"
-                onClick={saveCompanyTitle}
-              >
-                <SaveIcon/>
-                Save
-              </Button>
-              <Button
-                className={classes.Btn}
-                variant="contained"
-                size="small"
-                onClick={cancelCompanyTitleChangeHandler}
-              >
-                Cancel
-              </Button>
+        )
+      }
+      {
+          (!isCompanyTitleEdit &&  companyType === 'ORGANIZATION') &&  (
+            <Box>
+              <TextField
+                className={classes.companyTitleEditInput}
+                defaultValue={companyTitle}
+                onChange={changeCompanyTitleHandler}
+                autoFocus
+              />
+              <Box className={classes.btnGroup}>
+                <Button
+                  className={classes.saveBtn}
+                  color="greenBtn"
+                  variant="contained"
+                  size="small"
+                  onClick={saveCompanyTitle}
+                >
+                  <SaveIcon/>
+                  Save
+                </Button>
+                <Button
+                  className={classes.cancelBtn}
+                  variant="contained"
+                  size="small"
+                  onClick={cancelCompanyTitleChangeHandler}
+                >
+                  Cancel
+                </Button>
+              </Box>
             </Box>
+          )
+      }
+      {
+        (companyType === 'INDIVIDUAL_INVESTOR') && (
+          <Box className={classes.companyTitle}>
+            <Typography variant="h4" className={classes.companyName}>Personal Assets</Typography>
           </Box>
         )
       }
@@ -375,56 +546,180 @@ const CompanySettingsEditor = ({company}) => {
        </Box>
           <Button
             className={classes.Btn}
+            color="primary"
             variant="contained"
             size="small"
             onClick={IdCopyHandler}
           >
             <FileCopyIcon/>
-            Copy
+             Copy
           </Button>
       </Box>
       <hr className={classes.hr}/>
       {/*//========================================*/}
 
       {/*//=================== Users ==============*/}
-      <Box   className={classes.messages}>
-        <Typography className={classes.TextMessages}>
-          Outgoing regular messages
-        </Typography>
-        <Chip label="1" style={{marginTop: '-5px'}}/>
-        <KeyboardArrowRightIcon className={classes.rightArrow}/>
-      </Box>
-      <hr className={classes.hr}/>
+      {
+        (companyType !== 'INDIVIDUAL_INVESTOR') && (
+          <>
+            <Box   className={classes.messages}>
+              <Typography className={classes.TextMessages}>
+                Outgoing regular messages
+              </Typography>
+              <Chip label="1" style={{marginTop: '-5px'}}/>
+              <KeyboardArrowRightIcon className={classes.rightArrow}/>
+            </Box>
+            <hr className={classes.hr}/>
+          </>
+        )
+      }
 
-      <Box   className={classes.messages}>
-        <Typography className={classes.TextMessages}>
-          Users
-        </Typography>
-        <Chip label="0" style={{marginTop: '-5px'}}/>
-        <KeyboardArrowRightIcon className={classes.rightArrow}/>
-      </Box>
-      <hr className={classes.hr}/>
+      { (companyType !== 'SERVICE_COMPANY') && (
+        <>
+        <Box className={classes.messages}>
+          <Typography className={classes.TextMessages}>
+            Forwarding
+          </Typography>
+          <Chip label="1" style={{marginTop: '-5px'}}/>
+          <KeyboardArrowRightIcon className={classes.rightArrow}/>
+        </Box>
+        <hr className={classes.hr}/>
+        </>
+        )
+      }
+      {
+        (companyType === 'ORGANIZATION') && (
+          <>
+            <Box   className={classes.messages}>
+              <Typography className={classes.TextMessages}>
+                Users
+              </Typography>
+              <Chip label="0" style={{marginTop: '-5px'}}/>
+              <KeyboardArrowRightIcon className={classes.rightArrow}/>
+            </Box>
+            <hr className={classes.hr}/>
+          </>
+        )
+      }
       {/*//========================================*/}
 
       {/*//================= Time =================*/}
-      <Box   className={classes.messages}>
-        <Box>
-          <Typography className={classes.TextMessages}>
-            Sending time
-          </Typography>
-          {!timeDisabled ? <input  className={classes.timeInput} type="time"/> : null}
-        </Box>
+      {
+        (companyType !== 'INDIVIDUAL_INVESTOR') && (
+          <>
+            <Box   className={classes.messages}>
+              <Box>
+                <Typography className={classes.TextMessages}>
+                  Sending time
+                </Typography>
+                {!timeDisabled ? <input  className={classes.timeInput} type="time"/> : null}
+              </Box>
 
-        <Button
-          className={classes.Btn}
-          variant="contained"
-          size="small"
-          onClick={setTimeHandler}
-        >
-          Set time
-        </Button>
+              <Button
+                className={classes.Btn}
+                color="primary"
+                variant="contained"
+                size="small"
+                onClick={setTimeHandler}
+              >
+                Set time
+              </Button>
+            </Box>
+            <hr className={classes.hr}/>
+          </>
+        )
+      }
+      {/*//==============================================*/}
+      {/*//============== Currency ========================*/}
+      <Box>
+        <Typography className={classes.bold}>
+          About
+        </Typography>
+        <Typography>
+          Currency
+        </Typography>
+        {
+          currencyDisabled && (
+            <Box   className={classes.messages}>
+              <input
+                className={classes.input}
+                type="text"
+                value={currencyValue}
+                disabled
+              />
+              <Button
+                className={classes.Btn}
+                color="primary"
+                variant="contained"
+                size="small"
+                data-testid="country-edit"
+                onClick={setCurrencyValueHandler}
+              >
+                <CreateIcon/>
+                Edit
+              </Button>
+            </Box>
+          )
+        }
+        {
+          !currencyDisabled && (
+            <Box>
+              <Controller
+                onChange={([, data]) => data}
+                defaultValue={currencies[0]}
+                name="currency"
+                control={control}
+                rules={{
+                  required: true,
+                  validate: value => value !== currencies[0]
+                }}
+                render={({ onChange, ...props }) => (
+                  <Autocomplete
+                    className={classes.countryInput}
+                    disableClearable
+                    options={[defaultCurrency, ...currencyOptions]}
+                    getOptionLabel={option => option.code}
+                    renderOption={option => option.code}
+                    getOptionSelected={(option, value) => option.code === value.code}
+                    onChange={(e, data) => onChange(data)}
+                    {...props}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        error={!!errors.baseCurrency}
+                        margin="normal"
+                        label="Base Currency"
+                        variant="outlined"
+                        InputLabelProps={{
+                          role: "label"
+                        }}
+                      />
+                    )}
+                  />
+                )}
+              />
+              <Button
+                className={classes.saveBtn}
+                variant="contained"
+                size="small"
+                onClick={saveCurrencyValueHandler}
+              >
+                <SaveIcon/>
+                Save
+              </Button>
+              <Button
+                className={classes.cancelBtn}
+                variant="contained"
+                size="small"
+                onClick={cancelCurrencyChangeHandler}
+              >
+                Cancel
+              </Button>
+            </Box>
+          )
+        }
+        <hr />
       </Box>
-      <hr className={classes.hr}/>
       {/*//==============================================*/}
 
 {/*//============== Country ========================*/}
@@ -443,8 +738,10 @@ const CompanySettingsEditor = ({company}) => {
               />
               <Button
                 className={classes.Btn}
+                color="primary"
                 variant="contained"
                 size="small"
+                data-testid="country-edit"
                 onClick={setCountryValueHandler}
               >
                 <CreateIcon/>
@@ -472,6 +769,7 @@ const CompanySettingsEditor = ({company}) => {
                     options={countries}
                     getOptionLabel={option => option.name}
                     renderOption={option => option.name}
+                    data-testid="country-autocomplete"
                     onChange={(e, data) => onChange(data)}
                     {...props}
                     renderInput={params => (
@@ -488,7 +786,7 @@ const CompanySettingsEditor = ({company}) => {
                 )}
               />
               <Button
-                className={classes.Btn}
+                className={classes.saveBtn}
                 variant="contained"
                 size="small"
                 onClick={saveCountryValueHandler}
@@ -497,7 +795,7 @@ const CompanySettingsEditor = ({company}) => {
                 Save
               </Button>
               <Button
-                className={classes.Btn}
+                className={classes.cancelBtn}
                 variant="contained"
                 size="small"
                 onClick={cancelCountryChangeHandler}
@@ -512,6 +810,8 @@ const CompanySettingsEditor = ({company}) => {
 {/*//================================================*/}
 
 {/*//================= Business address ==============*/}
+      { (companyType !== 'INDIVIDUAL_INVESTOR') && (
+      <>
       <Box>
           <Typography>
             Business address
@@ -542,6 +842,9 @@ const CompanySettingsEditor = ({company}) => {
         }
       </Box>
         <hr className={classes.hr}/>
+        </>
+      )
+      }
     </div>
   );
 };

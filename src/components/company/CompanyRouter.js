@@ -2,20 +2,20 @@ import React from "react";
 import {
     Redirect,
     Route,
-    Switch, useParams,
-    useRouteMatch
+    Switch,
+    useParams,
+    useRouteMatch,
 } from "react-router-dom";
 import Company from "../company/Company";
 import CompanySettings from "./CompanySettings";
 import CompanyCreatePopup from "./CompanyCreatePopup";
 import CompanySidebar from "./CompanySidebar";
 import CompanySettingsEditor from './CompanySettingsEditor';
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import CompanyAccount from "./CompanyAccount";
 import Profile from "../user/Profile";
 
 function CompanyRouter() {
-
     let { path } = useRouteMatch();
     let { companyID } = useParams();
     const childCompanies = useSelector(state => state.companies.childCompanies);
@@ -38,25 +38,24 @@ function CompanyRouter() {
             <CompanySidebar company={rootCompany.typeOfBusiness === 'SERVICE_COMPANY' ? company : rootCompany } />
             <Switch>
                 <Route exact path={`${path}/settings`}>
-                    <CompanySettings company={company}/>
+                    <CompanySettings company={company} />
                 </Route>
                 <Route exact path={`${path}/settings/edit/:companyID`}>
-                    <CompanySettingsEditor company={company}/>
+                    <CompanySettingsEditor company={company} />
                 </Route>
                 <Route exact path={`${path}/settings/account`}>
-                    <CompanyAccount company={company}/>
+                    <CompanyAccount company={company} />
                 </Route>
                 <Route exact path={`${path}/settings/profile`}>
-                    <Profile/>
+                    <Profile />
                 </Route>
                 <Route exact path={`${path}`}>
-                    <Company company={company}/>
+                    <Company company={company} />
                 </Route>
                 <Route exact path={`${path}/settings/create-company`}>
-                    <CompanyCreatePopup/>
+                    <CompanyCreatePopup />
                 </Route>
             </Switch>
-
         </>
     );
 }
