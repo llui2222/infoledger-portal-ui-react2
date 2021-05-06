@@ -4,46 +4,65 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
+    DialogTitle, FormControl,
     TextField
 } from "@material-ui/core";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import {confirmMfa} from "../../redux/actions/user";
+
+const useStyles = makeStyles((theme) => ({
+    codeField: {
+        marginBottom: theme.spacing(1),
+    },
+}));
 
 function MfaRequest() {
 
+    const classes = useStyles();
+    const dispatch = useDispatch();
     const [code, setCode] = useState('');
-    const userMfa = useSelector(state => state.user.userMfa);
+    const user = useSelector(state => state.user);
+    const userMfa = user.userMfa;
 
-    const handleConfirm = () => {
-
+    const handleConfirm = e => {
+        e.preventDefault();
+        dispatch(confirmMfa({user: user.user, code}));
     }
 
     return (
         <Dialog open={!!userMfa} maxWidth='xs'>
 
-            <DialogTitle>
-                Authenticator Code
-            </DialogTitle>
+            <FormControl
+                component="form"
+                onSubmit={handleConfirm}
+            >
+                <DialogTitle>
+                    Authenticator Code
+                </DialogTitle>
 
-            <DialogContent dividers>
-                <TextField
-                    label="6-digit Authenticator Code"
-                    value={code}
-                    variant="outlined"
-                    onChange={e => setCode(e.target.value)}
-                />
-            </DialogContent>
+                <DialogContent dividers>
+                    <TextField
+                        label="6-digit Authenticator Code"
+                        value={code}
+                        variant="outlined"
+                        onChange={e => setCode(e.target.value)}
+                        className={classes.codeField}
+                        autoFocus
+                    />
+                </DialogContent>
 
-            <DialogActions>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    disableElevation
-                    onClick={handleConfirm}
-                >
-                    Verify
-                </Button>
-            </DialogActions>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disableElevation
+                        type='submit'
+                    >
+                        Verify
+                    </Button>
+                </DialogActions>
+            </FormControl>
         </Dialog>
     );
 }
