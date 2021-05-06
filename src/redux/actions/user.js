@@ -33,6 +33,17 @@ export const SET_USER_MFA = 'SET_USER_MFA';
 export const CONFIRM_MFA_REQUEST = 'CONFIRM_MFA_REQUEST';
 export const CONFIRM_MFA_SUCCESS = 'CONFIRM_MFA_SUCCESS';
 export const CONFIRM_MFA_FAILURE = 'CONFIRM_MFA_FAILURE';
+export const GET_USER_MFA_SETUP_CODE_REQUEST = 'GET_USER_MFA_SETUP_CODE_REQUEST';
+export const GET_USER_MFA_SETUP_CODE_SUCCESS = 'GET_USER_MFA_SETUP_CODE_SUCCESS';
+export const GET_USER_MFA_SETUP_CODE_FAILURE = 'GET_USER_MFA_SETUP_CODE_FAILURE';
+export const VERIFY_USER_MFA_SETUP_CODE_REQUEST = 'VERIFY_USER_MFA_SETUP_CODE_REQUEST';
+export const VERIFY_USER_MFA_SETUP_CODE_SUCCESS = 'VERIFY_USER_MFA_SETUP_CODE_SUCCESS';
+export const VERIFY_USER_MFA_SETUP_CODE_FAILURE = 'VERIFY_USER_MFA_SETUP_CODE_FAILURE';
+export const SET_PREFERRED_MFA_SUCCESS = 'SET_PREFERRED_MFA_SUCCESS';
+export const SET_PREFERRED_MFA_FAILURE = 'SET_PREFERRED_MFA_FAILURE';
+export const DISABLE_USER_MFA_REQUEST = 'DISABLE_USER_MFA_REQUEST';
+export const DISABLE_USER_MFA_SUCCESS = 'DISABLE_USER_MFA_SUCCESS';
+export const DISABLE_USER_MFA_FAILURE = 'DISABLE_USER_MFA_FAILURE';
 
 export const userRegister = (userName, password) => ({
     type: USER_REGISTER_REQUEST,
@@ -181,9 +192,65 @@ export const changePasswordFailure = error => ({
     error
 });
 
-export const setCurrentUser = userData => ({
+export const setCurrentUser = user => ({
     type: SET_CURRENT_USER,
-    userData
+    user
+});
+
+export const getUserMfaSetupCode = user => ({
+    type: GET_USER_MFA_SETUP_CODE_REQUEST,
+    user
+});
+
+export const getUserMfaSetupCodeSuccess = code => ({
+    type: GET_USER_MFA_SETUP_CODE_SUCCESS,
+    code
+});
+
+export const getUserMfaSetupCodeFailure = error => ({
+    type: GET_USER_MFA_SETUP_CODE_FAILURE,
+    error
+});
+
+export const verifyUserMfaSetupCode = ({user, challengeAnswer}) => ({
+    type: VERIFY_USER_MFA_SETUP_CODE_REQUEST,
+    user,
+    challengeAnswer
+});
+
+export const verifyUserMfaSetupCodeSuccess = user => ({
+    type: VERIFY_USER_MFA_SETUP_CODE_SUCCESS,
+    user
+});
+
+export const verifyUserMfaSetupCodeFailure = error => ({
+    type: VERIFY_USER_MFA_SETUP_CODE_FAILURE,
+    error
+});
+
+export const setPreferredMfaSuccess = () => ({
+    type: SET_PREFERRED_MFA_SUCCESS
+});
+
+export const setPreferredMfaFailure = error => ({
+    type: SET_PREFERRED_MFA_FAILURE,
+    error
+});
+
+export const disableUserMfa = ({user, code}) => ({
+    type: DISABLE_USER_MFA_REQUEST,
+    user,
+    code
+});
+
+export const disableUserMfaSuccess = user => ({
+    type: DISABLE_USER_MFA_SUCCESS,
+    user
+});
+
+export const disableUserMfaFailure = error => ({
+    type: DISABLE_USER_MFA_FAILURE,
+    error
 });
 
 export const setUserMfa = userMfa => ({

@@ -7,9 +7,7 @@ import {
     DialogTitle, FormControl,
     TextField
 } from "@material-ui/core";
-import {useDispatch, useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import {confirmMfa} from "../../redux/actions/user";
 
 const useStyles = makeStyles((theme) => ({
     codeField: {
@@ -17,28 +15,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function MfaRequest() {
+function MfaRequest({open, onSubmit, title}) {
 
     const classes = useStyles();
-    const dispatch = useDispatch();
     const [code, setCode] = useState('');
-    const user = useSelector(state => state.user);
-    const userMfa = user.userMfa;
 
     const handleConfirm = e => {
         e.preventDefault();
-        dispatch(confirmMfa({user: user.user, code}));
+        onSubmit(code);
     }
 
     return (
-        <Dialog open={!!userMfa} maxWidth='xs'>
+        <Dialog open={open} maxWidth='xs'>
 
             <FormControl
                 component="form"
                 onSubmit={handleConfirm}
             >
                 <DialogTitle>
-                    Authenticator Code
+                    {title}
                 </DialogTitle>
 
                 <DialogContent dividers>

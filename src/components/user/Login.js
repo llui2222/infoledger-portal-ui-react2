@@ -1,10 +1,10 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Typography from '@material-ui/core/Typography';
 import CenteredContainer from "../common/containers/CenteredContainer";
-import {Box, Button, FormControl, TextField} from "@material-ui/core";
+import {FormControl, TextField} from "@material-ui/core";
 import FieldPassword from "../common/FieldPassword";
 import LoginFormFooter from "./LoginFormFooter";
-import {signIn} from "../../redux/actions/user";
+import {confirmMfa, signIn} from "../../redux/actions/user";
 import {useDispatch, useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
@@ -28,6 +28,13 @@ function Login() {
     const dispatch = useDispatch();
     const classes = useStyles();
     const authState = useSelector(state => state.user.authState);
+    const user = useSelector(state => state.user);
+    const userMfa = user.userMfa;
+    const [mfaOpen, setMfaOpen] = useState(false);
+
+    useEffect(() => {
+        setMfaOpen(!!userMfa);
+    }, [userMfa])
 
     const { register, handleSubmit, errors } = useForm({
         mode: 'onChange'
@@ -39,6 +46,11 @@ function Login() {
 
     if(authState !== NOT_AUTHORIZED_AUTH_STATE) {
         return null;
+    }
+
+    const handleConfirmMfa = (code) => {
+        setMfaOpen(false);
+        dispatch(confirmMfa({user: user.user, code}));
     }
 
     return (
@@ -98,7 +110,11 @@ function Login() {
                 </Link>
 
             </FormControl>
-            <MfaRequest/>
+            <MfaRequest
+                open={mfaOpen}
+                onSubmit={handleConfirmMfa}
+                title='Authenticator Code'
+            />
         </CenteredContainer>
     );
 }

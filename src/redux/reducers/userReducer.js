@@ -8,6 +8,8 @@ import {
     SET_CURRENT_USER,
     SET_USER_MFA,
     LOG_OUT_SUCCESS,
+    GET_USER_MFA_SETUP_CODE_SUCCESS,
+    DISABLE_USER_MFA_SUCCESS,
 } from '../actions/user';
 
 import {
@@ -20,6 +22,7 @@ const initialState = {
     emailConfirmed: false,
     authState: PENDING_AUTH_STATE,
     user: null,
+    setupMfaCode: null,
     userMfa: null,
 }
 
@@ -37,9 +40,13 @@ const userReducer = (state = initialState, action) => {
         case SIGN_IN_SUCCESS:
             return {...state, emailConfirmed: false, authState: AUTHORIZED_AUTH_STATE}
         case SET_CURRENT_USER:
-            return {...state, user: action.userData}
+            return {...state, user: action.user}
         case SET_USER_MFA:
             return {...state, userMfa: action.userMfa}
+        case DISABLE_USER_MFA_SUCCESS:
+            return {...state, userMfa: null}
+        case GET_USER_MFA_SETUP_CODE_SUCCESS:
+            return {...state, setupMfaCode: action.code}
         case LOG_OUT_SUCCESS:
             return {...state, userMfa: null}
         default:

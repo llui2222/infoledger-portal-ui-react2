@@ -1,10 +1,20 @@
 import React from "react";
-import {Typography,Grid,Button, Chip} from '@material-ui/core';
-import PageContainer from "../common/containers/PageContainer";
+import {
+    Typography,
+    Grid,
+    Button,
+    Chip,
+    List,
+    ListItem,
+    ListItemText,
+} from '@material-ui/core';
+import PageContainer from "../../common/containers/PageContainer";
 import {Add} from "@material-ui/icons";
 import {useRouteMatch} from "react-router-dom";
-import {history} from "../../redux";
+import {history} from "../../../redux";
 import {useSelector} from "react-redux";
+import MfaSettings from "./MfaSettings";
+import LogoutItem from "./LogoutItem";
 
 function CompanySettings({ company }) {
 
@@ -40,6 +50,20 @@ function CompanySettings({ company }) {
                         </Grid>
                     )}
             </Grid>
+
+            <List>
+                <ListItem button divider>
+                    <ListItemText primary="Account" secondary="Org Name LLC" />
+                </ListItem>
+                <ListItem button divider>
+                    <ListItemText primary="Users & Permissions" />
+                </ListItem>
+                <ListItem button divider>
+                    <ListItemText primary="Workflows" />
+                </ListItem>
+                <MfaSettings/>
+                <LogoutItem/>
+            </List>
         </PageContainer>
     );
 }

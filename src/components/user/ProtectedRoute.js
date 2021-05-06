@@ -7,8 +7,6 @@ import {allProfiles} from "../../graphql/queries";
 import ServiceCompanySidebar from "../company/ServiceCompanySidebar";
 import {setCompanies} from "../../redux/actions/company";
 import {fieldsRequired} from "../../utils/constants";
-import {currentAuthenticatedUser} from "../../redux/api/auth";
-import {setCurrentUser} from "../../redux/actions/user";
 import showErrorNotification from "../../utils/showErrorNotification";
 
 const ProtectedRoute = ({children, ...rest}) => {
@@ -21,16 +19,8 @@ const ProtectedRoute = ({children, ...rest}) => {
     const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
-        currentAuthenticatedUser().then(user => {
-            dispatch(setCurrentUser(user))
-        }).catch(error => {
-            dispatch(setCurrentUser(null));
-            console.log('currentAuthenticatedUser error', error);
-        })
-    }, []);
 
-    useEffect(() => {
-        if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles) {
+        if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles && user.user.attributes) {
             dispatch(setCompanies(data.allProfiles, refetch));
 
             let profileComplete = true;
