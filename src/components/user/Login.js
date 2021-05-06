@@ -11,6 +11,7 @@ import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
 import {useForm} from "react-hook-form";
 import {NOT_AUTHORIZED_AUTH_STATE} from "../../utils/constants";
 import Link from "../common/Link";
+import MfaRequest from "./MfaRequest";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -97,6 +98,7 @@ function Login() {
                 </Link>
 
             </FormControl>
+            <MfaRequest/>
         </CenteredContainer>
     );
 }

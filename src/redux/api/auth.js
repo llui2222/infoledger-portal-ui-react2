@@ -80,3 +80,15 @@ export async function getJwtToken() {
     const accessToken = currentSession.getAccessToken();
     return accessToken.getJwtToken();
 }
+
+export function setupTOTP({user}) {
+    return Auth.setupTOTP(user);
+}
+
+export function verifyTotpToken({user, challengeAnswer}) {
+    return Auth.verifyTotpToken(user, challengeAnswer);
+}
+
+export function setPreferredMFA({user, MFAType}) {
+    return Auth.setPreferredMFA(user, MFAType);
+}
