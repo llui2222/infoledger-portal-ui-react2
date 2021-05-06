@@ -7,6 +7,7 @@ import {
     FORGOT_PASSWORD_SUCCESS,
     SET_CURRENT_USER,
     SET_USER_MFA,
+    LOG_OUT_SUCCESS,
 } from '../actions/user';
 
 import {
@@ -39,6 +40,8 @@ const userReducer = (state = initialState, action) => {
             return {...state, user: action.userData}
         case SET_USER_MFA:
             return {...state, userMfa: action.userMfa}
+        case LOG_OUT_SUCCESS:
+            return {...state, userMfa: null}
         default:
             return state;
     }
