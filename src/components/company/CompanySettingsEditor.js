@@ -532,8 +532,6 @@ const CompanySettingsEditor = () => {
           </Box>
         )
       }
-
-      {/*//================= Copy Id ============*/}
       <Box   className={classes.messages}>
        <Box>
          <Typography>InfoLedger Id</Typography>
@@ -556,9 +554,6 @@ const CompanySettingsEditor = () => {
           </Button>
       </Box>
       <hr className={classes.hr}/>
-      {/*//========================================*/}
-
-      {/*//=================== Users ==============*/}
       {
         (companyType !== 'INDIVIDUAL_INVESTOR') && (
           <>
@@ -573,7 +568,6 @@ const CompanySettingsEditor = () => {
           </>
         )
       }
-
       { (companyType !== 'SERVICE_COMPANY') && (
         <>
         <Box className={classes.messages}>
@@ -601,9 +595,6 @@ const CompanySettingsEditor = () => {
           </>
         )
       }
-      {/*//========================================*/}
-
-      {/*//================= Time =================*/}
       {
         (companyType !== 'INDIVIDUAL_INVESTOR') && (
           <>
@@ -629,8 +620,6 @@ const CompanySettingsEditor = () => {
           </>
         )
       }
-      {/*//==============================================*/}
-      {/*//============== Currency ========================*/}
       <Box>
         <Typography className={classes.bold}>
           About
@@ -720,9 +709,6 @@ const CompanySettingsEditor = () => {
         }
         <hr />
       </Box>
-      {/*//==============================================*/}
-
-{/*//============== Country ========================*/}
       <Box>
           <Typography>
             Country
@@ -807,10 +793,8 @@ const CompanySettingsEditor = () => {
         }
       </Box>
       <hr className={classes.hr}/>
-{/*//================================================*/}
-
-{/*//================= Business address ==============*/}
-      { (companyType !== 'INDIVIDUAL_INVESTOR') && (
+      {
+        (companyType !== 'INDIVIDUAL_INVESTOR') && (
       <>
       <Box>
           <Typography>

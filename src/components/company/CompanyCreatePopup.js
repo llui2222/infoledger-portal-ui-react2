@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     Button,
     Dialog,
@@ -7,7 +7,9 @@ import {
     DialogTitle,
     Stepper,
     Step,
-    StepLabel, FormControl
+    StepLabel,
+    FormControl,
+    Box,
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
@@ -300,18 +302,18 @@ function CompanyCreatePopup() {
                 }
 
                 { haveMoreSteps ?
-                  <div>
+                  <Box>
                       <Button onClick={handleNextClick} variant="contained" color="primary">
                           Next
                       </Button>
 
-                  </div>
+                  </Box>
                     :
-                  <div>
+                  <Box>
                     <Button onClick={handleNextClick} variant="contained" color="primary">
                         Add
                     </Button>
-                  </div>
+                  </Box>
                 }
 
             </DialogActions>
