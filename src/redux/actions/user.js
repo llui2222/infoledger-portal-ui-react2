@@ -30,6 +30,9 @@ export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS';
 export const CHANGE_PASSWORD_FAILURE = 'CHANGE_PASSWORD_FAILURE';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SET_USER_MFA = 'SET_USER_MFA';
+export const CONFIRM_MFA_REQUEST = 'CONFIRM_MFA_REQUEST';
+export const CONFIRM_MFA_SUCCESS = 'CONFIRM_MFA_SUCCESS';
+export const CONFIRM_MFA_FAILURE = 'CONFIRM_MFA_FAILURE';
 
 export const userRegister = (userName, password) => ({
     type: USER_REGISTER_REQUEST,
@@ -186,4 +189,20 @@ export const setCurrentUser = userData => ({
 export const setUserMfa = userMfa => ({
     type: SET_USER_MFA,
     userMfa
+});
+
+export const confirmMfa = ({user, code}) => ({
+    type: CONFIRM_MFA_REQUEST,
+    user,
+    code
+});
+
+export const confirmMfaSuccess = user => ({
+    type: CONFIRM_MFA_SUCCESS,
+    user
+});
+
+export const confirmMfaFailure = error => ({
+    type: CONFIRM_MFA_FAILURE,
+    error
 });

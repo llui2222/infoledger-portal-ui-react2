@@ -92,3 +92,7 @@ export function verifyTotpToken({user, challengeAnswer}) {
 export function setPreferredMFA({user, MFAType}) {
     return Auth.setPreferredMFA(user, MFAType);
 }
+
+export function confirmSignIn({user, code, mfaType}) {
+    return Auth.confirmSignIn(user,code,mfaType);
+}

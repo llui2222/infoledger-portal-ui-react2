@@ -5,7 +5,8 @@ import {
     SIGN_IN_FAILURE,
     signInSuccess,
     signInFailure,
-    setUserMfa
+    setCurrentUser,
+    setUserMfa,
 } from "../actions/user";
 import {history} from "../index";
 import * as api from '../api/auth';
@@ -20,6 +21,7 @@ export function* workerSignIn(action) {
     try {
         const user = yield call(api.signIn, action);
         if(user.challengeName) {
+            yield put(setCurrentUser(user));
             yield put(setUserMfa(user.challengeName));
         } else {
             yield put(signInSuccess());
