@@ -47,6 +47,11 @@ import {
     watchSetNewPasswordSuccess,
     watchSetNewPasswordFailure,
 } from "./setNewPasswordSaga";
+import {
+    watchMfaConfirm,
+    watchMfaConfirmSuccess,
+    watchMfaConfirmFailure,
+} from "./confirmMfaSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -82,5 +87,8 @@ export default function* rootSaga() {
         watchSetNewPasswordFailure(),
         watchChangedEmailConfirm(),
         watchUpdateUserPassword(),
+        watchMfaConfirm(),
+        watchMfaConfirmSuccess(),
+        watchMfaConfirmFailure(),
     ])
 };
