@@ -4,7 +4,10 @@ import {
     CONFIRM_MFA_SUCCESS,
     CONFIRM_MFA_FAILURE,
     confirmMfaSuccess,
-    confirmMfaFailure, setCurrentUser, signInSuccess
+    confirmMfaFailure,
+    setCurrentUser,
+    signInSuccess,
+    signInFailure
 } from "../actions/user";
 import {history} from "../index";
 import * as api from '../api/auth';
@@ -20,6 +23,7 @@ export function* workerMfaConfirm(action) {
         yield put(confirmMfaSuccess(user));
     } catch (error) {
         yield put(confirmMfaFailure(error));
+        yield put(signInFailure());
     }
 }
 
