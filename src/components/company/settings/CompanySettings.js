@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import {
     Typography,
     Grid,
@@ -13,7 +13,7 @@ import {
 import {Add, Edit, KeyboardArrowRight, FileCopy} from "@material-ui/icons";
 import PageContainer from "../../common/containers/PageContainer";
 import { useLocation, useRouteMatch } from "react-router-dom";
-import Link from "../common/Link";
+import Link from "../../common/Link";
 import {history} from "../../../redux";
 import {useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,10 +21,6 @@ import MfaSettings from "./MfaSettings";
 import LogoutItem from "./LogoutItem";
 
 const useStyles = makeStyles((theme) => ({
-    editCompany: {
-        marginLeft: '10px',
-        color: 'black',
-    },
     infoLedgerId: {
         display: 'flex',
     },
@@ -38,32 +34,8 @@ const useStyles = makeStyles((theme) => ({
     profileButtonDiv: {
         marginRight: 'auto',
     },
-    messages: {
-        marginTop: '30px',
-        width: '95%',
-    },
-    field: {
-        display: 'flex',
-        marginBottom: '10px',
-        padding: '10px 0 10px 0'
-    },
-    rightArrow: {
-        marginLeft: 'auto',
-    },
-    logOut: {
-        color: '#d32f2f',
-        textTransform: 'none',
-        fontSize: '1rem',
-        padding: 0,
-    },
     profileButtonText: {
         textAlign: 'left',
-    },
-    companyIdInput: {
-        outline: 'none',
-        border: 'none',
-        background: '#fafafa',
-        fontSize: '1.1rem',
     },
     Btn: {
         margin: '0 20px 10px auto',
@@ -74,15 +46,10 @@ const useStyles = makeStyles((theme) => ({
 function CompanySettings({ company }) {
 
     const classes = useStyles();
-    const [userName, setUserName] = useState('');
-    const [userLastName, setUserLastName] = useState('');
     const ref = useRef(null);
     const {pathname} = useLocation();
     const childCompanies = useSelector(state => state.companies.childCompanies);
-
-    useEffect(() => {
-        getUserInfo()
-    }, []);
+    const user = useSelector(state => state.user.user);
 
     const id = useMemo(() => {
         const paths =  pathname.split('/')
@@ -107,17 +74,6 @@ function CompanySettings({ company }) {
         history.push('/profile');
     };
 
-    const logOutHandler = () => {
-        history.push('/logout');
-    }
-
-    const getUserInfo = () => {
-        currentAuthenticatedUser().then(user => {
-            setUserName(user.attributes.name);
-            setUserLastName(user.attributes.family_name);
-        })
-    };
-
     return (
         <PageContainer>
             <Typography variant="h4" gutterBottom>
@@ -133,7 +89,7 @@ function CompanySettings({ company }) {
                 >
                     <Box className={classes.profileButtonDiv}>
                         <p className={classes.profileButtonText}>Profile</p>
-                        <p className={classes.profileButtonText}>{userName}&nbsp;<span>{userLastName}</span></p>
+                        <p className={classes.profileButtonText}>{user.attributes.name}&nbsp;<span>{user.attributes.family_name}</span></p>
                     </Box>
                 </Button>
             </Link>
@@ -165,7 +121,7 @@ function CompanySettings({ company }) {
 
             <List>
                 { company.typeOfBusiness === 'SERVICE_COMPANY' &&
-                    <ListItem button divider onClick={() => handleNavigate('/account')}>
+                    <ListItem divider>
                         <ListItemText
                             primary="InfoLedger Id"
                             secondary={
@@ -201,37 +157,37 @@ function CompanySettings({ company }) {
                         }
                     />
                     <ListItemSecondaryAction>
-                        <KeyboardArrowRight company={company}/>
+                        <KeyboardArrowRight/>
                     </ListItemSecondaryAction>
                 </ListItem>
                 {(company.profileType === 'INDIVIDUAL_INVESTOR' || company.profileType === 'SERVICE_COMPANY') &&
-                    <ListItem button divider onClick={() => handleNavigate('/account')}>
+                    <ListItem divider>
                         <ListItemText
                             primary="Notifications"
                             secondary=' '
                         />
                         <ListItemSecondaryAction>
-                            <KeyboardArrowRight company={company} className={classes.rightArrow}/>
+                            <KeyboardArrowRight/>
                         </ListItemSecondaryAction>
                     </ListItem>
                 }
-                <ListItem button divider onClick={() => handleNavigate('/account')}>
+                <ListItem divider>
                     <ListItemText
                         primary="User & Permission"
                         secondary=' '
                     />
                     <ListItemSecondaryAction>
-                        <KeyboardArrowRight company={company} className={classes.rightArrow}/>
+                        <KeyboardArrowRight/>
                     </ListItemSecondaryAction>
                 </ListItem>
                 {company.typeOfBusiness === 'ASSET_OWNER' && company.profileType !== 'INDIVIDUAL_INVESTOR' &&
-                    <ListItem button divider onClick={() => handleNavigate('/account')}>
+                    <ListItem divider>
                         <ListItemText
                             primary="Workflows"
                             secondary=' '
                         />
                         <ListItemSecondaryAction>
-                            <KeyboardArrowRight company={company} className={classes.rightArrow}/>
+                            <KeyboardArrowRight/>
                         </ListItemSecondaryAction>
                     </ListItem>
                 }
