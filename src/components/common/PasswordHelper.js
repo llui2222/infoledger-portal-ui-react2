@@ -93,8 +93,8 @@ function PasswordHelper({ fieldProps, controlProps, name, register, ...restProps
                 onFocus={e => setInputAnchor(e.currentTarget)}
                 onBlur={() => setInputAnchor(null)}
                 inputProps={{
-                    name: name,
-                    ref: register( {
+                    ...register(name, {
+                        required: true,
                         validate: {
                             passwordValidate
                         }

@@ -45,8 +45,7 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                     type="text"
                     margin="normal"
                     inputProps={{
-                        name: "street1",
-                        ref: register({ required: true })
+                        ...register("street1", { required: true })
                     }}
                     InputLabelProps={{
                         role: "label"
@@ -62,8 +61,7 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                     type="text"
                     margin="normal"
                     inputProps={{
-                        name: "street2",
-                        ref: register()
+                        ...register("street2")
                     }}
                     InputLabelProps={{
                         role: "label"
@@ -83,8 +81,7 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                             type="text"
                             margin="normal"
                             inputProps={{
-                                name: "city",
-                                ref: register({ required: true })
+                                ...register("city", { required: true })
                             }}
                             InputLabelProps={{
                                 role: "label"
@@ -103,8 +100,7 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                             type="number"
                             margin="normal"
                             inputProps={{
-                                name: "postalCode",
-                                ref: register({ required: true })
+                                ...register("postalCode", { required: true })
                             }}
                             InputLabelProps={{
                                 role: "label"
@@ -123,8 +119,7 @@ const ChildCompanyFields = ({ errors, control, register, showCurrency, setShowCu
                             type="text"
                             margin="normal"
                             inputProps={{
-                                name: "phone",
-                                ref: register({
+                                ...register("phone", {
                                     required: true,
                                     minLength: 6,
                                     maxLength: 20,

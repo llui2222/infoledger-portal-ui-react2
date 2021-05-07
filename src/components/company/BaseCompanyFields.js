@@ -54,10 +54,7 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                 type="text"
                 margin="normal"
                 inputProps={{
-                    name: "companyName",
-                    ref: register({
-                        required: true
-                    })
+                    ...register("companyName", { required: true })
                 }}
                 InputLabelProps={{
                     role: "label"

@@ -21,7 +21,7 @@ function SetNewPassword() {
     const authState = useSelector(state => state.user.authState);
     const userName = localStorage.getItem(USERNAME_TO_PASSWORD_RESET);
 
-    const { register, handleSubmit, watch, errors } = useForm({
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
         mode: 'onChange'
     });
 
@@ -63,8 +63,7 @@ function SetNewPassword() {
                     type="text"
                     margin="normal"
                     inputProps={{
-                        name: "verificationCode",
-                        ref: register({ required: true })
+                        ...register("verificationCode", { required: true })
                     }}
                     error={!!errors.verificationCode}
                     helperText={errors.verificationCode && <>This field is required</>}
@@ -92,11 +91,7 @@ function SetNewPassword() {
                     labelWidth={180}
                     autoComplete="new-password"
                     inputProps={{
-                        name: 'confirm-password',
-                        ref: register({
-                            required: true,
-                            validate: value => value === password.current
-                        })
+                        ...register("confirm-password", { required: true })
                     }}
                 />
 
