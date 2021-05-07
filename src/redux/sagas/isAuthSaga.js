@@ -5,6 +5,7 @@ import {
     IS_AUTHENTICATED_SUCCESS,
     isAuthenticatedSuccess,
     isAuthenticatedFailure,
+    setCurrentUser,
 } from "../actions/user";
 import * as api from '../api/auth';
 import { workerFailure } from "./common";
@@ -29,8 +30,9 @@ export function* watchGetAuthFailure() {
     yield takeLatest(IS_AUTHENTICATED_FAILURE, workerGetAuthFailure);
 }
 
-export function* workerGetAuthFailure() {
-    yield workerFailure();
+export function* workerGetAuthFailure(error) {
+    yield put(setCurrentUser(null));
+    yield workerFailure(error);
     if(!isCurrentRouteInUnauthorizedList()) {
         yield history.push('/login');
     }
@@ -40,8 +42,8 @@ export function* watchGetAuthSuccess() {
     yield takeLatest(IS_AUTHENTICATED_SUCCESS, workerGetAuthSuccess);
 }
 
-export function* workerGetAuthSuccess() {
-
+export function* workerGetAuthSuccess({user}) {
+    yield put(setCurrentUser(user));
     if(isCurrentRouteInUnauthorizedList()) {
         yield history.push('/');
     }

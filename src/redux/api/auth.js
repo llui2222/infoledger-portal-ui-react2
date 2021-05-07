@@ -96,3 +96,7 @@ export function setPreferredMFA({user, MFAType}) {
 export function confirmSignIn({user, code, mfaType}) {
     return Auth.confirmSignIn(user,code,mfaType);
 }
+
+export function confirmDisableMfa({user, code}) {
+    return Auth.confirmSignIn(user,code);
+}

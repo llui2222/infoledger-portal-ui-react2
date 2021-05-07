@@ -7,7 +7,7 @@ import {
     useRouteMatch,
 } from "react-router-dom";
 import Company from "../company/Company";
-import CompanySettings from "./CompanySettings";
+import CompanySettings from "./settings/CompanySettings";
 import CompanyCreatePopup from "./CompanyCreatePopup";
 import CompanySidebar from "./CompanySidebar";
 import CompanySettingsEditor from './CompanySettingsEditor';

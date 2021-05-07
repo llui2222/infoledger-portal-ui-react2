@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {setupTOTP, verifyTotpToken, setPreferredMFA} from "../../redux/api/auth";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import QRCode from 'qrcode.react';
 import {
     TextField,
@@ -8,11 +7,14 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Dialog
+    Dialog, FormControl
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import logo_qr from '../../img/logo_qr.png'
-import showErrorNotification from "../../utils/showErrorNotification";
+import {getUserMfaSetupCode, verifyUserMfaSetupCode} from "../../redux/actions/user";
+import {useForm} from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -24,83 +26,91 @@ const useStyles = makeStyles((theme) => ({
         minWidth: 200,
         marginTop: theme.spacing(2)
     },
+    qrcode: {
+        marginTop: theme.spacing(2)
+    }
 }));
 
-function MfaSetup() {
+function MfaSetup({open, setOpen, onClose}) {
 
     const classes = useStyles();
+    const dispatch = useDispatch();
     const user = useSelector(state => state.user);
-    const [setUpCode, setSetUpCode] = useState(null);
-    const [code, setCode] = useState('');
+    const setupMfaCode = useSelector(state => state.user.setupMfaCode);
+
+    const schema = yup.object().shape({
+        code: yup.string().matches(/^[0-9]+$/, "Should be as 6-digit number").min(6, "Should be as 6-digit number").max(6, "Should be as 6-digit number").required(),
+    });
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        mode: 'onChange',
+        resolver: yupResolver(schema)
+    });
 
     const currentUser = user.user;
 
     useEffect(() => {
-
-        if(currentUser) {
-            setupTOTP({user: currentUser}).then((code) => {
-                setSetUpCode(code);
-            });
+        if(open && !setupMfaCode) {
+            dispatch(getUserMfaSetupCode(currentUser));
         }
+    }, [user, open])
 
-    }, [user])
-
-    if(!setUpCode) {
+    if(!setupMfaCode) {
         return null;
     }
 
-    const str = "otpauth://totp/AWSCognito:" + currentUser.username + "?secret=" + setUpCode + "&issuer=InfoLedger";
-
-    const handleConfirm = () => {
-
-        verifyTotpToken({user: currentUser, challengeAnswer: code}).then(() => {
-            setPreferredMFA({user: currentUser, MFAType: 'TOTP'}).then(() => {
-                console.log('setPreferredMFA data');
-            }).catch(error => {
-                showErrorNotification(error);
-            })
-        }).catch( error => {
-            showErrorNotification(error);
-        });
+    const handleConfirm = data => {
+        setOpen(false);
+        dispatch(verifyUserMfaSetupCode({user: currentUser, challengeAnswer: data.code}));
     }
 
     return (
-        <Dialog open={true} maxWidth='xs'>
+        <Dialog open={open} maxWidth='xs' onClose={onClose}>
 
-            <DialogTitle>
-                Set Up Multi-factor Authorization
-            </DialogTitle>
+            <FormControl
+                component="form"
+                onSubmit={handleSubmit(handleConfirm)}
+            >
+                <DialogTitle>
+                    Enable Multi-factor Authorization
+                </DialogTitle>
 
-            <DialogContent dividers>
+                <DialogContent dividers>
 
-                <QRCode
-                    value={str}
-                    size={256}
-                    imageSettings={{
-                        height: 40,
-                        width: 40,
-                        src: logo_qr
-                    }}
-                />
-                <TextField
-                    label="6-digit Authenticator Code"
-                    value={code}
-                    variant="outlined"
-                    className={classes.authCodeField}
-                    onChange={e => setCode(e.target.value)}
-                />
-            </DialogContent>
+                    <QRCode
+                        className={classes.qrcode}
+                        value={`otpauth://totp/AWSCognito:${currentUser.username}?secret=${setupMfaCode}&issuer=InfoLedger`}
+                        size={256}
+                        imageSettings={{
+                            height: 40,
+                            width: 40,
+                            src: logo_qr
+                        }}
+                    />
+                    <TextField
+                        label="6-digit Authenticator Code"
+                        variant="outlined"
+                        className={classes.authCodeField}
+                        autoFocus
+                        inputProps={{
+                            ...register("code")
+                        }}
+                        error={!!errors.code}
+                        helperText={errors.code && errors.code.message}
+                    />
+                </DialogContent>
 
-            <DialogActions>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    disableElevation
-                    onClick={handleConfirm}
-                >
-                    Confirm
-                </Button>
-            </DialogActions>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disableElevation
+                        type='submit'
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </FormControl>
         </Dialog>
     );
 }

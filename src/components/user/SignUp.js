@@ -19,7 +19,7 @@ function SignUp() {
     const password = useRef({});
     const authState = useSelector(state => state.user.authState);
 
-    const { register, handleSubmit, watch, errors } = useForm({
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
         mode: 'onChange'
     });
 
@@ -53,8 +53,7 @@ function SignUp() {
                     type="email"
                     margin="normal"
                     inputProps={{
-                        name: "userName",
-                        ref: register({ required: true })
+                        ...register("userName", { required: true })
                     }}
                     error={!!errors.email}
                     helperText={errors.email && <>This field is required</>}
@@ -80,8 +79,7 @@ function SignUp() {
                     helperText='The passwords do not match'
                     labelWidth={142}
                     inputProps={{
-                        name: 'password2',
-                        ref: register({
+                        ...register("password2", {
                             required: true,
                             validate: value => value === password.current
                         })

@@ -52,6 +52,17 @@ import {
     watchMfaConfirmSuccess,
     watchMfaConfirmFailure,
 } from "./confirmMfaSaga";
+import {
+    watchGetMfaSetupCode,
+    watchVerifyMfaSetupCode,
+    watchVerifyMfaSetupCodeSuccess,
+    watchGetMfaSetupCodeFailure,
+    watchVerifyMfaSetupCodeFailure,
+    watchSetPreferredMfaFailure,
+    watchDisableUserMfa,
+    watchUserMfaSuccess,
+    watchDisableUserMfaFailure,
+} from "./mfaSetupSaga";
 
 export default function* rootSaga() {
     yield all([
@@ -87,6 +98,15 @@ export default function* rootSaga() {
         watchSetNewPasswordFailure(),
         watchChangedEmailConfirm(),
         watchUpdateUserPassword(),
+        watchGetMfaSetupCode(),
+        watchGetMfaSetupCodeFailure(),
+        watchVerifyMfaSetupCode(),
+        watchVerifyMfaSetupCodeSuccess(),
+        watchVerifyMfaSetupCodeFailure(),
+        watchSetPreferredMfaFailure(),
+        watchDisableUserMfa(),
+        watchUserMfaSuccess(),
+        watchDisableUserMfaFailure(),
         watchMfaConfirm(),
         watchMfaConfirmSuccess(),
         watchMfaConfirmFailure(),

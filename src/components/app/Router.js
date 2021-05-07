@@ -46,9 +46,6 @@ function Router() {
             <ProtectedRoute path="/create-company">
                 <CompanyCreatePopup/>
             </ProtectedRoute>
-            <ProtectedRoute path="/mfa">
-                <MfaSetup/>
-            </ProtectedRoute>
             <UnauthorizedRoute path="/login">
                 <Login/>
             </UnauthorizedRoute>

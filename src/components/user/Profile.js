@@ -112,9 +112,9 @@ function Profile() {
     const {
         register,
         handleSubmit,
-        errors,
         setValue,
         getValues,
+        formState: { errors }
     } = useForm({
         mode: 'onBlur'
     });
@@ -189,8 +189,7 @@ function Profile() {
                             id="code"
                             label="code"
                             inputProps={{
-                                name: "code",
-                                ref: register({required: true})
+                                ...register("code", { required: true })
                             }}
                             error={!!errors.code}
                         />
@@ -208,8 +207,7 @@ function Profile() {
                             type="text"
                             id="name"
                             inputProps={{
-                                name: "name",
-                                ref: register()
+                                ...register("name", { required: true })
                             }}
                             error={!!errors.name}
                             helperText={errors.name?.message}
@@ -223,8 +221,7 @@ function Profile() {
                             type="text"
                             id="family_name"
                             inputProps={{
-                                name: "family_name",
-                                ref: register()
+                                ...register("family_name")
                             }}
                             error={!!errors.family_name}
                             helperText={errors.family_name?.message}
@@ -240,13 +237,11 @@ function Profile() {
                             id="email"
                             label="Email"
                             inputProps={{
-                                name: "email",
-                                ref: register({
-                                        validate: {
-                                            pattern: v => /^(.+@.+\..+)+$/i.test(v) || 'Incorrect entry.'
-                                        }
+                                ...register("email", {
+                                    validate: {
+                                        pattern: v => /^(.+@.+\..+)+$/i.test(v) || 'Incorrect entry.'
                                     }
-                                )
+                                })
                             }}
                             error={!!errors.email}
                             helperText={errors.email?.message}
@@ -265,8 +260,7 @@ function Profile() {
                             id="oldPass"
                             autoComplete="current-password"
                             inputProps={{
-                                name: "oldPass",
-                                ref: register({
+                                ...register("oldPass", {
                                     validate: {
                                         pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
                                             || 'Password must include [a-zA-z0-9!@#$%^&*]'
@@ -285,8 +279,7 @@ function Profile() {
                             id="newPass"
                             autoComplete="current-password"
                             inputProps={{
-                                name: "newPass",
-                                ref: register({
+                                ...register("newPass", {
                                     validate: {
                                         pattern: v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%^&*]{8,}$/i.test(v)
                                             || 'Password must include [a-zA-z0-9!@#$%^&*]',

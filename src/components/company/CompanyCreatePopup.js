@@ -62,11 +62,11 @@ function CompanyCreatePopup() {
 
     const {
         register,
-        errors,
         getValues,
         control,
         trigger,
-        reset
+        reset,
+        formState: { errors }
     } = useForm({
         mode: 'onChange',
         defaultValues: {

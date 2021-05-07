@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {
     Button,
     Dialog,
@@ -7,9 +7,10 @@ import {
     DialogTitle, FormControl,
     TextField
 } from "@material-ui/core";
-import {useDispatch, useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import {confirmMfa} from "../../redux/actions/user";
+import {useForm} from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
     codeField: {
@@ -17,38 +18,45 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function MfaRequest() {
+function MfaRequest({open, onSubmit, title}) {
 
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const [code, setCode] = useState('');
-    const user = useSelector(state => state.user);
-    const userMfa = user.userMfa;
 
-    const handleConfirm = e => {
-        e.preventDefault();
-        dispatch(confirmMfa({user: user.user, code}));
+    const schema = yup.object().shape({
+        code: yup.string().matches(/^[0-9]+$/, "Should be as 6-digit number").min(6, "Should be as 6-digit number").max(6, "Should be as 6-digit number").required(),
+    });
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        mode: 'onChange',
+        resolver: yupResolver(schema)
+    });
+
+    const handleConfirm = data => {
+        onSubmit(data.code);
     }
 
     return (
-        <Dialog open={!!userMfa} maxWidth='xs'>
+        <Dialog open={open} maxWidth='xs'>
 
             <FormControl
                 component="form"
-                onSubmit={handleConfirm}
+                onSubmit={handleSubmit(handleConfirm)}
             >
                 <DialogTitle>
-                    Authenticator Code
+                    {title}
                 </DialogTitle>
 
                 <DialogContent dividers>
                     <TextField
                         label="6-digit Authenticator Code"
-                        value={code}
                         variant="outlined"
-                        onChange={e => setCode(e.target.value)}
                         className={classes.codeField}
                         autoFocus
+                        inputProps={{
+                            ...register("code")
+                        }}
+                        error={!!errors.code}
+                        helperText={errors.code && errors.code.message}
                     />
                 </DialogContent>
 
