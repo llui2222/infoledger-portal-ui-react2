@@ -237,10 +237,9 @@ export const setPreferredMfaFailure = error => ({
     error
 });
 
-export const disableUserMfa = ({user, code}) => ({
+export const disableUserMfa = ({user}) => ({
     type: DISABLE_USER_MFA_REQUEST,
-    user,
-    code
+    user
 });
 
 export const disableUserMfaSuccess = user => ({

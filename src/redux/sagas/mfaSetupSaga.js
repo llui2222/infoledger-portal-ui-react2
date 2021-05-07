@@ -70,7 +70,6 @@ export function* watchDisableUserMfa() {
 
 export function* workerDisableUserMfa(action) {
     try {
-        // yield call(api.confirmDisableMfa, action); @todo: refactor to use login & password login flow
         yield call(api.setPreferredMFA, {user: action.user, MFAType: 'NOMFA'});
         yield put(disableUserMfaSuccess());
     } catch (error) {
