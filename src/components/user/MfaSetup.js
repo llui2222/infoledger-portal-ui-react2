@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import QRCode from 'qrcode.react';
 import {
@@ -12,6 +12,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import logo_qr from '../../img/logo_qr.png'
 import {getUserMfaSetupCode, verifyUserMfaSetupCode} from "../../redux/actions/user";
+import {useForm} from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -34,7 +37,15 @@ function MfaSetup({open, setOpen, onClose}) {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user);
     const setupMfaCode = useSelector(state => state.user.setupMfaCode);
-    const [code, setCode] = useState('');
+
+    const schema = yup.object().shape({
+        code: yup.string().matches(/^[0-9]+$/, "Should be as 6-digit number").min(6, "Should be as 6-digit number").max(6, "Should be as 6-digit number").required(),
+    });
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        mode: 'onChange',
+        resolver: yupResolver(schema)
+    });
 
     const currentUser = user.user;
 
@@ -48,10 +59,9 @@ function MfaSetup({open, setOpen, onClose}) {
         return null;
     }
 
-    const handleConfirm = e => {
-        e.preventDefault();
+    const handleConfirm = data => {
         setOpen(false);
-        dispatch(verifyUserMfaSetupCode({user: currentUser, challengeAnswer: code}));
+        dispatch(verifyUserMfaSetupCode({user: currentUser, challengeAnswer: data.code}));
     }
 
     return (
@@ -59,7 +69,7 @@ function MfaSetup({open, setOpen, onClose}) {
 
             <FormControl
                 component="form"
-                onSubmit={handleConfirm}
+                onSubmit={handleSubmit(handleConfirm)}
             >
                 <DialogTitle>
                     Enable Multi-factor Authorization
@@ -79,11 +89,14 @@ function MfaSetup({open, setOpen, onClose}) {
                     />
                     <TextField
                         label="6-digit Authenticator Code"
-                        value={code}
                         variant="outlined"
                         className={classes.authCodeField}
-                        onChange={e => setCode(e.target.value)}
                         autoFocus
+                        inputProps={{
+                            ...register("code")
+                        }}
+                        error={!!errors.code}
+                        helperText={errors.code && errors.code.message}
                     />
                 </DialogContent>
 

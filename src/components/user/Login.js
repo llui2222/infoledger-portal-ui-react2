@@ -36,7 +36,7 @@ function Login() {
         setMfaOpen(!!userMfa);
     }, [userMfa])
 
-    const { register, handleSubmit, errors } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm({
         mode: 'onChange'
     });
 
@@ -78,8 +78,7 @@ function Login() {
                     type="email"
                     margin="normal"
                     inputProps={{
-                        name: "userName",
-                        ref: register({ required: true })
+                        ...register("userName")
                     }}
                     error={!!errors.email}
                 />
@@ -90,8 +89,7 @@ function Login() {
                     label='Password'
                     margin='normal'
                     inputProps={{
-                        name: "password",
-                        ref: register({ required: true })
+                        ...register("password")
                     }}
                 />
 
