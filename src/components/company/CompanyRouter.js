@@ -2,17 +2,20 @@ import React from "react";
 import {
     Redirect,
     Route,
-    Switch, useParams,
-    useRouteMatch
+    Switch,
+    useParams,
+    useRouteMatch,
 } from "react-router-dom";
 import Company from "../company/Company";
 import CompanySettings from "./settings/CompanySettings";
 import CompanyCreatePopup from "./CompanyCreatePopup";
 import CompanySidebar from "./CompanySidebar";
-import {useSelector} from "react-redux";
+import CompanySettingsEditor from './CompanySettingsEditor';
+import { useSelector } from "react-redux";
+import CompanyAccount from "./CompanyAccount";
+import Profile from "../user/Profile";
 
 function CompanyRouter() {
-
     let { path } = useRouteMatch();
     let { companyID } = useParams();
     const childCompanies = useSelector(state => state.companies.childCompanies);
@@ -34,16 +37,25 @@ function CompanyRouter() {
         <>
             <CompanySidebar company={rootCompany.typeOfBusiness === 'SERVICE_COMPANY' ? company : rootCompany } />
             <Switch>
-                <Route path={`${path}/settings`}>
-                    <CompanySettings company={company}/>
+                <Route exact path={`${path}/settings`}>
+                    <CompanySettings company={company} />
                 </Route>
-                <Route path={`${path}`}>
-                    <Company company={company}/>
+                <Route exact path={`${path}/settings/edit/:companyID`}>
+                    <CompanySettingsEditor company={company} />
+                </Route>
+                <Route exact path={`${path}/settings/account`}>
+                    <CompanyAccount company={company} />
+                </Route>
+                <Route exact path={`${path}/settings/profile`}>
+                    <Profile />
+                </Route>
+                <Route exact path={`${path}`}>
+                    <Company company={company} />
+                </Route>
+                <Route exact path={`${path}/settings/create-company`}>
+                    <CompanyCreatePopup />
                 </Route>
             </Switch>
-            <Route path={`${path}/settings/create-company`}>
-                <CompanyCreatePopup/>
-            </Route>
         </>
     );
 }
