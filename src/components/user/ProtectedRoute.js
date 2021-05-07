@@ -20,7 +20,7 @@ const ProtectedRoute = ({children, ...rest}) => {
 
     useEffect(() => {
 
-        if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles && user.user.attributes) {
+        if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles && user.user && user.user.attributes) {
             dispatch(setCompanies(data.allProfiles, refetch));
 
             let profileComplete = true;
