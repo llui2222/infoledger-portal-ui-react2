@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Company({ company }) {
-
     const classes = useStyles();
 
     return (

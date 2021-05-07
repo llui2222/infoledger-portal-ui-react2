@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     Button,
     Dialog,
@@ -7,7 +7,9 @@ import {
     DialogTitle,
     Stepper,
     Step,
-    StepLabel, FormControl
+    StepLabel,
+    FormControl,
+    Box,
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
@@ -30,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
         width: 400,
         margin: 'auto',
         textAlign: 'left'
+    },
+    backBtn: {
+        marginRight: '350px',
     },
 }));
 
@@ -229,6 +234,7 @@ function CompanyCreatePopup() {
 
     const handleCancel = () => {
         clearForm();
+        history.goBack();
     }
 
     const clearForm = () => {
@@ -289,19 +295,25 @@ function CompanyCreatePopup() {
             <DialogActions>
 
                 { rootCompany &&
-                    <Button onClick={handleCancel} color="primary">
+                    <Button onClick={handleCancel}
+                            color="primary">
                         Cancel
                     </Button>
                 }
 
                 { haveMoreSteps ?
-                    <Button onClick={handleNextClick} variant="contained" color="primary">
-                        Next
-                    </Button>
+                  <Box>
+                      <Button onClick={handleNextClick} variant="contained" color="primary">
+                          Next
+                      </Button>
+
+                  </Box>
                     :
+                  <Box>
                     <Button onClick={handleNextClick} variant="contained" color="primary">
                         Add
                     </Button>
+                  </Box>
                 }
 
             </DialogActions>

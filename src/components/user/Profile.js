@@ -4,7 +4,7 @@ import {
     Button, Divider,
     FormControl, InputAdornment, TextField,
 } from "@material-ui/core";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
 import {useForm} from "react-hook-form";
 import EmailConfirmedMessage from "../common/EmailConfirmedMessage";
@@ -17,6 +17,7 @@ import {changePassword, confirmChangedEmail, updateUserAttributes} from "../../r
 import {cleanProperty} from "../../utils/cleanProperty";
 import Modal from "../shared/modal/Modal";
 import FieldPassword from "../common/FieldPassword";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     defaultForm: {
@@ -31,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
         width: '100%',
         minWidth: '40vw'
+    },
+    backBtn: {
+        marginBottom: '20px',
     },
     submitButton: {
         margin: `${theme.spacing(1)}px 0 0 auto`
@@ -95,14 +99,15 @@ const modalTitle = {
     [FormTypes.EMAIL]: 'Change email',
 }
 
-
 function Profile() {
 
     const [activeField, setActiveField] = useState(null)
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
-    const [profile, setProfile] = useState(initialProfile)
+  const rootCompany = useSelector(state => state?.companies.rootCompany);
+  const [profile, setProfile] = useState(initialProfile)
     const dispatch = useDispatch();
     const classes = useStyles();
+    const history = useHistory();
 
     const {
         register,
@@ -134,7 +139,6 @@ function Profile() {
     useEffect(() => {
         getUserInfo()
     }, [])
-
 
     const onSubmit = data => {
         const {name, family_name, address, email, oldPass, newPass, code} = data
@@ -307,6 +311,19 @@ function Profile() {
     return (
         <>
             <PageContainer>
+              {window.location.href.includes('company') &&
+              <Button
+                className={classes.backBtn}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  history.push(`/company/${rootCompany.profileId}/settings`);
+                }}
+              >
+                Back
+              </Button>
+              }
+
                 <PageHeader title="Profile" isSearch={false}/>
                 <Box className={classes.defaultForm}>
                     <TextField
@@ -392,7 +409,6 @@ function Profile() {
                         }}
                     />
                 </Box>
-
                 <EmailConfirmedMessage/>
             </PageContainer>
             <Modal
@@ -438,5 +454,3 @@ function Profile() {
 }
 
 export default Profile;
-
-
