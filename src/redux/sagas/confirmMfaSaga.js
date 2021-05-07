@@ -7,7 +7,8 @@ import {
     confirmMfaFailure,
     setCurrentUser,
     signInSuccess,
-    signInFailure
+    signInFailure,
+    setUserMfa,
 } from "../actions/user";
 import {history} from "../index";
 import * as api from '../api/auth';
@@ -22,6 +23,7 @@ export function* workerMfaConfirm(action) {
         const user = yield call(api.confirmSignIn, {...action, mfaType: 'SOFTWARE_TOKEN_MFA' });
         yield put(confirmMfaSuccess(user));
     } catch (error) {
+        yield put(setUserMfa(null));
         yield put(confirmMfaFailure(error));
         yield put(signInFailure());
     }
