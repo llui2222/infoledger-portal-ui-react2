@@ -101,7 +101,7 @@ const CompanyAccount = ({company}) => {
           profileType: company.profileType,
           typeOfBusiness: company.typeOfBusiness,
           billingAddress: {
-            country: company.billingAddress.country,
+            country: company.billingAddress?.country,
           }
         }
       }
@@ -131,8 +131,8 @@ const CompanyAccount = ({company}) => {
       {
         isOrgNameEdit ? (
           <Box className={classes.orgNameTitle}>
-            <Typography variant="h4" className={classes.orgName}>{orgName}</Typography>
-            <BorderColorIcon className={classes.orgNameEdit} onClick={isOrgNameEditHandler}/>
+            <Typography variant="h4" className={classes.orgName} data-testid="orgName">{orgName}</Typography>
+            <BorderColorIcon className={classes.orgNameEdit} onClick={isOrgNameEditHandler} data-testid="companyName-edit"/>
           </Box>
         ) : (
           <Box>
@@ -177,7 +177,7 @@ const CompanyAccount = ({company}) => {
         <hr/>
         <Box className={classes.field}>
           <Typography>Billing address</Typography>
-          <Typography className={classes.accountType}>
+          <Typography className={classes.accountType} data-testid="businessAddress">
             {company?.billingAddress?.postalCode &&
             <span>{company?.billingAddress?.postalCode}, </span>
             }
