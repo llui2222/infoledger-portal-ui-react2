@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Route, useHistory, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {AUTHORIZED_AUTH_STATE} from "../../utils/constants";
+import {AUTHORIZED_AUTH_STATE, PENDING_AUTH_STATE} from "../../utils/constants";
 import {gql, useQuery} from "@apollo/client";
 import {allProfiles} from "../../graphql/queries";
 import ServiceCompanySidebar from "../company/ServiceCompanySidebar";
@@ -19,7 +19,6 @@ const ProtectedRoute = ({children, ...rest}) => {
     const {loading, error, data, refetch} = useQuery(gql(allProfiles));
 
     useEffect(() => {
-
         if (authState === AUTHORIZED_AUTH_STATE && data && data.allProfiles && user.user && user.user.attributes) {
             dispatch(setCompanies(data.allProfiles, refetch));
 
@@ -32,8 +31,8 @@ const ProtectedRoute = ({children, ...rest}) => {
             })
 
             if(!profileComplete) {
-                if(location.pathname !== '/profile') {
-                    history.push('/profile');
+                if(location.pathname !== '/intro') {
+                    history.push('/intro');
                 }
             } else if(!data.allProfiles.length || !data.allProfiles[0]) {
                 if(location.pathname !== '/create-company') {
@@ -55,7 +54,7 @@ const ProtectedRoute = ({children, ...rest}) => {
             {loading ?
                 null
                 :
-                (!data || authState !== AUTHORIZED_AUTH_STATE) ?
+                (!data || ![PENDING_AUTH_STATE, AUTHORIZED_AUTH_STATE].includes(authState)) ?
                     null
                     :
                     <>

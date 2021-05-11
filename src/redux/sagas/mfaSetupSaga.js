@@ -57,7 +57,6 @@ export function* watchVerifyMfaSetupCodeSuccess() {
 export function* workerVerifyMfaSetupCodeSuccess(action) {
     try {
         yield call(api.setPreferredMFA, {user: action.user, MFAType: 'TOTP'});
-        yield put(isAuthenticated(history.location.pathname));
         yield put(setPreferredMfaSuccess());
     } catch (error) {
         yield put(setPreferredMfaFailure(error));

@@ -8,7 +8,9 @@ import {
     CHANGE_PASSWORD_REQUEST,
     CHANGE_PASSWORD_SUCCESS,
     CHANGE_PASSWORD_FAILURE,
-    changePasswordSuccess, changePasswordFailure
+    changePasswordSuccess,
+    changePasswordFailure,
+    isAuthenticated
 } from "../actions/user";
 import * as api from '../api/auth';
 import {workerFailure} from "./common";
@@ -52,6 +54,7 @@ export function* workerUpdateUserAttributesSuccess() {
             variant: 'success'
         },
     }));
+    yield put(isAuthenticated());
 }
 
 export function* watchUpdateUserAttributesFailure() {
