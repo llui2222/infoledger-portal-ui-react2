@@ -13,11 +13,6 @@ import {useLocation} from "react-router-dom";
 
 const menuItems = [
     {
-        name: 'Profile',
-        url: '/profile',
-        icon: AccountCircle,
-    },
-    {
         name: 'Encrypt Demo',
         url: '/crypto',
         icon: EnhancedEncryption,
