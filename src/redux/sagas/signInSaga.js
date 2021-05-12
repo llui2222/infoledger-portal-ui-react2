@@ -23,6 +23,7 @@ export function* workerSignIn(action) {
         if(user.challengeName) {
             yield put(setCurrentUser(user));
             yield put(setUserMfa(user.challengeName));
+            yield put(signInSuccess());
         } else {
             yield put(signInSuccess());
         }

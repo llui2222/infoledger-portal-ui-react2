@@ -52,8 +52,9 @@ function MfaRequest({open, onSubmit, title}) {
                         variant="outlined"
                         className={classes.codeField}
                         autoFocus
+                        autoComplete='off'
                         inputProps={{
-                            ...register("code")
+                            ...register("code"),
                         }}
                         error={!!errors.code}
                         helperText={errors.code && errors.code.message}

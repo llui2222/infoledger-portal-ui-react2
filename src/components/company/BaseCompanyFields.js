@@ -135,7 +135,8 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                                         label="Base Currency"
                                         variant="outlined"
                                         InputLabelProps={{
-                                            role: "label"
+                                            role: "label",
+                                            autoComplete: 'new-password',
                                         }}
                                     />
                                 )}
@@ -170,7 +171,6 @@ const BaseCompanyFields = ({ errors, control, register, showCurrency, setShowCur
                                 margin="normal"
                                 label="Country"
                                 variant="outlined"
-                                autoComplete='new-password'
                                 InputLabelProps={{
                                     role: "label"
                                 }}

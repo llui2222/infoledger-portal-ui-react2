@@ -92,6 +92,7 @@ function MfaSetup({open, setOpen, onClose}) {
                         variant="outlined"
                         className={classes.authCodeField}
                         autoFocus
+                        autoComplete='off'
                         inputProps={{
                             ...register("code")
                         }}
