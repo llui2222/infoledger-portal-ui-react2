@@ -31,8 +31,8 @@ function Router() {
             <ProtectedRoute path="/profile">
                 <Profile/>
             </ProtectedRoute>
-            <ProtectedRoute path="/messages">
-                <Profile/>
+            <ProtectedRoute path="/sendmessage">
+                <Sendmessage/>
             </ProtectedRoute>
             <ProtectedRoute path="/crypto">
                 <EncryptDemo/>
